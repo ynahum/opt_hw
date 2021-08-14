@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb}
+
+\title{Introduction to Numerical Optimization\\HW1}
+\author{Yair Nahum 034462796 }
+
+\begin{document}
+
+\maketitle
+
+%\tableofcontents{}
+
+\section{Analytical and Numerical Differentiation}
+
+\subsection{Analytical Differentiation}
+
+\subsubsection{Gradient and Hessian of $f_1$}
+$$f_1(x)=\phi(Ax)$$
+Where:
+$$f_1:\mathbb{R}^n \rightarrow \mathbb{R}$$
+$$x \in \mathbb{R}^{n},$$
+$$A \in \mathbb{R}^{m\times n},$$
+$$\phi:\mathbb{R}^m \rightarrow \mathbb{R}$$
+Assuming $\nabla\phi$ and $\nabla^2\phi$ are known (relative to its $\mathbb{R}^m$ variable).
+$$\nabla f_1 = ?$$
+$$\nabla^2 f_1 = ?$$
+
+We denote $u=Ax \Rightarrow du=Adx$, by the external definition of the gradient:
+$$df_1=d\phi(u)=(\nabla\phi(u))^T du = (\nabla\phi(Ax))^T A dx = $$
+$$ \langle A^T\nabla \phi(Ax), dx \rangle \Rightarrow $$
+\begin{center}
+\begin{tabular}{ |c| }
+\hline
+ $$ \nabla f_1 = A^T\nabla \phi(Ax)$$\\
+\hline
+\end{tabular}
+\end{center}
+
+Next, We denote $\nabla f_1= g(x)$:
+$$dg\equiv Hdx,d(\nabla \phi(u)) =  \nabla^2 \phi(u) du \Rightarrow$$
+$$dg=d(\nabla f_1) = d(A^T\nabla \phi(Ax))=A^Td(\nabla \phi(u))=A^T\nabla^2 \phi(u) du = A^T\nabla^2 \phi(Ax) A dx \Rightarrow$$
+\begin{center}
+\begin{tabular}{ |c| }
+\hline
+$$ \nabla^2 f_1 = A^T\nabla^2 \phi(Ax) A$$\\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Gradient and Hessian of $f_2$}
+
+$$f_2(x)=h(\phi(x))$$
+Where:
+$$f_2:\mathbb{R}^n \rightarrow \mathbb{R}$$
+$$x \in \mathbb{R}^{n},$$
+$$\phi:\mathbb{R}^n \rightarrow \mathbb{R}$$
+$$h:\mathbb{R} \rightarrow \mathbb{R},$$
+Assuming $\nabla\phi, \nabla^2\phi, h'(t)$ and $h''(t)$ are known.
+$$\nabla f_2 = ?$$
+$$\nabla^2 f_2 = ?$$
+We denote $t=\phi(x)\Rightarrow dt=d\phi(x)=(\nabla \phi(x))^Tdx$
+$$df_2= dh = h'(t)dt = h'(\phi(x))(\nabla \phi(x))^Tdx=$$
+Since $h'(t)$ is scalar, it doesn't change on transpose operation:
+$$\langle h'(\phi(x))\nabla \phi(x), dx \rangle \Rightarrow$$
+\begin{center}
+\begin{tabular}{ |c| }
+\hline
+$$ \nabla f_2 = h'(\phi(x))\nabla \phi(x)$$\\
+\hline
+\end{tabular}
+\end{center}
+Next, We denote $\nabla f_2= g(x)$:
+$$dg = d(h'(\phi(x))\nabla \phi(x)) =  d(h'(\phi(x)))\nabla \phi(x) + h'(\phi(x))d(\nabla \phi(x))=$$
+$$h''(\phi(x))((\nabla \phi(x))^Tdx)\nabla \phi(x) + h'(\phi(x))\nabla^2 \phi(x)dx=$$
+$$h''(\phi(x))\nabla \phi(x)((\nabla \phi(x))^Tdx) + h'(\phi(x))\nabla^2 \phi(x)dx=$$
+$$h''(\phi(x))\nabla \phi(x)(\nabla \phi(x))^Tdx + h'(\phi(x))\nabla^2 \phi(x)dx=$$
+$$[h''(\phi(x))\nabla \phi(x)(\nabla \phi(x))^T + h'(\phi(x))\nabla^2 \phi(x)]dx=$$
+by definition $dg=Hdx$, therefore:
+\begin{center}
+\begin{tabular}{ |c| }
+\hline
+$$ \nabla^2 f_2 = h''(\phi(x))\nabla \phi(x)(\nabla \phi(x))^T + h'(\phi(x))\nabla^2 \phi(x)$$\\
+\hline
+\end{tabular}
+\end{center}
+\newpage
+\subsubsection{Gradient and Hessian of $\phi$}
+
+
+\end{document}
+
