@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
+\usepackage{amsmath}
 \usepackage{amssymb}
+
 
 \title{Introduction to Numerical Optimization\\HW1}
 \author{Yair Nahum 034462796 }
@@ -86,7 +88,32 @@ $$ \nabla^2 f_2 = h''(\phi(x))\nabla \phi(x)(\nabla \phi(x))^T + h'(\phi(x))\nab
 \end{center}
 \newpage
 \subsubsection{Gradient and Hessian of $\phi$}
-
+Given the following $\phi:\mathbb{R}^3\rightarrow\mathbb{R}$ function:
+$$\phi \begin{pmatrix}x_1\\x_2\\x_3 \end{pmatrix} = sin(x_1x_2x_3)$$
+We need to calculate its gradient vector and hessian matrix.
+We can use the previous section results when there is a chain of functions to compute the gradient and hessian as we can define:
+$$f=sin:\mathbb{R}\rightarrow\mathbb{R}$$ and $$u=x_1x_2x_3:\mathbb{R}^3\rightarrow\mathbb{R}$$
+\\
+Thus, the gradient is as follows:
+$$\nabla \phi = f'(u)\nabla u(x) = cos(x_1x_2x_3)\begin{pmatrix}x_2x_3\\x_1x_3\\x_1x_2 \end{pmatrix}$$
+\begin{center}
+\begin{tabular}{ |c| }
+\hline
+$$\nabla \phi = cos(x_1x_2x_3)\begin{pmatrix}x_2x_3\\x_1x_3\\x_1x_2 \end{pmatrix}$$\\
+\hline
+\end{tabular}
+\end{center}
+\\
+We can also use the hessian formula we got on the previous section and get:
+$$\nabla^2 \phi = f''(u(x))\nabla u(x)(\nabla u(x))^T + f'(u(x))\nabla^2 u(x)=$$
+$$-sin(x_1x_2x_3)\begin{pmatrix}x_2x_3\\x_1x_3\\x_1x_2 \end{pmatrix}\begin{pmatrix}x_2x_3 & x_1x_3 & x_1x_2 \end{pmatrix} + cos(x_1x_2x_3)\begin{pmatrix}0 & x_3 & x_2\\x_3 & 0 & x_1\\x_2 & x_1 & 0 \end{pmatrix} \Rightarrow$$
+\begin{center}
+\begin{tabular}{ |c| }
+\hline
+$$\nabla^2 \phi = -sin(x_1x_2x_3)\begin{pmatrix}{x_2}^2{x_3}^2 & x_1x_2{x_3}^2 & x_1{x_2}^2x_3\\x_1x_2{x_3}^2 & {x_1}^2{x_3}^2 & {x_1}^2x_2x_3\\x_1{x_2}^2x_3 & {x_1}^2x_2x_3 & {x_1}^2{x_2}^2 \end{pmatrix}+ cos(x_1x_2x_3)\begin{pmatrix}0 & x_3 & x_2\\x_3 & 0 & x_1\\x_2 & x_1 & 0 \end{pmatrix}$$\\
+\hline
+\end{tabular}
+\end{center}
 
 \end{document}
 
