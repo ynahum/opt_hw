@@ -2,49 +2,43 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 1.1.5
-def calc_phi_grad(x):
+def calc_phi_and_derivatives(x, calc_grad=True, calc_hessian=True):
+    x_vec = x.squeeze()
     u_value = np.prod(x, axis=0)
+    sin_value = np.sin(u_value)
     cos_value = np.cos(u_value)
-    u_grad = np.array([x[1] * x[2], x[0] * x[2], x[0] * x[1]])
-    return  cos_value * u_grad
+    value = sin_value
+    ret = [value]
 
-
-def phi_val_grad_hessian(x, calc_g=True, calc_h=True):
-    # Input : Vector x of shape 3x1
-    # Input : calc_g(bool), calc_h(bool) - whether to calculate gradient or hessian(respectively)
-    # Value, gradient and hessian calculation for function: phi(x) = sin(x[0]*x[1]*x[2])
-    cos = np.cos(np.prod(x, 0))
-    sin = np.sin(np.prod(x, 0))
-    phi_val = sin
-    to_ret = [phi_val]
-    if calc_g:
-        phi_grad = np.array([x[1] * x[2],
-                             x[0] * x[2],
-                             x[0] * x[1]]) * cos
-        # phi_grad=np.array([x[1] * x[2],
-        #           x[0] * x[2],
-        #           x[0] * x[1]]) * np.cos(np.prod(x, axis=0))
-        to_ret.append(phi_grad)
-    if calc_h:
-        h11 = -(x[1] ** 2) * (x[2] ** 2) * sin
-        h12 = x[2] * cos - x[0] * x[1] * (x[2] ** 2) * sin
-        h13 = x[1] * cos - x[0] * (x[1] ** 2) * x[2] * sin
-        h22 = -(x[0] ** 2) * (x[2] ** 2) * sin
-        h23 = x[0] * cos - (x[0] ** 2) * x[1] * x[2] * sin
-        h33 = -(x[0] ** 2) * (x[1] ** 2) * sin
-
-        phi_hessian = np.array([[h11, h12, h13],
-                                [h12, h22, h23],
-                                [h13, h23, h33]]).squeeze(2)
-        to_ret.append(phi_hessian)
-    return to_ret
+    if calc_grad:
+        u_grad = np.array([x[1] * x[2],
+                           x[0] * x[2],
+                           x[0] * x[1]])
+        phi_grad = u_grad * cos_value
+        ret.append(phi_grad)
+    if calc_hessian:
+        H1 = np.array([[0, x_vec[2], x_vec[1]],
+                       [x_vec[2], 0, x_vec[0]],
+                       [x_vec[1], x_vec[0], 0]])
+        H2_11 = (x_vec[1]*x_vec[2])**2
+        H2_12 = x_vec[0] * x_vec[1] * (x_vec[2]**2)
+        H2_13 = x_vec[0] * (x_vec[1]**2) * x_vec[2]
+        H2_22 = (x_vec[0]*x_vec[2])**2
+        H2_23 = (x_vec[0]**2) * x_vec[1] * x_vec[2]
+        H2_33 = (x_vec[0] * x_vec[1])**2
+        H2 = np.array([[H2_11, H2_12, H2_13],
+                       [H2_12, H2_22, H2_23],
+                       [H2_13, H2_23, H2_33]])
+        phi_hessian = cos_value * H1 - sin_value * H2
+        ret.append(phi_hessian)
+    return ret
 
 
 def f1_val_grad_hessian(x, A, calc_g=True, calc_h=True):
     # Input : Vector x of shape 3x1, Matrix A of shape 3x3
     # Input : calc_g(bool), calc_h(bool) - whether to calculate gradient or hessian(respectively)
     # Value, gradient and hessian calculation for function: f1(x) = phi(A@x)
-    phi_val, phi_grad, phi_hessian = phi_val_grad_hessian(np.matmul(A,x))
+    phi_val, phi_grad, phi_hessian = calc_phi_and_derivatives(np.matmul(A,x))
     to_ret = [phi_val]
     if calc_g:
         f1_grad = np.matmul(np.transpose(A), phi_grad)
@@ -74,7 +68,7 @@ def f2_val_grad_hessian(x, calc_g=True, calc_h=True):
     # Input : Vector x of shape 3x1
     # Input : calc_g(bool), calc_h(bool) - whether to calculate gradient or hessian(respectively)
     # Value, gradient and hessian calculation for function: f2(x) = h(phi(x))
-    phi_val, phi_grad, phi_hessian = phi_val_grad_hessian(x)
+    phi_val, phi_grad, phi_hessian = calc_phi_and_derivatives(x)
     h_val, h_der, h_sec_der = h_val_der_sec_der(phi_val)
     f2_val = h_val
     to_ret = [f2_val]

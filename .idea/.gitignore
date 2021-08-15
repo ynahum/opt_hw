@@ -1,0 +1,11 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../../../../../../../../../../:\Users\ynahum\OneDrive - Intel Corporation\Personal-ynahum-MOBL\studies\master\courses\2020_2021_spring\236330_optimization\hw\opt_hw\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+
+*.xml
+*.iml
