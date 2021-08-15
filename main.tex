@@ -3,6 +3,15 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+\newcommand{\rectres}[1]{
+\begin{center}
+\begin{tabular}{ |c| }
+\hline
+ #1\\
+\hline
+\end{tabular}
+\end{center}
+}
 
 \title{Introduction to Numerical Optimization\\HW1}
 \author{Yair Nahum 034462796 }
@@ -31,27 +40,13 @@ $$\nabla^2 f_1 = ?$$
 We denote $u=Ax \Rightarrow du=Adx$, by the external definition of the gradient:
 $$df_1=d\phi(u)=(\nabla\phi(u))^T du = (\nabla\phi(Ax))^T A dx = $$
 $$ \langle A^T\nabla \phi(Ax), dx \rangle \Rightarrow $$
-\begin{center}
-\begin{tabular}{ |c| }
-\hline
- $$ \nabla f_1 = A^T\nabla \phi(Ax)$$\\
-\hline
-\end{tabular}
-\end{center}
-
+\rectres{$\nabla f_1 = A^T\nabla \phi(Ax)$}
 Next, We denote $\nabla f_1= g(x)$:
 $$dg\equiv Hdx,d(\nabla \phi(u)) =  \nabla^2 \phi(u) du \Rightarrow$$
 $$dg=d(\nabla f_1) = d(A^T\nabla \phi(Ax))=A^Td(\nabla \phi(u))=A^T\nabla^2 \phi(u) du = A^T\nabla^2 \phi(Ax) A dx \Rightarrow$$
-\begin{center}
-\begin{tabular}{ |c| }
-\hline
-$$ \nabla^2 f_1 = A^T\nabla^2 \phi(Ax) A$$\\
-\hline
-\end{tabular}
-\end{center}
+\rectres{$\nabla^2 f_1 = A^T\nabla^2 \phi(Ax) A$}
 
 \subsubsection{Gradient and Hessian of $f_2$}
-
 $$f_2(x)=h(\phi(x))$$
 Where:
 $$f_2:\mathbb{R}^n \rightarrow \mathbb{R}$$
@@ -65,13 +60,7 @@ We denote $t=\phi(x)\Rightarrow dt=d\phi(x)=(\nabla \phi(x))^Tdx$
 $$df_2= dh = h'(t)dt = h'(\phi(x))(\nabla \phi(x))^Tdx=$$
 Since $h'(t)$ is scalar, it doesn't change on transpose operation:
 $$\langle h'(\phi(x))\nabla \phi(x), dx \rangle \Rightarrow$$
-\begin{center}
-\begin{tabular}{ |c| }
-\hline
-$$ \nabla f_2 = h'(\phi(x))\nabla \phi(x)$$\\
-\hline
-\end{tabular}
-\end{center}
+\rectres{$\nabla f_2 = h'(\phi(x))\nabla \phi(x)$}
 Next, We denote $\nabla f_2= g(x)$:
 $$dg = d(h'(\phi(x))\nabla \phi(x)) =  d(h'(\phi(x)))\nabla \phi(x) + h'(\phi(x))d(\nabla \phi(x))=$$
 $$h''(\phi(x))((\nabla \phi(x))^Tdx)\nabla \phi(x) + h'(\phi(x))\nabla^2 \phi(x)dx=$$
@@ -79,13 +68,7 @@ $$h''(\phi(x))\nabla \phi(x)((\nabla \phi(x))^Tdx) + h'(\phi(x))\nabla^2 \phi(x)
 $$h''(\phi(x))\nabla \phi(x)(\nabla \phi(x))^Tdx + h'(\phi(x))\nabla^2 \phi(x)dx=$$
 $$[h''(\phi(x))\nabla \phi(x)(\nabla \phi(x))^T + h'(\phi(x))\nabla^2 \phi(x)]dx=$$
 by definition $dg=Hdx$, therefore:
-\begin{center}
-\begin{tabular}{ |c| }
-\hline
-$$ \nabla^2 f_2 = h''(\phi(x))\nabla \phi(x)(\nabla \phi(x))^T + h'(\phi(x))\nabla^2 \phi(x)$$\\
-\hline
-\end{tabular}
-\end{center}
+\rectres{$\nabla^2 f_2 = h''(\phi(x))\nabla \phi(x)(\nabla \phi(x))^T + h'(\phi(x))\nabla^2 \phi(x)$}
 \newpage
 \subsubsection{Gradient and Hessian of $\phi$}
 Given the following $\phi:\mathbb{R}^3\rightarrow\mathbb{R}$ function:
@@ -93,27 +76,26 @@ $$\phi \begin{pmatrix}x_1\\x_2\\x_3 \end{pmatrix} = sin(x_1x_2x_3)$$
 We need to calculate its gradient vector and hessian matrix.
 We can use the previous section results when there is a chain of functions to compute the gradient and hessian as we can define:
 $$f=sin:\mathbb{R}\rightarrow\mathbb{R}$$ and $$u=x_1x_2x_3:\mathbb{R}^3\rightarrow\mathbb{R}$$
-\\
 Thus, the gradient is as follows:
 $$\nabla \phi = f'(u)\nabla u(x) = cos(x_1x_2x_3)\begin{pmatrix}x_2x_3\\x_1x_3\\x_1x_2 \end{pmatrix}$$
-\begin{center}
-\begin{tabular}{ |c| }
-\hline
-$$\nabla \phi = cos(x_1x_2x_3)\begin{pmatrix}x_2x_3\\x_1x_3\\x_1x_2 \end{pmatrix}$$\\
-\hline
-\end{tabular}
-\end{center}
-\\
+\rectres{$\nabla \phi = cos(x_1x_2x_3)\begin{pmatrix}x_2x_3\\x_1x_3\\x_1x_2 \end{pmatrix}$}\\
 We can also use the hessian formula we got on the previous section and get:
 $$\nabla^2 \phi = f''(u(x))\nabla u(x)(\nabla u(x))^T + f'(u(x))\nabla^2 u(x)=$$
 $$-sin(x_1x_2x_3)\begin{pmatrix}x_2x_3\\x_1x_3\\x_1x_2 \end{pmatrix}\begin{pmatrix}x_2x_3 & x_1x_3 & x_1x_2 \end{pmatrix} + cos(x_1x_2x_3)\begin{pmatrix}0 & x_3 & x_2\\x_3 & 0 & x_1\\x_2 & x_1 & 0 \end{pmatrix} \Rightarrow$$
-\begin{center}
-\begin{tabular}{ |c| }
-\hline
-$$\nabla^2 \phi = -sin(x_1x_2x_3)\begin{pmatrix}{x_2}^2{x_3}^2 & x_1x_2{x_3}^2 & x_1{x_2}^2x_3\\x_1x_2{x_3}^2 & {x_1}^2{x_3}^2 & {x_1}^2x_2x_3\\x_1{x_2}^2x_3 & {x_1}^2x_2x_3 & {x_1}^2{x_2}^2 \end{pmatrix}+ cos(x_1x_2x_3)\begin{pmatrix}0 & x_3 & x_2\\x_3 & 0 & x_1\\x_2 & x_1 & 0 \end{pmatrix}$$\\
-\hline
-\end{tabular}
-\end{center}
+\rectres{$\nabla^2 \phi = cos(x_1x_2x_3)\begin{pmatrix}0 & x_3 & x_2\\x_3 & 0 & x_1\\x_2 & x_1 & 0 \end{pmatrix} -sin(x_1x_2x_3)\begin{pmatrix}{x_2}^2{x_3}^2 & x_1x_2{x_3}^2 & x_1{x_2}^2x_3\\x_1x_2{x_3}^2 & {x_1}^2{x_3}^2 & {x_1}^2x_2x_3\\x_1{x_2}^2x_3 & {x_1}^2x_2x_3 & {x_1}^2{x_2}^2 \end{pmatrix}$}
 
+\subsubsection{First and Second Derivatives of $h$}
+$$h=\sqrt{(1+x^2)}$$
+We can solve directly using derivative formulas and we can use the external gradient definition.\\
+We can denote $f=sqrt$ and $u=1+x^2 \Rightarrow h=f(u), du=2xdx \Rightarrow$
+$$dh=\frac{1}{2}\frac{1}{\sqrt{u}}du=\frac{1}{2}\frac{1}{\sqrt{(1+x^2)}}2xdx=\frac{x}{\sqrt{(1+x^2)}}dx\Rightarrow$$\\
+\rectres{$h'(x)=\frac{x}{\sqrt{(1+x^2)}}$}
+For the second derivative we can compute again:\\
+$$dh'=\frac{dx}{\sqrt{(1+x^2)}}+xd(\frac{1}{\sqrt{(1+x^2)}})=\frac{dx}{\sqrt{(1+x^2)}}-x\frac{1}{(1+x^2)}\frac{x}{\sqrt{(1+x^2)}}dx=$$
+$$\frac{((1+x^2)-x^2)dx}{(1+x^2)\sqrt{(1+x^2)}}=\frac{dx}{(1+x^2)\sqrt{(1+x^2)}} \Rightarrow$$
+\rectres{$h''(x)=\frac{1}{(1+x^2)^{\frac{3}{2}}}$}
+
+\subsubsection{Analytical Evaluation}
+in code
 \end{document}
 
