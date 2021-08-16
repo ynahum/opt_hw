@@ -66,87 +66,82 @@ def calc_f2_value_grad_hessian(x, calc_grad=True, calc_hessian=True):
 
 
 # 1.2.3
-def evaluate_grad_hessian(x, eps, func, func_pos_args):
-
-    # consider to calculate with only function values (analytical gradient is not known)
+def numerical_grad_hessian(x, eps, func, func_pos_args):
+    # TODO: consider to calculate with only function values (analytical gradient is not known)
     func_key_args = {'calc_grad': True, 'calc_hessian': False}
     n = x.size
-    I = np.identity(n) * eps
     grad = np.zeros((n, 1))
     hessian = np.zeros((n, n))
     for i in range(n):
-        f_val_add, f_g_add = func(x + np.expand_dims(I[:, i], 1), *func_pos_args, **func_key_args)
-        f_val_sub, f_g_sub = func(x - np.expand_dims(I[:, i], 1), *func_pos_args, **func_key_args)
-
-        grad[i] = (f_val_add - f_val_sub) / (2 * eps)
-        hessian[:, i] = ((f_g_add - f_g_sub) / (2 * eps)).squeeze(1)
-
+        e_i = np.zeros((n, 1))
+        e_i[i] = eps
+        func_value_x_plus_eps, func_grad_x_plus_eps = func(x + e_i, *func_pos_args, **func_key_args)
+        func_value_x_minus_eps, func_grad_x_minus_eps = func(x - e_i, *func_pos_args, **func_key_args)
+        grad[i] = (func_value_x_plus_eps - func_value_x_minus_eps) / (2 * eps)
+        #TODO: remove this squeeze somehow
+        hessian[:, i] = ((func_grad_x_plus_eps - func_grad_x_minus_eps) / (2 * eps)).squeeze(1)
     return grad, hessian
 
 
-def comparison():
-    # This function computes the numerical and analytical expression for f1 and f2 gradient and hessian for epsilon
-    # values between 2^0 until 2^-60 and outputs comparison graphs.
+def compare_analytical_vs_numerical():
     np.random.seed(42)
+    x_range = np.arange(61)
     x = np.random.rand(3, 1)
     A = np.random.rand(3, 3)
-    _, f1_g, f1_h = calc_f1_value_grad_hessian(x, A)
-    _, f2_g, f2_h = calc_f2_value_grad_hessian(x)
+    f1_value, f1_grad, f1_hessian = calc_f1_value_grad_hessian(x, A)
+    f2_value, f2_grad, f2_hessian = calc_f2_value_grad_hessian(x)
 
-    f1_g_norm = []
-    f1_h_norm = []
+    f1_grad_norm = []
+    f1_hessian_norm = []
+    f2_grad_norm = []
+    f2_hessian_norm = []
 
-    f2_g_norm = []
-    f2_h_norm = []
-
-    x_axis = np.arange(61)
-
-    for i in x_axis:
-        f1_num_g, f1_num_h =\
-            evaluate_grad_hessian(
+    for i in x_range:
+        f1_num_grad, f1_num_hessian =\
+            numerical_grad_hessian(
                 x,
                 np.power(2.0, -i),
                 calc_f1_value_grad_hessian,
                 [A])
 
-        f1_g_diff = np.linalg.norm(f1_g-f1_num_g, ord=np.inf)
-        f1_g_norm.append(f1_g_diff)
-        f1_h_diff = np.linalg.norm(f1_h-f1_num_h, ord=np.inf)
-        f1_h_norm.append(f1_h_diff)
+        f1_grad_diff = np.linalg.norm(f1_grad-f1_num_grad, ord=np.inf)
+        f1_grad_norm.append(f1_grad_diff)
+        f1_hessian_diff = np.linalg.norm(f1_hessian-f1_num_hessian, ord=np.inf)
+        f1_hessian_norm.append(f1_hessian_diff)
 
-        f2_num_g, f2_num_h =\
-            evaluate_grad_hessian(
+        f2_num_grad, f2_num_hessian =\
+            numerical_grad_hessian(
                 x,
                 np.power(2.0, -i),
                 calc_f2_value_grad_hessian,
                 [])
 
-        f2_g_diff = np.linalg.norm(f2_g-f2_num_g, ord=np.inf)
-        f2_g_norm.append(f2_g_diff)
-        f2_h_diff = np.linalg.norm(f2_h-f2_num_h, ord=np.inf)
-        f2_h_norm.append(f2_h_diff)
+        f2_grad_diff = np.linalg.norm(f2_grad-f2_num_grad, ord=np.inf)
+        f2_grad_norm.append(f2_grad_diff)
+        f2_hessian_diff = np.linalg.norm(f2_hessian-f2_num_hessian, ord=np.inf)
+        f2_hessian_norm.append(f2_hessian_diff)
 
-    f1_g_min_err = np.min(f1_g_norm)
-    f1_g_min_err_ind = np.argmin(f1_g_norm)
-    f1_h_min_err = np.min(f1_h_norm)
-    f1_h_min_err_ind = np.argmin(f1_h_norm)
+    f1_grad_min_err = np.min(f1_grad_norm)
+    f1_grad_min_err_ind = np.argmin(f1_grad_norm)
+    f1_hessian_min_err = np.min(f1_hessian_norm)
+    f1_hessian_min_err_ind = np.argmin(f1_hessian_norm)
 
-    f2_g_min_err = np.min(f2_g_norm)
-    f2_g_min_err_ind = np.argmin(f2_g_norm)
-    f2_h_min_err = np.min(f2_h_norm)
-    f2_h_min_err_ind = np.argmin(f2_h_norm)
+    f2_grad_min_err = np.min(f2_grad_norm)
+    f2_grad_min_err_ind = np.argmin(f2_grad_norm)
+    f2_hessian_min_err = np.min(f2_hessian_norm)
+    f2_hessian_min_err_ind = np.argmin(f2_hessian_norm)
 
     # Plot norm difference
 
     plt.subplot()
-    plt.plot(x_axis, f1_g_norm)
+    plt.plot(x_range, f1_grad_norm)
     plt.yscale('log')
     plt.xlabel('Exponent absolute value')
     # plt.ylabel('Infinity norm of difference(log scale)')
     plt.suptitle('f1 gradient difference')
     plt.show()
 
-    plt.plot(x_axis, f1_h_norm)
+    plt.plot(x_range, f1_hessian_norm)
     plt.yscale('log')
     plt.xlabel('Exponent absolute value')
     # plt.ylabel('Infinity norm of difference(log scale)')
@@ -154,26 +149,26 @@ def comparison():
     plt.show()
 
     plt.subplot()
-    plt.plot(x_axis, f2_g_norm)
+    plt.plot(x_range, f2_grad_norm)
     plt.yscale('log')
     plt.xlabel('Exponent absolute value')
     # plt.ylabel('Infinity norm of difference(log scale)')
     plt.suptitle('f2 gradient difference')
     plt.show()
 
-    plt.plot(x_axis, f2_h_norm)
+    plt.plot(x_range, f2_hessian_norm)
     plt.yscale('log')
     plt.xlabel('Exponent absolute value')
     # plt.ylabel('Infinity norm of difference(log scale)')
     plt.suptitle('f2 hessian difference')
     plt.show()
 
-    print(f'f1 gradient min error is: {f1_g_min_err} at exponent: {f1_g_min_err_ind}')
-    print(f'f1 hessian min error is: {f1_h_min_err} at exponent: {f1_h_min_err_ind}')
+    print(f'f1 gradient min error is: {f1_grad_min_err} at exponent: {f1_grad_min_err_ind}')
+    print(f'f1 hessian min error is: {f1_hessian_min_err} at exponent: {f1_hessian_min_err_ind}')
 
-    print(f'f2 gradient min error is: {f2_g_min_err} at exponent: {f2_g_min_err_ind}')
-    print(f'f2 hessian min error is: {f2_h_min_err} at exponent: {f2_h_min_err_ind}')
+    print(f'f2 gradient min error is: {f2_grad_min_err} at exponent: {f2_grad_min_err_ind}')
+    print(f'f2 hessian min error is: {f2_hessian_min_err} at exponent: {f2_hessian_min_err_ind}')
 
 
 if __name__ == '__main__':
-    comparison()
+    compare_analytical_vs_numerical()
