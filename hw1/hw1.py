@@ -67,13 +67,16 @@ def calc_f2_value_grad_hessian(x, calc_grad=True, calc_hessian=True):
 
 # 1.2.3
 def evaluate_grad_hessian(x, eps, func, func_pos_args):
-    n = x.shape[0]
+
+    # consider to calculate with only function values (analytical gradient is not known)
+    func_key_args = {'calc_grad': True, 'calc_hessian': False}
+    n = x.size
     I = np.identity(n) * eps
     grad = np.zeros((n, 1))
     hessian = np.zeros((n, n))
     for i in range(n):
-        f_val_add, f_g_add = func(x + np.expand_dims(I[:, i], 1), *func_pos_args)
-        f_val_sub, f_g_sub = func(x - np.expand_dims(I[:, i], 1), *func_pos_args)
+        f_val_add, f_g_add = func(x + np.expand_dims(I[:, i], 1), *func_pos_args, **func_key_args)
+        f_val_sub, f_g_sub = func(x - np.expand_dims(I[:, i], 1), *func_pos_args, **func_key_args)
 
         grad[i] = (f_val_add - f_val_sub) / (2 * eps)
         hessian[:, i] = ((f_g_add - f_g_sub) / (2 * eps)).squeeze(1)
@@ -104,7 +107,7 @@ def comparison():
                 x,
                 np.power(2.0, -i),
                 calc_f1_value_grad_hessian,
-                [A, True, False])
+                [A])
 
         f1_g_diff = np.linalg.norm(f1_g-f1_num_g, ord=np.inf)
         f1_g_norm.append(f1_g_diff)
@@ -116,7 +119,7 @@ def comparison():
                 x,
                 np.power(2.0, -i),
                 calc_f2_value_grad_hessian,
-                [True, False])
+                [])
 
         f2_g_diff = np.linalg.norm(f2_g-f2_num_g, ord=np.inf)
         f2_g_norm.append(f2_g_diff)
