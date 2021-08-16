@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 1.1.5
-def calc_phi_and_derivatives(x, calc_grad=True, calc_hessian=True):
+def calc_phi_value_grad_hessian(x, calc_grad=True, calc_hessian=True):
     x_vec = x.squeeze()
     u_value = np.prod(x, axis=0)
     sin_value = np.sin(u_value)
@@ -34,25 +34,17 @@ def calc_phi_and_derivatives(x, calc_grad=True, calc_hessian=True):
     return ret
 
 
-def f1_val_grad_hessian(x, A, calc_g=True, calc_h=True):
-    # Input : Vector x of shape 3x1, Matrix A of shape 3x3
-    # Input : calc_g(bool), calc_h(bool) - whether to calculate gradient or hessian(respectively)
-    # Value, gradient and hessian calculation for function: f1(x) = phi(A@x)
-    phi_val, phi_grad, phi_hessian = calc_phi_and_derivatives(np.matmul(A,x))
-    to_ret = [phi_val]
-    if calc_g:
-        f1_grad = np.matmul(np.transpose(A), phi_grad)
-        to_ret.append(f1_grad)
-    if calc_h:
-        f1_hessian = np.matmul(np.matmul(np.transpose(A), phi_hessian), A)
-        to_ret.append(f1_hessian)
-    return to_ret
+def calc_f1_value_grad_hessian(x, A, calc_grad=True, calc_hessian=True):
+    phi_value, phi_grad, phi_hessian = calc_phi_value_grad_hessian(A @ x)
+    ret = [phi_value]
+    if calc_grad:
+        ret.append(A.T @ phi_grad)
+    if calc_hessian:
+        ret.append(A.T @ phi_hessian @ A)
+    return ret
 
 
 def h_val_der_sec_der(x, calc_g=True, calc_h=True):
-    # Input : Scalar x
-    # Input : calc_g(bool), calc_h(bool) - whether to calculate gradient or hessian(respectively)
-    # Value, gradient and hessian calculation for function: h(x) = sqrt(1+x^2)
     h_val = np.sqrt(1 + (x ** 2))
     to_ret = [h_val]
     if calc_g:
@@ -64,44 +56,38 @@ def h_val_der_sec_der(x, calc_g=True, calc_h=True):
     return to_ret
 
 
-def f2_val_grad_hessian(x, calc_g=True, calc_h=True):
-    # Input : Vector x of shape 3x1
-    # Input : calc_g(bool), calc_h(bool) - whether to calculate gradient or hessian(respectively)
-    # Value, gradient and hessian calculation for function: f2(x) = h(phi(x))
-    phi_val, phi_grad, phi_hessian = calc_phi_and_derivatives(x)
+def f2_val_grad_hessian(x, calc_grad=True, calc_hessian=True):
+    phi_val, phi_grad, phi_hessian = calc_phi_value_grad_hessian(x)
     h_val, h_der, h_sec_der = h_val_der_sec_der(phi_val)
     f2_val = h_val
     to_ret = [f2_val]
-    if calc_g:
+    if calc_grad:
         f2_grad = h_der * phi_grad
         to_ret.append(f2_grad)
-    if calc_h:
+    if calc_hessian:
         f2_hessian = h_der * phi_hessian + h_sec_der * np.matmul(phi_grad, np.transpose(phi_grad))
         to_ret.append(f2_hessian)
     return to_ret
 
-
+# 1.2
 def numerical_evaluation(f, x, eps, A=None):
-    # This function gets as input a function reference f, vector x and matrix A(optional depends on f)
-    # as inputs for f.
-    # Output: grad - gradient numerical estimation for f at point x
-    # Output: hessian - hessian numerical estimation for f at point x
     n = x.shape[0]
     I = np.identity(n) * eps
     grad = np.zeros((n, 1))
     hessian = np.zeros((n, n))
     for i in range(n):
         if A is None:
-            f_val_add, f_g_add = f(x + np.expand_dims(I[:, i], 1), calc_g=True, calc_h=False)
-            f_val_sub, f_g_sub = f(x - np.expand_dims(I[:, i], 1), calc_g=True, calc_h=False)
+            f_val_add, f_g_add = f(x + np.expand_dims(I[:, i], 1), calc_grad=True, calc_hessian=False)
+            f_val_sub, f_g_sub = f(x - np.expand_dims(I[:, i], 1), calc_grad=True, calc_hessian=False)
         else:
-            f_val_add, f_g_add = f(x + np.expand_dims(I[:, i], 1), A, calc_g=True, calc_h=False)
-            f_val_sub, f_g_sub = f(x - np.expand_dims(I[:, i], 1), A, calc_g=True, calc_h=False)
+            f_val_add, f_g_add = f(x + np.expand_dims(I[:, i], 1), A, calc_grad=True, calc_hessian=False)
+            f_val_sub, f_g_sub = f(x - np.expand_dims(I[:, i], 1), A, calc_grad=True, calc_hessian=False)
 
         grad[i] = (f_val_add - f_val_sub) / (2 * eps)
         hessian[:, i] = ((f_g_add - f_g_sub) / (2 * eps)).squeeze(1)
 
     return grad, hessian
+
 
 def comparison():
     # This function computes the numerical and analytical expression for f1 and f2 gradient and hessian for epsilon
@@ -109,7 +95,7 @@ def comparison():
     np.random.seed(42)
     x = np.random.rand(3, 1)
     A = np.random.rand(3, 3)
-    _, f1_g, f1_h = f1_val_grad_hessian(x, A)
+    _, f1_g, f1_h = calc_f1_value_grad_hessian(x, A)
     _, f2_g, f2_h = f2_val_grad_hessian(x)
 
     f1_g_norm = []
@@ -121,7 +107,7 @@ def comparison():
     x_axis = np.arange(61)
 
     for i in x_axis:
-        f1_num_g, f1_num_h = numerical_evaluation(f1_val_grad_hessian, x,
+        f1_num_g, f1_num_h = numerical_evaluation(calc_f1_value_grad_hessian, x,
                                                   np.power(2.0, -i), A)
 
         f1_g_diff = np.linalg.norm(f1_g-f1_num_g, ord=np.inf)
@@ -183,6 +169,7 @@ def comparison():
 
     print(f'f2 gradient min error is: {f2_g_min_err} at exponent: {f2_g_min_err_ind}')
     print(f'f2 hessian min error is: {f2_h_min_err} at exponent: {f2_h_min_err_ind}')
+
 
 if __name__ == '__main__':
     comparison()
