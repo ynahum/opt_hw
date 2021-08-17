@@ -15,6 +15,8 @@
 \end{center}
 }
 
+\newcommand{\qed}{\hfill$\blacksquare$}
+
 \title{Introduction to Numerical Optimization\\HW1}
 \author{Yair Nahum 034462796\\and\\blabla 11111111 }
 
@@ -102,7 +104,9 @@ in code
 
 \subsection{Numerical Differentiation}
 \subsubsection{Numerical Gradient}
+Background information given in the assignment's pdf
 \subsubsection{Numerical Hessian}
+Background information given in the assignment's pdf
 \subsubsection{Numerical Evaluation of Gradient and Hessian}
 in code
 
@@ -128,5 +132,52 @@ f2 hessian min infinity norm error : 1.0314180065584821e-12\\
 epsilon exponent: -19\\
 epsilon value: 1.9073486328125e-06\\
 
+\newpage
+\section{SVD}
+\subsection{Motivation}
+Background information given in the assignment's pdf
+\subsection{Singular Value Gradient}
+We need to calculate the gradient of $f_i(A) = \sigma_i$\\
+Given SVD of $A$ as $$A=USV^T$$
+In which $U$ and $V$ are orthonormal matrices:
+$$U \in \mathbb{R}^{m\times m}$$
+$$V \in \mathbb{R}^{n\times n}$$
+And S is a rectangular diagonal matrix with:
+\[
+    S_{i,j}= 
+\begin{cases}
+    \sigma_i,& \text{if } i==j\\
+    0,       & \text{otherwise}
+\end{cases}
+\]
+We will try to define the function $f_i(A)$ based on its SVD decomposition and apply the external definition of the gradient.\\
+\subsubsection*{Lemma1}
+$$A=USV^T=\sum_{k=1}^p\sigma_k u_{k} v^T_{k}$$ When $p=\min(m,n)$
+\subsubsection*{Proof}
+$$A_{i,j}=(USV^T)_{i,j}=\sum_{k=1}^n U_{i,k} (SV^T)_{k,j}=\sum_{k=1}^m U_{i,k} \sum_{l=1}^n S_{k,l}V^T_{l,j}=\sum_{k=1}^m \sum_{l=1}^n U_{i,k}  S_{k,l}V^T_{l,j}$$
+Since S is a rectangular diagonal matrix we actually have only one summation up to $p=\min(m,n) \Rightarrow$:
+$$\sum_{k=1}^m \sum_{l=1}^n U_{i,k}  S_{k,l}V^T_{l,j}=\sum_{k=1}^p U_{i,k}  S_{k,k}V^T_{k,j} =\sum_{k=1}^p\sigma_k U_{i,k}V^T_{k,j} \Rightarrow$$
+$$(*)\:\:\:\:A_{i,j}=\sum_{k=1}^p\sigma_k U_{i,k}V^T_{k,j}$$
+On the other hand, if we denote the column vectors of $U$ as $u_k$ and the row vectors of $V^T$ as $v^T_k$,
+due to linearity of matrices addition, we can deduce:
+$$\Big(\sum_{k=1}^p\sigma_k u_{k} v^T_{k}\Big)_{i,j}=\sum_{k=1}^p\sigma_k \Big(u_{k} v^T_{k}\Big)_{i,j}$$
+In addition, the following is also true (outer product):
+$$\Big(u_{k} v^T_{k}\Big)_{i,j}=U_{i,k}V^T_{k,j}$$
+So,
+$$\Big(\sum_{k=1}^p\sigma_k u_{k} v^T_{k}\Big)_{i,j}=\sum_{k=1}^p\sigma_k \Big(u_{k} v^T_{k}\Big)_{i,j}=\sum_{k=1}^p\sigma_k U_{i,k}V^T_{k,j}\Rightarrow$$
+$$(**)\:\:\:\:\Big(\sum_{k=1}^p\sigma_k u_{k} v^T_{k}\Big)_{i,j}=\sum_{k=1}^p\sigma_k U_{i,k}V^T_{k,j}$$
+From $(*)$ and $(**)$ we get:
+$$A_{i,j}=\Big(\sum_{k=1}^p\sigma_k u_{k} v^T_{k}\Big)_{i,j}$$
+\qed\\
+\subsubsection*{Lemma2}
+$$f_i(A)=\sigma_i=u_i^T A v_i$$
+\subsubsection*{Proof}
+From previous Lemma and orthonaormality of the $U,V$ matrices:
+$$u_i^T A v_i=u_i^T \Big(\sum_{k=1}^p \sigma_k u_{k} v^T_{k}\Big)v_i=\sum_{k=1}^p \sigma_k u_i^T  u_{k} v^T_{k}v_i = \sum_{k=1}^p \sigma_k \delta_{i,k}=\sigma_i$$
+\qed\\
+Now, we can find the gradient using the external definition of the gradient and the trace properties:
+$$d(f_i(A))=d(\sigma_i)=d(\sigma_i)=d(trace(\sigma_i))=d(trace(u_i^T A v_i))=d(trace(v_i u_i^T A )) = $$
+$$trace(d(v_i u_i^T A ))=trace(v_i u_i^T dA ) = \langle u_i v_i^T, dA \rangle \Rightarrow$$
+\rectres{$\nabla f_i(A)=u_i v_i^T$}
 \end{document}
 
