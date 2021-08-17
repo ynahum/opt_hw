@@ -7,63 +7,74 @@ from func_cmp_analyt_vs_num import func_compare_analytical_vs_numerical
 
 def compare_analytical_vs_numerical():
 
-    np.random.seed(42)
+    np.random.seed(10)
 
-    x_range = np.arange(61)
-    eps_array = np.power(2.0, -x_range)
+    exp_range = np.arange(61)
+    eps_array = np.power(2.0, -exp_range)
 
     x = np.random.rand(3, 1)
     A = np.random.rand(3, 3)
-    f1_grad_norm, f1_hessian_norm = func_compare_analytical_vs_numerical(x, eps_array, calc_f1_value_grad_hessian, [A])
-    f2_grad_norm, f2_hessian_norm = func_compare_analytical_vs_numerical(x, eps_array, calc_f2_value_grad_hessian, [])
-
-    f1_grad_min_err = np.min(f1_grad_norm)
-    f1_grad_min_err_ind = np.argmin(f1_grad_norm)
-    f1_hessian_min_err = np.min(f1_hessian_norm)
-    f1_hessian_min_err_ind = np.argmin(f1_hessian_norm)
-
-    f2_grad_min_err = np.min(f2_grad_norm)
-    f2_grad_min_err_ind = np.argmin(f2_grad_norm)
-    f2_hessian_min_err = np.min(f2_hessian_norm)
-    f2_hessian_min_err_ind = np.argmin(f2_hessian_norm)
-
-    # Plot norm difference
+    f1_grad_diff_max_norm, f1_hessian_diff_max_norm = func_compare_analytical_vs_numerical(x, eps_array, calc_f1_value_grad_hessian, [A])
 
     plt.subplot()
-    plt.plot(x_range, f1_grad_norm)
+    plt.plot(exp_range, f1_grad_diff_max_norm)
+    plt.suptitle(r'$\log{||\nabla_{x}^{analytical}f_1 - \nabla_{x}^{numerical}f_1||_{\infty}}$ vs  $\epsilon$ accuracy')
+    plt.xlabel(r'Absolute value of $\epsilon$ exponent')
     plt.yscale('log')
-    plt.xlabel('Exponent absolute value')
-    # plt.ylabel('Infinity norm of difference(log scale)')
-    plt.suptitle('f1 gradient difference')
     plt.show()
 
-    plt.plot(x_range, f1_hessian_norm)
+    plt.plot(exp_range, f1_hessian_diff_max_norm)
+    plt.suptitle(r'$\log{||\nabla_{x}^{2\;analytical}f_1 - \nabla_{x}^{2\;numerical}f_1||_{\infty}}$ vs  $\epsilon$ accuracy')
+    plt.xlabel(r'Absolute value of $\epsilon$ exponent')
     plt.yscale('log')
-    plt.xlabel('Exponent absolute value')
-    # plt.ylabel('Infinity norm of difference(log scale)')
-    plt.suptitle('f1 hessian difference')
     plt.show()
+
+    f1_grad_diff_max_norm_min = np.min(f1_grad_diff_max_norm)
+    f1_grad_diff_max_norm_argmin = np.argmin(f1_grad_diff_max_norm)
+
+    print(f'f1 gradient min infinity norm error : {f1_grad_diff_max_norm_min} ')
+    print(f'epsilon exponent: {-f1_grad_diff_max_norm_argmin}')
+    print(f'epsilon value: {np.power(2.0, -f1_grad_diff_max_norm_argmin)}')
+    print()
+
+    f1_hessian_diff_max_norm_min = np.min(f1_hessian_diff_max_norm)
+    f1_hessian_diff_max_norm_argmin = np.argmin(f1_hessian_diff_max_norm)
+
+    print(f'f1 hessian min infinity norm error : {f1_hessian_diff_max_norm_min} ')
+    print(f'epsilon exponent: {-f1_hessian_diff_max_norm_argmin}')
+    print(f'epsilon value: {np.power(2.0, -f1_hessian_diff_max_norm_argmin)}')
+    print()
+
+    f2_grad_diff_max_norm, f2_hessian_diff_max_norm = func_compare_analytical_vs_numerical(x, eps_array, calc_f2_value_grad_hessian, [])
 
     plt.subplot()
-    plt.plot(x_range, f2_grad_norm)
+    plt.plot(exp_range, f2_grad_diff_max_norm)
+    plt.suptitle(r'$\log{||\nabla_{x}^{analytical}f_2 - \nabla_{x}^{numerical}f_2||_{\infty}}$ vs  $\epsilon$ accuracy')
+    plt.xlabel(r'Absolute value of $\epsilon$ exponent')
     plt.yscale('log')
-    plt.xlabel('Exponent absolute value')
-    # plt.ylabel('Infinity norm of difference(log scale)')
-    plt.suptitle('f2 gradient difference')
     plt.show()
 
-    plt.plot(x_range, f2_hessian_norm)
+    plt.plot(exp_range, f2_hessian_diff_max_norm)
+    plt.suptitle(r'$\log{||\nabla_{x}^{2\;analytical}f_2 - \nabla_{x}^{2\;numerical}f_2||_{\infty}}$ vs  $\epsilon$ accuracy')
+    plt.xlabel(r'Absolute value of $\epsilon$ exponent')
     plt.yscale('log')
-    plt.xlabel('Exponent absolute value')
-    # plt.ylabel('Infinity norm of difference(log scale)')
-    plt.suptitle('f2 hessian difference')
     plt.show()
 
-    print(f'f1 gradient min error is: {f1_grad_min_err} at exponent: {f1_grad_min_err_ind}')
-    print(f'f1 hessian min error is: {f1_hessian_min_err} at exponent: {f1_hessian_min_err_ind}')
+    f2_grad_diff_max_norm_min = np.min(f2_grad_diff_max_norm)
+    f2_grad_diff_max_norm_argmin = np.argmin(f2_grad_diff_max_norm)
 
-    print(f'f2 gradient min error is: {f2_grad_min_err} at exponent: {f2_grad_min_err_ind}')
-    print(f'f2 hessian min error is: {f2_hessian_min_err} at exponent: {f2_hessian_min_err_ind}')
+    print(f'f2 gradient min infinity norm error : {f2_grad_diff_max_norm_min} ')
+    print(f'epsilon exponent: {-f2_grad_diff_max_norm_argmin}')
+    print(f'epsilon value: {np.power(2.0, -f2_grad_diff_max_norm_argmin)}')
+    print()
+
+    f2_hessian_diff_max_norm_min = np.min(f2_hessian_diff_max_norm)
+    f2_hessian_diff_max_norm_argmin = np.argmin(f2_hessian_diff_max_norm)
+
+    print(f'f2 hessian min infinity norm error : {f2_hessian_diff_max_norm_min} ')
+    print(f'epsilon exponent: {-f2_hessian_diff_max_norm_argmin}')
+    print(f'epsilon value: {np.power(2.0, -f2_hessian_diff_max_norm_argmin)}')
+    print()
 
 
 if __name__ == '__main__':
