@@ -2,6 +2,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{graphicx}
+\graphicspath{ {./plots/} }
 
 \newcommand{\rectres}[1]{
 \begin{center}
@@ -14,7 +16,7 @@
 }
 
 \title{Introduction to Numerical Optimization\\HW1}
-\author{Yair Nahum 034462796 }
+\author{Yair Nahum 034462796\\and\\blabla 11111111 }
 
 \begin{document}
 
@@ -97,5 +99,34 @@ $$\frac{((1+x^2)-x^2)dx}{(1+x^2)\sqrt{(1+x^2)}}=\frac{dx}{(1+x^2)\sqrt{(1+x^2)}}
 
 \subsubsection{Analytical Evaluation}
 in code
+
+\subsection{Numerical Differentiation}
+\subsubsection{Numerical Gradient}
+\subsubsection{Numerical Hessian}
+\subsubsection{Numerical Evaluation of Gradient and Hessian}
+in code
+
+\newpage
+
+\subsection{Comparison}
+See hw1.py for the code that does the comparison.
+With random seed set to 10 we got the following results:\\
+\includegraphics[scale=0.7]{f1_grad_plot}\\
+f1 gradient min infinity norm error : 6.255884699157832e-12\\
+epsilon exponent: -18\\
+epsilon value: 3.814697265625e-06\\
+\includegraphics[scale=0.7]{f1_hessian_plot}\\
+f1 hessian min infinity norm error : 3.76653153111306e-11\\
+epsilon exponent: -19\\
+epsilon value: 1.9073486328125e-06\\
+\includegraphics[scale=0.7]{f2_grad_plot}\\
+f2 gradient min infinity norm error : 3.0824258076544986e-12\\
+epsilon exponent: -15\\
+epsilon value: 3.0517578125e-05\\
+\includegraphics[scale=0.7]{f2_hessian_plot}\\
+f2 hessian min infinity norm error : 1.0314180065584821e-12\\
+epsilon exponent: -19\\
+epsilon value: 1.9073486328125e-06\\
+
 \end{document}
 
