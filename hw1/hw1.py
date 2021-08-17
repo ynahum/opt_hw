@@ -4,44 +4,31 @@ from f1 import calc_f1_value_grad_hessian
 from f2 import calc_f2_value_grad_hessian
 from num_eval_grad_hessian import num_eval_grad_hessian
 
+def func_compare_analytical_vs_numerical(x, eps_array, func, func_pos_args):
+    func_value, func_grad, func_hessian = func(x, *func_pos_args)
+    func_grad_max_norm = []
+    func_hessian_max_norm = []
+    for eps in eps_array:
+        func_num_grad, func_num_hessian =\
+            num_eval_grad_hessian(
+                x,
+                eps,
+                func,
+                func_pos_args)
+        func_grad_diff = np.linalg.norm(func_grad-func_num_grad, ord=np.inf)
+        func_grad_max_norm.append(func_grad_diff)
+        func_hessian_diff = np.linalg.norm(func_hessian-func_num_hessian, ord=np.inf)
+        func_hessian_max_norm.append(func_hessian_diff)
+    return func_grad_max_norm, func_hessian_max_norm
 
 def compare_analytical_vs_numerical():
     np.random.seed(42)
     x_range = np.arange(61)
+    eps_array = np.power(2.0, -x_range)
     x = np.random.rand(3, 1)
     A = np.random.rand(3, 3)
-    f1_value, f1_grad, f1_hessian = calc_f1_value_grad_hessian(x, A)
-    f2_value, f2_grad, f2_hessian = calc_f2_value_grad_hessian(x)
-
-    f1_grad_norm = []
-    f1_hessian_norm = []
-    f2_grad_norm = []
-    f2_hessian_norm = []
-
-    for i in x_range:
-        f1_num_grad, f1_num_hessian =\
-            num_eval_grad_hessian(
-                x,
-                np.power(2.0, -i),
-                calc_f1_value_grad_hessian,
-                [A])
-
-        f1_grad_diff = np.linalg.norm(f1_grad-f1_num_grad, ord=np.inf)
-        f1_grad_norm.append(f1_grad_diff)
-        f1_hessian_diff = np.linalg.norm(f1_hessian-f1_num_hessian, ord=np.inf)
-        f1_hessian_norm.append(f1_hessian_diff)
-
-        f2_num_grad, f2_num_hessian =\
-            num_eval_grad_hessian(
-                x,
-                np.power(2.0, -i),
-                calc_f2_value_grad_hessian,
-                [])
-
-        f2_grad_diff = np.linalg.norm(f2_grad-f2_num_grad, ord=np.inf)
-        f2_grad_norm.append(f2_grad_diff)
-        f2_hessian_diff = np.linalg.norm(f2_hessian-f2_num_hessian, ord=np.inf)
-        f2_hessian_norm.append(f2_hessian_diff)
+    f1_grad_norm, f1_hessian_norm = func_compare_analytical_vs_numerical(x, eps_array, calc_f1_value_grad_hessian, [A])
+    f2_grad_norm, f2_hessian_norm = func_compare_analytical_vs_numerical(x, eps_array, calc_f2_value_grad_hessian, [])
 
     f1_grad_min_err = np.min(f1_grad_norm)
     f1_grad_min_err_ind = np.argmin(f1_grad_norm)
