@@ -55,6 +55,23 @@ Therefore $g(x)$ must be convex.
 
 \qed\\
 \subsection{Question 2}
+Let $f(x)$ be a convex function defined over convex domain $C$\\
+We need to show that the level set $L = \{x \in C, f(x) \leq \alpha \}$ is a convex set.
+Meaning, we need to prove that for any $y,z \in L$:
+$$\beta y + (1-\beta)z \in L \:\:\:, \forall \beta \in [0,1]$$
+That is:\\
+(1)$\:\:\:\beta y + (1-\beta)z \in C$\\
+$\text{ and }$\\
+(2)$\:\:\:f(\beta y + (1-\beta)z) \leq \alpha$\\
+\\
+(1) From definition of $L$ and $C$:
+$$\:\:\: y,z \in L \Rightarrow y,z \in C \Rightarrow \beta y + (1-\beta)z \in C$$
+(2) Due to $f$ convexity over $C$ (first inequality) and $y,z \in L$ (second inequality):
+$$f(\beta y + (1-\beta)z) \leq \beta f(y) + (1-\beta)f(z) \leq  \beta \alpha  + (1-\beta)\alpha = \alpha$$
+\qed\\
+
+\newpage
+\subsection{Question 3}
 
 \end{document}
 
