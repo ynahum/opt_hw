@@ -105,14 +105,24 @@ We assume correctness of Jensen's inequality for $k-1$. Meaning,
 $$f(\sum_{i=1}^{k-1} \alpha_i x_i) \leq \sum_{i=1}^{k-1} \alpha_i f(x_i)$$
 Step:\\
 We denote $$y=\sum_{i=1}^{k-1} \frac{\alpha_i}{(1-\alpha_k)} x_i$$ Thus,
-$$f(\sum_{i=1}^{k} \alpha_i x_i) = f(\sum_{i=1}^{k-1} \alpha_i x_i + \alpha_k x_k) = f(\sum_{i=1}^{k-1} \alpha_i x_i + \alpha_k x_k) = f((1-\alpha_k)\sum_{i=1}^{k-1} \frac{\alpha_i}{(1-\alpha_k)} x_i + \alpha_k x_k) =$$
+$$f(\sum_{i=1}^{k} \alpha_i x_i) = $$
+$$f(\sum_{i=1}^{k-1} \alpha_i x_i + \alpha_k x_k) = $$
+$$f(\sum_{i=1}^{k-1} \alpha_i x_i + \alpha_k x_k) =$$
+$$ f((1-\alpha_k)\sum_{i=1}^{k-1} \frac{\alpha_i}{(1-\alpha_k)} x_i + \alpha_k x_k) =$$
 $$f((1-\alpha_k)y + \alpha_k x_k)$$
-Also, $y\in C$since $x_i \in C$ and
+Also, $y\in C$ since $x_i \in C$ and
 $$\sum_{i=1}^{k-1} \frac{\alpha_i}{(1-\alpha_k)}=1$$
 So, due to convexity of 2 points in $C$ we get:
-$$\leq \sum_{i=1}^{k-1} \alpha_i f(x_i)$$
+$$f(\sum_{i=1}^{k} \alpha_i x_i) = $$
+$$f((1-\alpha_k)y + \alpha_k x_k) \leq$$
+$$(1-\alpha_k)f(y) + \alpha_k f(x_k) = $$
+$$(1-\alpha_k) f(\sum_{i=1}^{k-1} \frac{\alpha_i}{(1-\alpha_k)} x_i) + \alpha_k f(x_k) \leq_{(***)}$$
+$$(1-\alpha_k) \sum_{i=1}^{k-1} \frac{\alpha_i}{(1-\alpha_k)} f(x_i) + \alpha_k f(x_k) =$$
+$$\sum_{i=1}^{k} \alpha_i f(x_i)$$
+When we used the induction assumption at the last inequality marked with $(***)$
+\qed
+\newpage
 
-
-
+\subsection{Question 5}
 \end{document}
 
