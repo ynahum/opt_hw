@@ -4,12 +4,12 @@ from f1 import calc_f1_value_grad_hessian
 from f2 import calc_f2_value_grad_hessian
 from func_cmp_analyt_vs_num import func_compare_analytical_vs_numerical
 
-run_on_f1 = False
+run_on_f1 = True
 run_on_f2 = True
 
 def compare_analytical_vs_numerical():
 
-    np.random.seed(42)
+    np.random.seed(10)
 
     exp_range = np.arange(61)
     eps_array = np.power(2.0, -exp_range)
