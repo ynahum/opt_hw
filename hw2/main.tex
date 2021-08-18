@@ -29,6 +29,32 @@
 \section{Convex Sets and Functions}
 
 \subsection{Question 1}
+Need to prove that if we have 2 convex functions $f_1$ and $f_2$ over convex set $C$, than $$g(x)=\max\limits_{i=1,2} f_i(x)$$ is also a convex function over convex set $C$
+\subsubsection*{Proof}
+Let's pick some points $s,t \in C$\\
+We need to show that $$g(\alpha s + (1-\alpha)t) \leq \alpha g(s) + (1-\alpha)g(t) \hspace{20} \forall \alpha \in [0,1]$$
+$f_1$ is convex $\Rightarrow$
+$$f_1(\alpha s + (1-\alpha)t) \leq \alpha f_1(s) + (1-\alpha)f_1(t)$$
+$f_2$ is convex $\Rightarrow$
+$$f_2(\alpha s + (1-\alpha)t) \leq \alpha f_2(s) + (1-\alpha)f_2(t)$$
+Since each function is convex in that intermediate point $(\alpha s + (1-\alpha)t)\in C$, we can only increment each max argument and deduce:
+$$g(\alpha s + (1-\alpha)t) = \max\limits_{i=1,2} f_i(\alpha s + (1-\alpha)t) \leq \max\limits_{i=1,2} \{\alpha f_i(s) + (1-\alpha)f_i(t)\} \leq $$
+$$\max\limits_{i=1,2} \{ \alpha f_i(s) \} + \max\limits_{i=1,2}\{(1-\alpha)f_i(t)\} = \alpha \max\limits_{i=1,2} f_i(s) + (1-\alpha)\max\limits_{i=1,2} f_i(t) = \alpha g(s) + (1-\alpha)g(t)$$
+\qed\\
+Another way to prove it is by contradiction:
+Assume $g(x)$ is not convex. Meaning, $$\exists s,t \in C \text{ and } \exists \alpha \in [0,1] \text{  s.t.}$$ 
+$$g(\alpha s + (1-\alpha)t) > \alpha g(s) + (1-\alpha)g(t)$$
+On the other hand, $\forall i \in \{1,2\}$ 
+$$\alpha g(s) + (1-\alpha)g(t) = \alpha \max\limits_{j=1,2} f_j(s) + (1-\alpha)\max\limits_{j=1,2} f_j(t) \geq \alpha  f_i(s) + (1-\alpha)f_i(t) \geq f_i(\alpha s + (1-\alpha)t)$$
+When the last inequality is due to convexity of $f_i$
+So using our assumption and the above, we get that $\forall i \in \{1,2\}$:
+$$g(\alpha s + (1-\alpha)t) > f_i(\alpha s + (1-\alpha)t)$$
+In contradiction to the definition of $g(x)$ that must be equal to one of the $f_i$ functions as:
+$$g(x)=\max\limits_{i=1,2} f_i(x)$$
+Therefore $g(x)$ must be convex.
+
+\qed\\
+\subsection{Question 2}
 
 \end{document}
 
