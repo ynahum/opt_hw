@@ -29,7 +29,7 @@
 \section{Convex Sets and Functions}
 
 \subsection{Question 1}
-Need to prove that if we have 2 convex functions $f_1$ and $f_2$ over convex set $C$, than $$g(x)=\max\limits_{i=1,2} f_i(x)$$ is also a convex function over convex set $C$
+Need to prove that if we have 2 convex functions $f_1$ and $f_2$ over convex set $C$, then $$g(x)=\max\limits_{i=1,2} f_i(x)$$ is also a convex function over convex set $C$
 \subsubsection*{Proof}
 Let's pick some points $s,t \in C$\\
 We need to show that $$g(\alpha s + (1-\alpha)t) \leq \alpha g(s) + (1-\alpha)g(t) \hspace{20} \forall \alpha \in [0,1]$$
@@ -41,7 +41,9 @@ Since each function is convex in that intermediate point $(\alpha s + (1-\alpha)
 $$g(\alpha s + (1-\alpha)t) = \max\limits_{i=1,2} f_i(\alpha s + (1-\alpha)t) \leq \max\limits_{i=1,2} \{\alpha f_i(s) + (1-\alpha)f_i(t)\} \leq $$
 $$\max\limits_{i=1,2} \{ \alpha f_i(s) \} + \max\limits_{i=1,2}\{(1-\alpha)f_i(t)\} = \alpha \max\limits_{i=1,2} f_i(s) + (1-\alpha)\max\limits_{i=1,2} f_i(t) = \alpha g(s) + (1-\alpha)g(t)$$
 \qed\\
-Another way to prove it is by contradiction:
+\newpage
+Another way to prove it is by contradiction.
+\subsubsection*{Proof}
 Assume $g(x)$ is not convex. Meaning, $$\exists s,t \in C \text{ and } \exists \alpha \in [0,1] \text{  s.t.}$$ 
 $$g(\alpha s + (1-\alpha)t) > \alpha g(s) + (1-\alpha)g(t)$$
 On the other hand, $\forall i \in \{1,2\}$ 
@@ -62,8 +64,8 @@ $$\beta y + (1-\beta)z \in L \:\:\:, \forall \beta \in [0,1]$$
 That is:\\
 (1)$\:\:\:\beta y + (1-\beta)z \in C$\\
 $\text{ and }$\\
-(2)$\:\:\:f(\beta y + (1-\beta)z) \leq \alpha$\\
-\\
+(2)$\:\:\:f(\beta y + (1-\beta)z) \leq \alpha$
+\subsubsection*{Proof}
 (1) From definition of $L$ and $C$:
 $$\:\:\: y,z \in L \Rightarrow y,z \in C \Rightarrow \beta y + (1-\beta)z \in C$$
 (2) Due to $f$ convexity over $C$ (first inequality) and $y,z \in L$ (second inequality):
@@ -72,6 +74,45 @@ $$f(\beta y + (1-\beta)z) \leq \beta f(y) + (1-\beta)f(z) \leq  \beta \alpha  + 
 
 \newpage
 \subsection{Question 3}
+Let $f(x)$ be a smooth and twice differential convex function over a convex domain $C$.\\
+We need to prove that $g(x) = f(Ax)$ is convex, where A is a matrix of appropriate size.
+\subsubsection*{Proof}
+As we learned in class, a function is convex if and only if its Hessian is PSD (we proved in class one direction but it's correct also on the other direction).\\
+So, we will show that $\nabla^2 g(x)$ is PSD.\\
+That is, we need to show that:
+$$\forall z \in \mathbb{R}^n, \;\;\; z^T \nabla^2 g(x) z \geq 0$$
+As we learned, if $g(x) = f(Ax)$, then 
+$$\nabla^2 g(x) = A^T \nabla^2 f(x) A \Rightarrow$$
+$$z^T \nabla^2 g(x) z = z^T A^T \nabla^2 f(x) A z$$
+We can denote $y = Az$ and get:
+$$z^T \nabla^2 g(x) z = y^T \nabla^2 f(x) y \geq 0$$
+When the last inequality is due to convexity of $f(x)$\\
+$\text{ }$\qed
+
+\subsection{Question 4}
+Jensen's inequality states the following:\\
+Let $f:C \rightarrow \mathbb{R}$ be a convex function over a convex set domain $C \in \mathbb{R}^n$.\\
+Then, for any collection of points $x_1,x_2,..,x_k \in C$ and any collection of positive scalars $\alpha_1,\alpha_2,..,\alpha_k$ s.t. $\sum_{i=1}^k \alpha_i = 1$\\
+We have:
+$$f(\sum_{i=1}^k \alpha_i x_i) \leq \sum_{i=1}^k \alpha_i f(x_i)$$
+\subsubsection*{Proof}
+We prove it by induction.\\
+Base:\\
+for $k=2$ it is trivial as $f(x)$ is convex and therefore:
+$$f(\alpha_1 x_1 + \alpha_2 x_2) = f(\alpha_1 x_1 + (1-\alpha_1) x_2) \leq \alpha_1 f(x_1) + (1-\alpha_1) f(x_2) = \alpha_1 f(x_1) + \alpha_2 f(x_2)$$
+Assumption:\\
+We assume correctness of Jensen's inequality for $k-1$. Meaning,
+$$f(\sum_{i=1}^{k-1} \alpha_i x_i) \leq \sum_{i=1}^{k-1} \alpha_i f(x_i)$$
+Step:\\
+We denote $$y=\sum_{i=1}^{k-1} \frac{\alpha_i}{(1-\alpha_k)} x_i$$ Thus,
+$$f(\sum_{i=1}^{k} \alpha_i x_i) = f(\sum_{i=1}^{k-1} \alpha_i x_i + \alpha_k x_k) = f(\sum_{i=1}^{k-1} \alpha_i x_i + \alpha_k x_k) = f((1-\alpha_k)\sum_{i=1}^{k-1} \frac{\alpha_i}{(1-\alpha_k)} x_i + \alpha_k x_k) =$$
+$$f((1-\alpha_k)y + \alpha_k x_k)$$
+Also, $y\in C$since $x_i \in C$ and
+$$\sum_{i=1}^{k-1} \frac{\alpha_i}{(1-\alpha_k)}=1$$
+So, due to convexity of 2 points in $C$ we get:
+$$\leq \sum_{i=1}^{k-1} \alpha_i f(x_i)$$
+
+
 
 \end{document}
 
