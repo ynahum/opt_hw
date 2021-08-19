@@ -165,5 +165,30 @@ $$\frac{1}{\frac{1}{n} \sum_{i=1}^n x_i} \leq \frac{1}{\sqrt[n]{\prod_{i=1}^n x_
 As both terms in denominators are positive (by assumption $\forall i : x_i > 0$). We conclude\\
 $$\frac{1}{n} \sum_{i=1}^n x_i \geq \sqrt[n]{\prod_{i=1}^n x_i}$$
 \qed
+
+\newpage
+
+\section{Multivariate Optimization - Gradient Descent
+and Newton’s Method}
+
+\subsection{Quadratic Form}
+
+\subsubsection{Gradient and Hessian}
+We need to derive the Gradient and Hessian of the form:
+$$f(x)=\frac{1}{2} x^T Q x$$
+Where $Q \in \mathbb{R}^{n \times n}$ and $x \in \mathbb{R}$\\
+\\
+(1) Gradient: $$d(f(x)) = \frac{1}{2}(dx^T Q x + x^T Q dx) = \frac{1}{2}((x^T Q dx)^T + x^T Q dx) = \frac{1}{2} x^T (Q^T + Q) dx$$
+Therefore, from the external definition of the gradient:
+\rectres{$$\nabla f(x) = \frac{1}{2} (Q + Q^T)x$$}
+\\
+(2) Hessian:\\
+$$d(\nabla f(x)) =  \frac{1}{2} d((Q + Q^T)x) = \frac{1}{2} (Q + Q^T)dx = \nabla^2 f(x) dx \Rightarrow$$
+\rectres{$$\nabla^2 f(x) = \frac{1}{2} (Q + Q^T)$$}
+if Q is symmetric we get:\\
+    $$\nabla f(x) =Qx \text{ and  }\nabla^2 f(x) = Q$$
+\subsubsection{Directional Derivative}
+We need to find the value of $\alpha$ which minimizes $f(x)=\frac{1}{2} x^T Q x$ along a line that passes through a given point $x$ and heading in some direction d.\\ In other words, to find the minimum point of $g_{x,d} : \mathbb{R} \rightarrow \mathbb{R}$, which is given as follows:\\
+$$g_{x,d}(\alpha) = f(x + \alpha d)$$
 \end{document}
 
