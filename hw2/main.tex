@@ -124,5 +124,46 @@ When we used the induction assumption at the last inequality marked with $(***)$
 \newpage
 
 \subsection{Question 5}
+Using Jensen’s inequality, we need to prove the arithmetic/geometric mean inequality:
+$$\frac{\sum_{i=1}^n x_i}{n} \geq \sqrt[n]{\prod_{i=0}^n x_i}$$
+Where $\forall i : x_i >0$
+\subsubsection*{Proof}
+First, we will show that $f(z)=-\log{(z)}:\mathbb{R}^n \rightarrow \mathbb{R}$ is convex.\\
+The gradient of $-log(z)$ can be calculated from the definition:\\
+$$d(f(z)) = -d(\log{(z)}) = -(\frac{1}{z_1},\frac{1}{z_2},..,\frac{1}{z_n})dz\Rightarrow$$
+$$\nabla (-log(z)) = -(\frac{1}{z_1},\frac{1}{z_2},..,\frac{1}{z_n})^T$$
+The hessian of $-log(z)$ can be calculated from the definition as well and we get a diagonal matrix in which all the entries on the diagonal are positive (as it is assumed that $z_i > 0$):\\
+$$
+\nabla^2 (-log(z)) =
+\begin{pmatrix}
+    \frac{1}{z_1^2} & 0 & .. & 0 \\
+    0 & \frac{1}{z_2^2} & .. & 0\\
+    ...\\
+    0 & 0 &  .. & \frac{1}{z_n^2}
+\end{pmatrix}
+\Rightarrow$$
+for any $u \in \mathbb{R}^n, u \neq 0$:\\
+$$u^T \nabla^2 (-log(z)) u = \sum_{i=1}^n \frac{1}{z_i^2} u_i^2 \geq 0 \Rightarrow$$
+$\nabla^2 (-log(z))$ is PSD $\Rightarrow -log(z)$ is convex.\\ 
+\\
+Second, from Jensen's inequality on convex function, the following is true $(\alpha_i = \frac{1}{n})$:\\
+$$-\log(\frac{1}{n} \sum_{i=1}^n x_i) \leq -\sum_{i=1}^n \frac{1}{n} \log(x_i) \Rightarrow$$
+$$-\log(\frac{1}{n} \sum_{i=1}^n x_i) \leq -\frac{1}{n} \sum_{i=1}^n \log(x_i) \Rightarrow$$
+$$-\log(\frac{1}{n} \sum_{i=1}^n x_i) \leq -\frac{1}{n} \log(\prod_{i=1}^n x_i) \Rightarrow$$
+$$-\log(\frac{1}{n} \sum_{i=1}^n x_i) \leq -\log(\{\prod_{i=1}^n x_i\}^\frac{1}{n}) \Rightarrow$$
+$$-\log(\frac{1}{n} \sum_{i=1}^n x_i) \leq -\log(\sqrt[n]{\prod_{i=1}^n x_i})$$
+%Also, we saw in lecture a theorem about the convexity of functions composition:\\
+%If $h(t):\mathbb{R} \rightarrow \mathbb{R}$ is a convex function which is also monotonically increasing, and $f(z):\mathbb{R}^n \rightarrow \mathbb{R}$ is convex.\\
+%Then, $h(f(z))$ is also convex.\\
+%$-\log{(z)}$ is convex as we showed above.\\
+%$e^t$ is monotonically increasing and convex in all its domain $\mathbb{R}$ as its second derivative is always positive.\\
+%Therefore, $e^{-\log{(z)}}$ is convex.
+Also, $e^t$ is monotonically increasing. Therefore,
+$$e^{-\log(\frac{1}{n} \sum_{i=1}^n x_i)} \leq e^{-\log(\sqrt[n]{\prod_{i=1}^n x_i})} \Rightarrow$$
+$$\{e^{\log{(\frac{1}{n} \sum_{i=1}^n x_i)}}\}^{-1} \leq {\{e^{\log(\sqrt[n]{\prod_{i=1}^n x_i})}\}}^{-1} \Rightarrow$$
+$$\frac{1}{\frac{1}{n} \sum_{i=1}^n x_i} \leq \frac{1}{\sqrt[n]{\prod_{i=1}^n x_i}}\Rightarrow$$
+As both terms in denominators are positive (by assumption $\forall i : x_i > 0$). We conclude\\
+$$\frac{1}{n} \sum_{i=1}^n x_i \geq \sqrt[n]{\prod_{i=1}^n x_i}$$
+\qed
 \end{document}
 
