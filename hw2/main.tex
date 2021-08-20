@@ -3,13 +3,15 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
+
 \graphicspath{ {./plots/} }
 
 \newcommand{\rectres}[1]{
 \begin{center}
 \begin{tabular}{ |c| }
-\hline
- #1\\
+\hline\\
+#1\\
+\\
 \hline
 \end{tabular}
 \end{center}
@@ -180,15 +182,75 @@ Where $Q \in \mathbb{R}^{n \times n}$ and $x \in \mathbb{R}$\\
 \\
 (1) Gradient: $$d(f(x)) = \frac{1}{2}(dx^T Q x + x^T Q dx) = \frac{1}{2}((x^T Q dx)^T + x^T Q dx) = \frac{1}{2} x^T (Q^T + Q) dx$$
 Therefore, from the external definition of the gradient:
-\rectres{$$\nabla f(x) = \frac{1}{2} (Q + Q^T)x$$}
+$$\nabla f(x) = \frac{1}{2} (Q + Q^T)x$$
 \\
 (2) Hessian:\\
 $$d(\nabla f(x)) =  \frac{1}{2} d((Q + Q^T)x) = \frac{1}{2} (Q + Q^T)dx = \nabla^2 f(x) dx \Rightarrow$$
-\rectres{$$\nabla^2 f(x) = \frac{1}{2} (Q + Q^T)$$}
-if Q is symmetric we get:\\
-    $$\nabla f(x) =Qx \text{ and  }\nabla^2 f(x) = Q$$
+$$\nabla^2 f(x) = \frac{1}{2} (Q + Q^T)$$
+%if Q is symmetric we get:\\
+%    $$\nabla f(x) =Qx \text{ and  }\nabla^2 f(x) = Q$$
 \subsubsection{Directional Derivative}
-We need to find the value of $\alpha$ which minimizes $f(x)=\frac{1}{2} x^T Q x$ along a line that passes through a given point $x$ and heading in some direction d.\\ In other words, to find the minimum point of $g_{x,d} : \mathbb{R} \rightarrow \mathbb{R}$, which is given as follows:\\
-$$g_{x,d}(\alpha) = f(x + \alpha d)$$
+We need to find the value of $\alpha$ which minimizes $f(x)=\frac{1}{2} x^T Q x$ along a line that passes through a given point $x$ and heading in some direction $r$.\\
+In other words, to find the minimum point of $g_{x,r} : \mathbb{R} \rightarrow \mathbb{R}$, which is given as follows:\\
+$$g_{x,r}(\alpha) = f(x + \alpha r)$$
+In order to find the $\alpha$ that minimizes the function $g(\alpha)$, we just need to find the point in which the derivative is 0.\\
+We do so by using the external definition of the derivative.\\
+We denote $y=x + \alpha r$ and therefore $dy= r d\alpha$:\\
+$$d(g_{x,d}(\alpha)) = d(f(x + \alpha r)) = \nabla f(y)^T dy = \frac{1}{2} y^T (Q^T + Q) dy = \frac{1}{2} (x + \alpha r)^T (Q^T + Q) r d\alpha \Rightarrow$$
+$$g_{x,d}'(\alpha) = \frac{1}{2} (x + \alpha r)^T (Q^T + Q)r$$
+We will compare it to 0 and get the $\alpha$ that minimizes it:
+$$(x + \alpha r)^T (Q^T + Q)r=0 \Rightarrow$$
+$$\alpha = -\frac{x^T(Q + Q^T)r}{r^T(Q + Q^T)r}$$
+
+\subsection{The Rosenbrock Function}
+
+\subsubsection{Gradient and Hessian}
+We need to derive the gradient and hessian of the Rosenbrock function:
+$$f(x_1,x_2,...,x_n) = \sum_{i=1}^{n-1}\big((1-x_i)^2 + 100(x_{i+1} - x_i^2)^2\big) $$
+\\
+(1) Gradient:\\
+We will calculate based on total differential:\\
+$$\frac{\partial f}{\partial x_1} = -2(1-x_1) + 200(x_2-x_1^2)(-2x_1)=400x_1^3+(2-400x_2)x_1-2$$
+$$\frac{\partial f}{\partial x_n} = 200(x_n-x_{n-1}^2)$$
+$\forall i \neq 1,n : x_i$ we have 2 components in the sum that contribute to the partial derivative:\\
+$$\frac{\partial f}{\partial x_i} = -2(1-x_i) + 200(x_{i+1}-x_i^2)(-2x_i) + 200(x_i-x_{i-1}^2)=400x_i^3+(202-400x_2)x_i - 200x_{i-1}^2 -2$$
+$$\Rightarrow \nabla f(x) = 
+\begin{pmatrix}
+    \frac{\partial f}{\partial x_1} \\
+    ...\\
+    \frac{\partial f}{\partial x_i}\\
+    ...\\
+    \frac{\partial f}{\partial x_n}
+\end{pmatrix} =
+\begin{pmatrix}
+    400x_1^3+(2-400x_2)x_1-2 \\
+    ...\\
+    400x_i^3+(202-400x_{i+1})x_i - 200x_{i-1}^2 -2\\
+    ...\\
+    200(x_n-x_{n-1}^2)
+\end{pmatrix}
+$$
+\newpage\\
+\\
+We follow similar calculations on gradient for calculating the hessian:\\
+(2) Hessian:\\
+$$\nabla^2 f(x) = 
+\begin{pmatrix}
+    \frac{\partial^2 f}{\partial x_1^2} & \frac{\partial^2 f}{\partial x_1 \partial x_2} & ... & \frac{\partial^2 f}{\partial x_1 \partial x_n}\\
+    ...\\
+    \frac{\partial^2 f}{\partial x_i\partial x_1} & \frac{\partial^2 f}{\partial x_i \partial x_2} & ... & \frac{\partial^2 f}{\partial x_i \partial x_n}\\
+    ...\\
+    \frac{\partial^2 f}{\partial x_n \partial x_1} & \frac{\partial^2 f}{\partial x_n \partial x_2} & ... & \frac{\partial^2 f}{\partial x_n^2}
+\end{pmatrix} =$$
+$$
+\begin{pmatrix}
+    1200x_1^2-400x_2+2 & -400x_1              & 0 & 0 &... & 0 \\
+    -400x_1            & 1200x_2^2-400x_3+202 & -400x_2 & 0 & ... & 0 \\
+    0                  & -400x_2        & 1200x_3^2-400x_4+202 & -400x_3 &  ... & 0 \\
+    ...\\
+    0                  & 0                    & 0     & 0 &  ... & 200
+\end{pmatrix}
+$$
+
 \end{document}
 
