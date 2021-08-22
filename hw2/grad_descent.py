@@ -15,12 +15,15 @@ def grad_descent(x_0, Q, exact_line_search=True, grad_norm_thresh=(10**(-5))):
     #print(f"x_0={repr(x_0)}")
     symQ = (Q + Q.T)
     x = x_0
-    x_k_list.append(x)
     num_of_iteration = 0
     while True:
         num_of_iteration += 1
         #print(f"Running iteration {num_of_iteration}")
         d = 0.5 * symQ @ x
+        x_k_list.append(x)
+        if np.linalg.norm(d, ord=2) <= grad_norm_thresh:
+            print('Gradient Descent has converged')
+            break
         if exact_line_search:
             denom = (d.T @ symQ @ d)
             if denom == 0:
@@ -30,10 +33,6 @@ def grad_descent(x_0, Q, exact_line_search=True, grad_norm_thresh=(10**(-5))):
                 alpha = -(x.T @ symQ @ d) / denom
         else:
             alpha = -inexact_armijo_rule_backtrack_line_search(Q, d, x)
-        if np.linalg.norm(d, ord=2) <= grad_norm_thresh:
-            print('Gradient Descent has converged')
-            break
         x = x + alpha * d
-        x_k_list.append(x)
 
     return np.array(x_k_list)
