@@ -20,7 +20,7 @@ def plot_search_method_graphs(Q,trajectory_points,title='', num_of_contours=30):
 
     ax = fig.add_subplot(1, 2, 1, projection='3d')
     ax.contour(X, Y, F, num_of_contours, cmap="coolwarm", offset=0)
-    #ax.scatter(traj_x, traj_y, s=7)
+    ax.scatter(traj_x, traj_y, s=10)
     ax.plot_surface(X, Y, F, cmap="coolwarm", rstride=1, cstride=1)
     z_vec_start = np.zeros(np.shape(x_vec_start))
     z_vec_offset = np.zeros(np.shape(x_vec_offset))
@@ -28,7 +28,7 @@ def plot_search_method_graphs(Q,trajectory_points,title='', num_of_contours=30):
 
     ax = fig.add_subplot(1, 2, 2)
     ax.contour(X, Y, F, num_of_contours, cmap="coolwarm")
-    #ax.scatter(traj_x, traj_y, s=7)
+    ax.scatter(traj_x, traj_y, s=10)
     ax.quiver(x_vec_start, y_vec_start, x_vec_offset, y_vec_offset,
               color='red', angles='xy', scale_units='xy', scale=1)
 
