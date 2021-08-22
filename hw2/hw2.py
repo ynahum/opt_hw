@@ -30,13 +30,15 @@ if __name__ == '__main__':
 
     exact_line_search_config = [ True, True, True, False, False, False]
 
-    run_grad_descent = False
-    run_newton_method = True
+    run_grad_descent = True
+
     if run_grad_descent:
         for idx, Q in enumerate(Qs):
             trajectory_points = grad_descent(
                 x_0s[idx], Q, exact_line_search=exact_line_search_config[idx])
             plot_search_method_graphs(Q, trajectory_points)
+
+    run_newton_method = True
 
     if run_newton_method:
         for idx, Q in enumerate(Qs):
