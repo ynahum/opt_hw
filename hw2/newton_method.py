@@ -4,34 +4,28 @@ from mcholmz.mcholmz import modifiedChol
 
 
 # 2.4.1
-def forward(m, y):
-    v = np.array([[0.] for i in range(len(m))])
-    for i in range(len(m)):
-        v[i, 0] = (y[i, 0] - (np.array([m[i]]) @ v))
-        v[i, 0] /= float(m[i, i])
-    return np.array(v)
+def forward(L, x):
+    y = np.zeros_like(x)
+    for idx, y_elem in enumerate(y):
+        y[idx] = (x[idx] - L[idx] @ y) / L[idx, idx]
+    return y
 
 
-def backward(m, y):
-    v = np.array([[0.] for i in range(len(m))])
-    for i in range(len(m))[::-1]:
-        v[i,0] = (y[i,0] - (np.array([m[i]]) @ v))
-        v[i, 0] /= float(m[i, i])
-    return np.array(v)
-
-
-def scalar(D,y):
-    z=np.array([[0.],[0.]])
-    for i in range(len(D)):
-        z[i,0]= y[i,0]/D[i,0]
-    return z
+def inverse_diagonal(d, y):
+    inv_d = 1/d
+    n = len(d)
+    inv_D = np.zeros((n,n))
+    np.fill_diagonal(inv_D, inv_d)
+    return inv_D @ y
 
 
 def newton_direction(hessian, gradient):
-    L, D, e = modifiedChol(hessian)
+    L, d, e = modifiedChol(hessian)
+    L = np.array(L)
+    d = np.array(d)
     y = forward(L, -gradient)
-    z = scalar(D, y)
-    x = backward(L.T, z)
+    z = inverse_diagonal(d, y)
+    x = forward(L.T, z)
     return x
 
 
