@@ -10,7 +10,7 @@ def rosenbrock_func(x):
 
 def rosenbrock_grad(x):
     n = len(x)
-    assert(len >=2)
+    assert(n>=2)
     grad = np.zeros_like(x)
     grad[0] = 400 * x[0] * (x[0] ** 2 - x[1]) + 2 * x[0] - 2
     for i in range(1,(n-1)):
@@ -21,7 +21,7 @@ def rosenbrock_grad(x):
 
 def rosenbrock_hessian(x):
     n = len(x)
-    assert(len >=2)
+    assert(n>=2)
     hessian = np.zeros((n,n))
 
     hessian[0][0] = 1200 * (x[0] ** 2) - 400 * x[1] + 2
@@ -33,3 +33,41 @@ def rosenbrock_hessian(x):
     hessian[n-1][n-2] = -400 * x[n-2]
     hessian[n-1][n-1] = 200
     return hessian
+
+def rosenbrock_inexact_line_search_armijo_rule_backtrack(d, x, alpha_0=1, beta=0.5, sigma=0.25):
+    alpha = alpha_0
+    while True:
+        f_x_k_1 = rosenbrock_func(x + alpha * d)
+        f_x_k = rosenbrock_func(x)
+        grad_f_x_k = rosenbrock_grad(x)
+        if f_x_k_1 <= f_x_k +  sigma * alpha * d.T @ grad_f_x_k:
+             break
+        alpha = beta * alpha
+    return alpha
+
+def rosenbrock_inexact_line_search_grad_descent(x_0, grad_norm_thresh=(10**(-1))):
+    x_k_list = []
+
+    print('Started Rosenbrock inexact search gradient descent with:')
+    print(f"x_0={repr(x_0)}")
+
+    x = x_0
+    num_of_iteration = 0
+
+    while True:
+        #print(f"Running iteration {num_of_iteration}")
+        # direction is the opposite to gradient
+
+        d = -rosenbrock_grad(x)
+        x_k_list.append(x)
+        if np.linalg.norm(d, ord=2) <= grad_norm_thresh:
+            print(f'Gradient Descent has converged after {num_of_iteration} iterations')
+            break
+
+        num_of_iteration += 1
+
+        alpha = rosenbrock_inexact_line_search_armijo_rule_backtrack(d, x)
+        x = x + alpha * d
+
+    return np.array(x_k_list)
+

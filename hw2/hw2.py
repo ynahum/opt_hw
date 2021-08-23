@@ -47,4 +47,10 @@ if __name__ == '__main__':
                 x_0s[idx], Q, exact_line_search=exact_line_search_config[idx])
             plot_search_method_graphs(Q, trajectory_points)
 
-    #run_rosenbrock_test = False
+    run_rosenbrock_inexact = True
+    if run_rosenbrock_inexact:
+        x_0 = np.zeros((10,1))
+        trajectory_points = rosenbrock_inexact_line_search_grad_descent(x_0)
+        #plot_search_method_graphs(Q, trajectory_points)
+
+

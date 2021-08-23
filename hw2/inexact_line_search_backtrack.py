@@ -1,5 +1,6 @@
 
-def inexact_line_search_armijo_rule_backtrack(Q, d, x, alpha_0=1, beta=0.5, sigma=0.25 ):
+
+def inexact_line_search_armijo_rule_backtrack(Q, d, x, alpha_0=1, beta=0.5, sigma=0.25):
     alpha = alpha_0
     while True:
         f_x_k_1 = 0.5 * (x + d * alpha).T @ Q @ (x + d * alpha)
