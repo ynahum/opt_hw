@@ -49,8 +49,11 @@ if __name__ == '__main__':
 
     run_rosenbrock_inexact = True
     if run_rosenbrock_inexact:
+        x_0 = np.ones((10,1))
+        print(f"ros func minimum at all ones vector: {rosenbrock_func(x_0)}")
+
         x_0 = np.zeros((10,1))
         trajectory_points = rosenbrock_inexact_line_search_grad_descent(x_0)
-        #plot_search_method_graphs(Q, trajectory_points)
+        #rosenbrock_plot(trajectory_points)
 
 

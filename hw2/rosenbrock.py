@@ -1,10 +1,11 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 # 2.7
 def rosenbrock_func(x):
     f = 0
     for i in range(len(x)-1):
-        f += ((100 * x[i+1] - x[i] ** 2) ** 2 + (1 - x[i] ** 2))
+        f += (100 * (x[i+1] - (x[i] ** 2)) ** 2 + ((1 - x[i]) ** 2))
     return f
 
 
@@ -45,11 +46,10 @@ def rosenbrock_inexact_line_search_armijo_rule_backtrack(d, x, alpha_0=1, beta=0
         alpha = beta * alpha
     return alpha
 
-def rosenbrock_inexact_line_search_grad_descent(x_0, grad_norm_thresh=(10**(-1))):
+def rosenbrock_inexact_line_search_grad_descent(x_0, grad_norm_thresh=(10**(-5))):
     x_k_list = []
 
-    print('Started Rosenbrock inexact search gradient descent with:')
-    print(f"x_0={repr(x_0)}")
+    print('Started Rosenbrock inexact line search gradient descent')
 
     x = x_0
     num_of_iteration = 0
@@ -71,3 +71,7 @@ def rosenbrock_inexact_line_search_grad_descent(x_0, grad_norm_thresh=(10**(-1))
 
     return np.array(x_k_list)
 
+
+def rosenbrock_plot(trajectory_points, title=''):
+
+    plt.show()
