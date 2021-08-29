@@ -101,6 +101,7 @@ def rosenbrock_inexact_line_search_newton_method(x_0, grad_norm_thresh=(10**(-5)
 def rosenbrock_plot(trajectory_points, title=''):
 
     f = [ rosenbrock_func(x) for x in trajectory_points]
+    #f = [ np.log10(rosenbrock_func(x)) for x in trajectory_points]
     fig = plt.figure()
     fig.suptitle(title)
     plt.yscale("log")
