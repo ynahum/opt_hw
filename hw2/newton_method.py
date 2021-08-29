@@ -22,7 +22,7 @@ def newton_method(x_0, Q, exact_line_search=True, grad_norm_thresh=(10**(-5))):
 
         x_k_list.append(x)
         if np.linalg.norm(d, ord=2) <= grad_norm_thresh:
-            print(f'Gradient Descent has converged after {num_of_iteration} iterations')
+            print(f'Newton Method has converged after {num_of_iteration} iterations')
             break
 
         num_of_iteration += 1

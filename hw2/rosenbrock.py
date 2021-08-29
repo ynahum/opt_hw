@@ -104,5 +104,7 @@ def rosenbrock_plot(trajectory_points, title=''):
     fig = plt.figure()
     fig.suptitle(title)
     plt.yscale("log")
+    plt.xlabel(r'Number of iterations (tolerance on gradient norm = $10^{-5}$)')
+    plt.ylabel(r'$log{(f(x_k)-f(x^*))}$')
     plt.plot(f, 'k')
     plt.show()
