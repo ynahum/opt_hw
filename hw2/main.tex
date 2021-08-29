@@ -283,6 +283,15 @@ At all runs of newton method, we converged after a single iteration. These resul
 \includegraphics[scale=0.5]{nm_inexact_3_elipse_easy_start_point.png}
 \subsection{Plot Instructions}
 \subsection{Find  the  Minimum  of  the  Rosenbrock  Function}
-The Rosenbrock function gets its minimum at $x = (1,1,1...,1)$ point. we can calculate the value and see that it is 0. which is the minimum as $Rosenbrock\_f(x) \geq 0\; \forall x \in \mathbb{R}^n$.
+The Rosenbrock function gets its minimum at $x = (1,1,1...,1)$ point. we can calculate the value and see that it is 0. which is the minimum as $$Rosenbrock\_f(x) \geq 0\; \forall x \in \mathbb{R}^n$$
+Therefore, the difference to optimal value is actualy the function value at each trajectory point in our search for the optimal point.\\
+\includegraphics[scale=0.5]{r_f_gd.png}\\
+We can see a linear convergence rate for the Gradient Descent algorithm. As we get a $10^-2$ decrease relative to a constant rate of iterations.
+In this method we've run for 17612 iterations (the Rosenbrock function is a test bench to compare between optimization methods as it is hard to find the optimal point)\\
+\newpage
+\includegraphics[scale=0.5]{r_f_nm.png}\\
+We can see an asymptotic convergence rate for the Newton Method algorithm. When we reach to close enough to minimu point, the rate of convergence accelrate polynomialy and we get fast decreases of $10^-2,10^-4,10-8..$ relative to a constant rate of iterations.\\
+In this method we've run for 26 iterations and converged.
+
 \end{document}
 
