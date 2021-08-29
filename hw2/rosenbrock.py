@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from newton_method_utils import *
 
 # 2.7
 def rosenbrock_func(x):
@@ -46,6 +47,7 @@ def rosenbrock_inexact_line_search_armijo_rule_backtrack(d, x, alpha_0=1, beta=0
         alpha = beta * alpha
     return alpha
 
+
 def rosenbrock_inexact_line_search_grad_descent(x_0, grad_norm_thresh=(10**(-5))):
     x_k_list = []
 
@@ -71,7 +73,36 @@ def rosenbrock_inexact_line_search_grad_descent(x_0, grad_norm_thresh=(10**(-5))
 
     return np.array(x_k_list)
 
+def rosenbrock_inexact_line_search_newton_method(x_0, grad_norm_thresh=(10**(-5))):
+    x_k_list = []
+
+    print('Started Rosenbrock inexact line search newton method')
+
+    x = x_0
+    num_of_iteration = 0
+
+    while True:
+        #print(f"Running iteration {num_of_iteration}")
+        # direction is the opposite to gradient
+
+        d = newton_direction(rosenbrock_hessian(x), rosenbrock_grad(x))
+        x_k_list.append(x)
+        if np.linalg.norm(d, ord=2) <= grad_norm_thresh:
+            print(f'Gradient Descent has converged after {num_of_iteration} iterations')
+            break
+
+        num_of_iteration += 1
+
+        alpha = rosenbrock_inexact_line_search_armijo_rule_backtrack(d, x)
+        x = x + alpha * d
+
+    return np.array(x_k_list)
 
 def rosenbrock_plot(trajectory_points, title=''):
 
+    f = [ rosenbrock_func(x) for x in trajectory_points]
+    fig = plt.figure()
+    fig.suptitle(title)
+    plt.yscale("log")
+    plt.plot(f, 'k')
     plt.show()

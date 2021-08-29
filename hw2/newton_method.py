@@ -1,33 +1,6 @@
 import numpy as np
 from inexact_line_search_backtrack import inexact_line_search_armijo_rule_backtrack
-from mcholmz.mcholmz import modifiedChol
-
-
-# 2.4.1
-def forward(L, x):
-    y = np.zeros_like(x)
-    for idx, y_elem in enumerate(y):
-        y[idx] = (x[idx] - L[idx] @ y) / L[idx, idx]
-    return y
-
-
-def inverse_diagonal(d, y):
-    inv_d = 1/d
-    n = len(d)
-    inv_D = np.zeros((n,n))
-    np.fill_diagonal(inv_D, inv_d)
-    return inv_D @ y
-
-
-def newton_direction(hessian, gradient):
-    L, d, e = modifiedChol(hessian)
-    L = np.array(L)
-    d = np.array(d)
-    y = forward(L, -gradient)
-    z = inverse_diagonal(d, y)
-    x = forward(L.T, z)
-    return x
-
+from newton_method_utils import *
 
 # 2.4
 def newton_method(x_0, Q, exact_line_search=True, grad_norm_thresh=(10**(-5))):

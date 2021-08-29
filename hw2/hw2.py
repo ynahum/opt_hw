@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     exact_line_search_config = [ True, True, True, False, False, False]
 
-    run_grad_descent = False
+    run_grad_descent = True
 
     if run_grad_descent:
         for idx, Q in enumerate(Qs):
@@ -39,7 +39,7 @@ if __name__ == '__main__':
                 x_0s[idx], Q, exact_line_search=exact_line_search_config[idx])
             plot_search_method_graphs(Q, trajectory_points)
 
-    run_newton_method = False
+    run_newton_method = True
 
     if run_newton_method:
         for idx, Q in enumerate(Qs):
@@ -50,10 +50,12 @@ if __name__ == '__main__':
     run_rosenbrock_inexact = True
     if run_rosenbrock_inexact:
         x_0 = np.ones((10,1))
-        print(f"ros func minimum at all ones vector: {rosenbrock_func(x_0)}")
+        print(f"rosenbrock func minimum at all ones vector: {rosenbrock_func(x_0)}")
 
         x_0 = np.zeros((10,1))
         trajectory_points = rosenbrock_inexact_line_search_grad_descent(x_0)
-        #rosenbrock_plot(trajectory_points)
+        rosenbrock_plot(trajectory_points)
 
+        trajectory_points = rosenbrock_inexact_line_search_newton_method(x_0)
+        rosenbrock_plot(trajectory_points)
 
