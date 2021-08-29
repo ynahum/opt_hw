@@ -257,8 +257,21 @@ In code. see grad\_descent.py file.
 In code. see grad\_descent.py file. see newton\_method.py and newton\_method\_utils.py file.
 \newpage
 \subsection{Find the Minimum of a Quadratic Form}
-
-
+\subsubsection{The results of Gradient Descent with exact line search:}
+\includegraphics[scale=0.5]{grad_descent_exact_1.png}\\
+We can see that we are zigzaging when going at the steepest descent direction. this is since the next direction will always be orthogonal to the current one (directional derivative result of exact line search $\nabla f^T r = 0$ ). this is also related to the convergence rate constant $1 - \frac{\lambda_{min}}{\lambda_{max}}$. In our case it is close to $1$, therefore we converge slowly. In this case we converged after $\bold{63}$ iterations.\\
+\includegraphics[scale=0.5]{grad_descent_exact_2_circle.png}
+When the hessian eigen values are the same $\lambda_{min} = \lambda_{max} = 3$, we don't zigzag and with only one iteration we find the minimum. this is related to the convergence rate constant $1 - \frac{\lambda_{min}}{\lambda_{max}}$. In our case it is 0, therefore we converge after $\bold{1}$ iteration.\\
+\includegraphics[scale=0.5]{grad_descent_exact_3_elipse_easy_start_point.png}
+When starting at an ideal point where the directional derivative is directed right to the global minimum. In such a case we converge after $\bold{1}$ iteration.\\
+\subsubsection{The results of Gradient Descent with inexact line search:}
+\includegraphics[scale=0.5]{grad_descent_inexact_1.png}
+With inexact line search, we zigzag less than steepest descent as we don't go to the exact minimum in which we will have an orthogonal next direction, but rather find better step size according to armijo rule. In this case we converged after $\bold{45}$ iterations.\\
+\newpage
+\includegraphics[scale=0.5]{grad_descent_inexact_2_circle.png}
+When the hessian eigen values are the same $\lambda_{min} = \lambda_{max} = 3$, we can see worse performance of inexact line search compared to exact, as in this case inexact oscillate around the minimum point due to its use of inexact step size to reach the minimum in one step. In this case we converged after $\bold{10}$ iterations.\\
+\includegraphics[scale=0.5]{grad_descent_inexact_3_elipse_easy_start_point.png}
+Similar to previous case, we can see that the performance is worse compared to exact line search and we oscillate. In this case we converged after $\bold{11}$ iterations.\\
 
 \end{document}
 
