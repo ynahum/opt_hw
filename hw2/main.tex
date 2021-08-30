@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass[12pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -19,7 +19,7 @@
 
 \newcommand{\qed}{\hfill$\blacksquare$}
 
-\title{Introduction to Numerical Optimization\\HW2}
+\title{Introduction to Numerical Optimization\\Assignment 2}
 \author{Yair Nahum 034462796\\and\\blabla 11111111 }
 
 \begin{document}
@@ -43,7 +43,6 @@ Since each function is convex in that intermediate point $(\alpha s + (1-\alpha)
 $$g(\alpha s + (1-\alpha)t) = \max\limits_{i=1,2} f_i(\alpha s + (1-\alpha)t) \leq \max\limits_{i=1,2} \{\alpha f_i(s) + (1-\alpha)f_i(t)\} \leq $$
 $$\max\limits_{i=1,2} \{ \alpha f_i(s) \} + \max\limits_{i=1,2}\{(1-\alpha)f_i(t)\} = \alpha \max\limits_{i=1,2} f_i(s) + (1-\alpha)\max\limits_{i=1,2} f_i(t) = \alpha g(s) + (1-\alpha)g(t)$$
 \qed\\
-\newpage
 Another way to prove it is by contradiction.
 \subsubsection*{Proof}
 Assume $g(x)$ is not convex. Meaning, $$\exists s,t \in C \text{ and } \exists \alpha \in [0,1] \text{  s.t.}$$ 
@@ -58,6 +57,7 @@ $$g(x)=\max\limits_{i=1,2} f_i(x)$$
 Therefore $g(x)$ must be convex.
 
 \qed\\
+\newpage
 \subsection{Question 2}
 Let $f(x)$ be a convex function defined over convex domain $C$\\
 We need to show that the level set $L = \{x \in C, f(x) \leq \alpha \}$ is a convex set.
@@ -91,6 +91,7 @@ $$z^T \nabla^2 g(x) z = y^T \nabla^2 f(x) y \geq 0$$
 When the last inequality is due to convexity of $f(x)$\\
 $\text{ }$\qed
 
+\newpage
 \subsection{Question 4}
 Jensen's inequality states the following:\\
 Let $f:C \rightarrow \mathbb{R}$ be a convex function over a convex set domain $C \in \mathbb{R}^n$.\\
@@ -256,7 +257,7 @@ In code. see grad\_descent.py file.
 \subsection{Newton’s Method Implementation}
 In code. see grad\_descent.py file. see newton\_method.py and newton\_method\_utils.py file.
 \newpage
-\subsection{Find the Minimum of a Quadratic Form}
+\subsection{Finding the Minimum of a Quadratic Form}
 \subsubsection{The results of Gradient Descent with exact line search:}
 \includegraphics[scale=0.5]{grad_descent_exact_1.png}\\
 We can see that we are zigzaging when going at the steepest descent direction. this is since the next direction will always be orthogonal to the current one (directional derivative result of exact line search $\nabla f^T r = 0$ ). this is also related to the convergence rate constant $1 - \frac{\lambda_{min}}{\lambda_{max}}$. In our case it is close to $1$, therefore we converge slowly. In this case we converged after $\bold{63}$ iterations.\\
@@ -282,7 +283,7 @@ Also, on inexact line search we do not oscillate since we start with $\alpha_0=1
 \includegraphics[scale=0.5]{nm_inexact_1.png}\\
 \includegraphics[scale=0.5]{nm_inexact_2_circle.png}\\
 \includegraphics[scale=0.5]{nm_inexact_3_elipse_easy_start_point.png}\\
-\subsection{Plot Instructions}
+\subsection{}
 \subsection{Find  the  Minimum  of  the  Rosenbrock  Function}
 The Rosenbrock function gets its minimum at $x = (1,1,1...,1)$ point. we can calculate the value and see that it is 0. which is the minimum as $$Rosenbrock\_f(x) \geq 0\; \forall x \in \mathbb{R}^n$$
 Therefore, the difference to optimal value is actualy the function value at each trajectory point in our search for the optimal point.\\
