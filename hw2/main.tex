@@ -274,13 +274,14 @@ When the hessian eigen values are the same $\lambda_{min} = \lambda_{max} = 3$, 
 Similar to previous case, we can see that the performance is worse compared to exact line search and we oscillate. In this case we converged after $\bold{11}$ iterations.\\
 
 \subsubsection{The results of Newton method with exact/inexact line search:}
-At all runs of newton method, we converged after a single iteration. These results are due to the fact that we try to optimize a quadratic function and in newton method the quadratic approximation calculated matches exactly the actual function. Thus, by calculating the correct direction to the minimum and following exact line search, we hit the optimum directly. Also, on inexact line search we get better results as the function approximation for inexact search is better, so we get the minimum (or very close to it) in one iteration as well.
+At all runs of newton method, we converged after a single iteration. These results are due to the fact that we try to optimize a quadratic function and in newton method the quadratic approximation calculated matches exactly the actual function. Thus, by calculating the correct direction/displacement to the minimum and following exact line search, we hit the optimum directly.\\
+Also, on inexact line search we do not oscillate since we start with $\alpha_0=1$ in which we start at the exact approximation of the displacement for the quadratic function.\\
 \includegraphics[scale=0.5]{nm_exact_1.png}\\
-\includegraphics[scale=0.5]{nm_exact_2_circle.png}
-\includegraphics[scale=0.5]{nm_exact_3_elipse_easy_start_point.png}
-\includegraphics[scale=0.5]{nm_inexact_1.png}
-\includegraphics[scale=0.5]{nm_inexact_2_circle.png}
-\includegraphics[scale=0.5]{nm_inexact_3_elipse_easy_start_point.png}
+\includegraphics[scale=0.5]{nm_exact_2_circle.png}\\
+\includegraphics[scale=0.5]{nm_exact_3_elipse_easy_start_point.png}\\
+\includegraphics[scale=0.5]{nm_inexact_1.png}\\
+\includegraphics[scale=0.5]{nm_inexact_2_circle.png}\\
+\includegraphics[scale=0.5]{nm_inexact_3_elipse_easy_start_point.png}\\
 \subsection{Plot Instructions}
 \subsection{Find  the  Minimum  of  the  Rosenbrock  Function}
 The Rosenbrock function gets its minimum at $x = (1,1,1...,1)$ point. we can calculate the value and see that it is 0. which is the minimum as $$Rosenbrock\_f(x) \geq 0\; \forall x \in \mathbb{R}^n$$
