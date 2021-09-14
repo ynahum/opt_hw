@@ -57,7 +57,7 @@ $$F\left(x \vert \mathcal{W}\right) = \phi( W^{3^T} \phi( W^{2^T} \phi( W^{1^T} 
 \stepcounter{subsubsection}
 \stepcounter{subsubsection}
 \subsubsection{Evaluating  the  Loss  Function’s  Derivative  with  Respect  to  Network’s Output of Single Training Example}
-$$\frac{\partial L}{\partial F\left(x^i, \mathcal{W} \right)} = \frac{\partial }{\partial F\left(x^i, \mathcal{W} \right)}\{ \frac{1}{n}\sum_{i=1}^{n} (F(x^i , \mathcal{W}) - y^i )^2\} = \frac{2}{n} (F(x^i , \mathcal{W}) - y^i)$$
+$$\frac{\partial L}{\partial F\left(x^i, \mathcal{W} \right)} = \frac{\partial }{\partial F\left(x^i, \mathcal{W} \right)}\{ \sum_{i=1}^{n} (F(x^i , \mathcal{W}) - y^i )^2\} = 2 (F(x^i , \mathcal{W}) - y^i)$$
 
 \end{document}
 
