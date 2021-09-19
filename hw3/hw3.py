@@ -22,41 +22,39 @@ def g_loss(F, y):
     return 2 * (F - y)
 
 
-def vec_to_dict(w_vec, sizes_dict):
-    w3_size = sizes_dict['w3']
-    start = 0
-    end = w3_size[0] * w3_size[1]
-    w3 = w_vec[start:end].reshape(w3_size)
+# Q1.3.8
+class MyNNModel(object):
+    def __init__(self):
+        self.layers = {}
+        self.layer_index = 0
 
-    b3_size = sizes_dict['b3']
-    start = end
-    end = end + b3_size[0] * b3_size[1]
-    b3 = np.squeeze(w_vec[start:end].reshape(b3_size),axis=1)
+    def add_layer(self, in_size, layer_size, weights, bias):
+        assert (len(bias) == layer_size)
+        assert (weights.shape[1] == layer_size)
+        assert (weights.shape[0] == in_size)
+        self.layers[f'l{self.layer_index}'] = {}
+        self.layers[f'l{self.layer_index}']['W'] = weights
+        self.layers[f'l{self.layer_index}']['b'] = bias
+        self.layer_index += 1
 
-    w2_size = sizes_dict['w2']
-    start = end
-    end = end + w2_size[0] * w2_size[1]
-    w2 = w_vec[start:end].reshape(w2_size)
+    def print(self):
+        for i in np.arange(0,self.layer_index):
+            print(f"layer {i}:")
+            W = self.layers[f'l{i}']['W']
+            print(f"W:\n{W}")
+            b = self.layers[f'l{i}']['b']
+            print(f"b:\n{b}")
 
-    b2_size = sizes_dict['b2']
-    start = end
-    end = end + b2_size[0] * b2_size[1]
-    b2 = np.squeeze(w_vec[start:end].reshape(b2_size),axis=1)
-
-    w1_size = sizes_dict['w1']
-    start = end
-    end = end + w1_size[0] * w1_size[1]
-    w1 = w_vec[start:end].reshape(w1_size)
-
-    b1_size = sizes_dict['b1']
-    start = end
-    end = end + b1_size[0] * b1_size[1]
-    b1 = np.squeeze(w_vec[start:end].reshape(b1_size),axis=1)
-
-    w_dict = {'w3' : w3, 'b3' : b3, 'w2' : w2, 'b2' : b2, 'w1' : w1, 'b1' : b1}
-
-    return w_dict
-
+    def forward(self, input_vec):
+        layers_outputs = {}
+        curr_layer_input = input_vec
+        for i in np.arange(0,self.layer_index):
+            W = self.layers[f'l{i}']['W']
+            b = self.layers[f'l{i}']['b']
+            y = np.dot(W.T, curr_layer_input) + b
+            curr_layer_input = phi(y)
+            layers_outputs[f'l{i}'] = curr_layer_input
+        return layers_outputs
 
 if __name__ == '__main__':
     run_rosenbrock_BFGS = False
@@ -73,11 +71,32 @@ if __name__ == '__main__':
 
     w_vec = np.arange(0,31)
     print(w_vec)
-    W_sizes_dict = {'w3': (3,1), 'b3': (1,1), 'w2': (4,3), 'b2': (3,1), 'w1': (2,4), 'b1' : (4,1)}
-    w_dict = vec_to_dict(w_vec, W_sizes_dict)
-    print(f"{w_dict['w3']}")
-    print(f"{w_dict['b3']}")
-    print(f"{w_dict['w2']}")
-    print(f"{w_dict['b2']}")
-    print(f"{w_dict['w1']}")
-    print(f"{w_dict['b1']}")
+    layers_sizes_dict = {'l0': (2,4), 'l1': (4,3), 'l2': (3,1)}
+
+    nn_model = MyNNModel()
+    layer_index = 0
+    start_offset = 0
+    for i in np.arange(0,len(layers_sizes_dict)):
+        layer_size = layers_sizes_dict[f'l{layer_index}']
+        print(f"layer size: {layer_size}")
+        start_w = start_offset
+        print(f"start_w: {start_w}")
+        end_w = start_w + layer_size[0] * layer_size[1]
+        print(f"end_w: {end_w}")
+        start_b = end_w
+        print(f"start_b: {start_b}")
+        end_b = start_b + layer_size[1]
+        print(f"end_b: {end_b}")
+        nn_model.add_layer(
+            in_size=layer_size[0],
+            layer_size=layer_size[1],
+            weights=w_vec[start_w:end_w].reshape(layer_size),
+            bias=w_vec[start_b:end_b].reshape((layer_size[1],1))
+        )
+        start_offset = end_b
+        layer_index +=1
+
+    nn_model.print()
+
+    outputs = nn_model.forward([[1], [2]])
+    print(outputs)
