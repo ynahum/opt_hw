@@ -63,20 +63,25 @@ class MyNNModel(object):
 
     def forward_and_backprop(self, input_vec, label):
         outputs, y_hat = self.forward(input_vec)
-        loss_derivative = self.calc_example_loss_grad(label, y_hat)
+        grad_z = self.calc_example_loss_grad(label, y_hat)
         grads = {}
-        # last layer is different as there is no activation function
-        i = self.layer_index-1
-        grads[f'l{i}'] = {}
-        grads[f'l{i}']['W'] = outputs[f'l{i-1}'] @ loss_derivative
-        grads[f'l{i}']['b'] = loss_derivative
-        for i in np.arange(start=self.layer_index-2, stop=-1):
-            grads[f'l{i}'] = {}
-            grads[f'l{i}']['W'] =\
-                outputs[f'l{i-1}'] @ grads[f'l{i}'].T @ np.diagflat(g_phi(outputs[f'l{i}_lin']))
-            grads[f'l{i}']['b'] = np.diagflat(g_phi(outputs[f'l{i}_lin'])) @ grads[f'l{i}']
+        for li in np.arange(start=self.layer_index-1, stop=0, step=-1):
+            x = outputs[f'l{li-1}']
+            W = self.layers[f'l{li}']['W']
+            y = outputs[f'l{li}_lin']
+            grads[f'l{li}'] = {}
+            # if we're not in the last layer then we have an activation function
+            # and thus it's gradient needs to be considered
+            if li < self.layer_index-1:
+                phi_grad_diag = np.diagflat(g_phi(y))
+            else:
+                phi_grad_diag = np.expand_dims(1, axis=(0, 1))
+            grads[f'l{li}']['x'] = W @ phi_grad_diag @ grad_z
+            grads[f'l{li}']['W'] = x @ grad_z.T @ phi_grad_diag
+            grads[f'l{li}']['b'] = phi_grad_diag @ grad_z
+            grad_z = grads[f'l{li}']['x']
 
-        return outputs, y_hat, grads
+        return outputs, grads, y_hat
 
     def set_loss_type(self, loss_type):
         self.loss_type = loss_type
@@ -137,11 +142,11 @@ if __name__ == '__main__':
 
     nn_model.print()
 
-    outputs, y_estimate = nn_model.forward([[1], [2]])
-    print(f"outputs {outputs}")
+    fwd_outputs, y_estimate = nn_model.forward([[1], [2]])
+    print(f"fwd_outputs: {fwd_outputs}")
+    print(f"y_estimate: {y_estimate}")
+    fwd_bwd_outputs, gradients, y_estimate = nn_model.forward_and_backprop([[1], [2]], label=1)
+    print(f"fwd_bwd_outputs: {fwd_bwd_outputs}")
+    print(f"gradients {gradients}")
     print(f"y_estimate {y_estimate}")
-    outputs, y_estimate , grads = nn_model.forward_and_backprop([[1], [2]], label=1)
-    print(f"outputs {outputs}")
-    print(f"y_estimate {y_estimate}")
-    print(f"grads {grads}")
 
