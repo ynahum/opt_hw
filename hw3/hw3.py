@@ -20,13 +20,23 @@ def g_phi(x):
 def loss(F, y):
     return (F - y)**2
 
+
 # 1.3.7
 def g_loss(F, y):
     return 2 * (F - y)
 
 
-# Q1.3.8
-class MyNNModel(object):
+# 1.3.10-11
+def get_data(num_of_samples, sample_vec_size):
+    X = 4 * np.random.rand(num_of_samples, sample_vec_size) - 2
+    labels = []
+    for x in X:
+        labels.append(f(x))
+    return X, np.array(labels)
+
+
+# 1.3.8-12
+class My_FC_NN_Model(object):
     def __init__(self, loss_type='mse'):
         self.layers = {}
         self.layer_index = 0
@@ -36,23 +46,23 @@ class MyNNModel(object):
         assert (len(bias) == layer_size)
         assert (weights.shape[1] == layer_size)
         assert (weights.shape[0] == in_size)
+        self.layer_index += 1
         self.layers[f'l{self.layer_index}'] = {}
         self.layers[f'l{self.layer_index}']['W'] = weights
         self.layers[f'l{self.layer_index}']['b'] = bias
-        self.layer_index += 1
 
     def print(self):
-        for i in np.arange(0,self.layer_index):
+        for i in np.arange(1,self.layer_index+1):
             print(f"layer {i}:")
             W = self.layers[f'l{i}']['W']
             print(f"W:\n{W}")
             b = self.layers[f'l{i}']['b']
             print(f"b:\n{b}")
 
-    def forward(self, input_vec):
+    def fwd(self, input_vec):
         layers_outputs = {}
         next_layer_input = input_vec
-        for i in np.arange(0, self.layer_index):
+        for i in np.arange(1, self.layer_index+1):
             W = self.layers[f'l{i}']['W']
             b = self.layers[f'l{i}']['b']
             y = np.dot(W.T, next_layer_input) + b
@@ -61,19 +71,24 @@ class MyNNModel(object):
             layers_outputs[f'l{i}'] = next_layer_input
         return layers_outputs, y
 
-    def forward_and_backprop(self, input_vec, label):
-        outputs, y_hat = self.forward(input_vec)
-        grad_z = self.calc_example_loss_grad(label, y_hat)
+    # 1.3.8
+    def fwd_and_backprop(self, input_vec, label):
+        outputs, y_hat = self.fwd(input_vec)
+        grad_z = self.calc_loss_grad(label, y_hat)
         grads = {}
-        for li in np.arange(start=self.layer_index-1, stop=0, step=-1):
-            x = outputs[f'l{li-1}']
+        for li in np.arange(start=self.layer_index, stop=0, step=-1):
+            if li > 1:
+                x = outputs[f'l{li-1}']
+            else:
+                x = input_vec
             W = self.layers[f'l{li}']['W']
             y = outputs[f'l{li}_lin']
             grads[f'l{li}'] = {}
             # if we're not in the last layer then we have an activation function
             # and thus it's gradient needs to be considered
-            if li < self.layer_index-1:
-                phi_grad_diag = np.diagflat(g_phi(y))
+            if li < self.layer_index:
+                grad_act = g_phi(y)
+                phi_grad_diag = np.diagflat(grad_act)
             else:
                 phi_grad_diag = np.expand_dims(1, axis=(0, 1))
             grads[f'l{li}']['x'] = W @ phi_grad_diag @ grad_z
@@ -81,19 +96,35 @@ class MyNNModel(object):
             grads[f'l{li}']['b'] = phi_grad_diag @ grad_z
             grad_z = grads[f'l{li}']['x']
 
-        return outputs, grads, y_hat
+        params_list = []
+        for li in np.arange(start=self.layer_index, stop=0, step=-1):
+            params_list.append(grads[f'l{li}']['W'])
+            params_list.append(grads[f'l{li}']['b'])
+
+        return outputs, np.concatenate(params_list), y_hat
+
+    # 1.3.9
+    def fwd_and_backprop_batch(self, inputs, labels):
+        n = len(labels)
+        _, params_vec, _ = self.fwd_and_backprop(inputs[0], labels[0])
+        grads_sum = np.zeros_like(params_vec)
+        for input, label in zip(inputs, labels):
+            _, params_vec, _ = self.fwd_and_backprop(input, label)
+            grads_sum += params_vec
+        grads_delta = grads_sum / n
+        return grads_delta
 
     def set_loss_type(self, loss_type):
         self.loss_type = loss_type
 
-    def calc_example_loss(self, y, y_hat):
+    def calc_loss(self, y, y_hat):
         if self.loss_type == 'mse':
             L = loss(y_hat,y)
         else:
             assert(0, f'the loss type {self.loss_type} is not supported')
         return L
 
-    def calc_example_loss_grad(self, y, y_hat):
+    def calc_loss_grad(self, y, y_hat):
         if self.loss_type == 'mse':
             L_der = g_loss(y_hat,y)
         else:
@@ -115,12 +146,12 @@ if __name__ == '__main__':
 
     w_vec = np.arange(0,31)
     print(w_vec)
-    layers_sizes_dict = {'l0': (2,4), 'l1': (4,3), 'l2': (3,1)}
+    layers_sizes_dict = {'l1': (2,4), 'l2': (4,3), 'l3': (3,1)}
 
-    nn_model = MyNNModel()
-    layer_index = 0
+    nn_model = My_FC_NN_Model()
+    layer_index = 1
     start_offset = 0
-    for i in np.arange(0,len(layers_sizes_dict)):
+    for i in np.arange(1,len(layers_sizes_dict)+1):
         layer_size = layers_sizes_dict[f'l{layer_index}']
         print(f"layer size: {layer_size}")
         start_w = start_offset
@@ -142,11 +173,11 @@ if __name__ == '__main__':
 
     nn_model.print()
 
-    fwd_outputs, y_estimate = nn_model.forward([[1], [2]])
+    fwd_outputs, y_estimate = nn_model.fwd([[1], [2]])
     print(f"fwd_outputs: {fwd_outputs}")
     print(f"y_estimate: {y_estimate}")
-    fwd_bwd_outputs, gradients, y_estimate = nn_model.forward_and_backprop([[1], [2]], label=1)
+    fwd_bwd_outputs, gradients_vec, y_estimate = nn_model.fwd_and_backprop([[1], [2]], label=1)
     print(f"fwd_bwd_outputs: {fwd_bwd_outputs}")
-    print(f"gradients {gradients}")
+    print(f"gradients_vec {gradients_vec}")
     print(f"y_estimate {y_estimate}")
 
