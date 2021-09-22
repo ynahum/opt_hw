@@ -42,14 +42,18 @@ class My_FC_NN_Model(object):
         self.layer_index = 0
         self.loss_type = loss_type
 
-    def add_layer(self, in_size, layer_size, weights, bias):
-        assert (len(bias) == layer_size)
-        assert (weights.shape[1] == layer_size)
-        assert (weights.shape[0] == in_size)
+    def add_layer(self, in_size, layer_size, W=None, b=None):
+        if W == None:
+            W = np.random.randn(in_size, layer_size) / np.sqrt(layer_size)
+        if b == None:
+            b = np.zeros((layer_size,1))
+        assert (len(b) == layer_size)
+        assert (W.shape[1] == layer_size)
+        assert (W.shape[0] == in_size)
         self.layer_index += 1
         self.layers[f'l{self.layer_index}'] = {}
-        self.layers[f'l{self.layer_index}']['W'] = weights
-        self.layers[f'l{self.layer_index}']['b'] = bias
+        self.layers[f'l{self.layer_index}']['W'] = W
+        self.layers[f'l{self.layer_index}']['b'] = b
 
     def print(self):
         for i in np.arange(1,self.layer_index+1):
