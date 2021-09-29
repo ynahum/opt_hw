@@ -162,16 +162,16 @@ def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, 
     ax.zaxis.set_major_formatter('{x:.02f}')
 
     # Add a color bar which maps values to colors.
-    #fig.colorbar(surf, shrink=0.5, aspect=5)
+    fig.colorbar(surf, shrink=0.5, aspect=5, location='left')
 
     ax.set_xlabel(r'$x_1$')
-    ax.set_xticks(np.arange(-2, 2, 0.5))
+    ax.set_xticks(np.arange(-2, 2, 1))
     ax.set_ylabel(r'$x_2$')
-    ax.set_yticks(np.arange(-2, 2, 0.5))
+    ax.set_yticks(np.arange(-2, 2, 1))
     ax.set_zlabel(r'$f(x_1,x_2)$')
-    ax.set_zticks(np.arange(-2, 2, 0.5))
-
-    ax.view_init(azim=120,elev=20)
+    ax.set_zticks(np.arange(-2, 2, 0.2))
+    ax.set_zlim(-0.45, 0.45)
+    ax.view_init(azim=135,elev=20)
 
     plt.suptitle(title)
 
