@@ -37,7 +37,7 @@ def get_data(num_of_samples, sample_vec_size):
     return X, np.array(labels)
 
 
-# 1.3.8-12
+# 1.3.8,9,12
 class My_FC_NN_Model(object):
     def __init__(self, loss_type='mse'):
         self.layers = {}
@@ -45,6 +45,9 @@ class My_FC_NN_Model(object):
         self.loss_type = loss_type
 
     def add_layer(self, in_size, layer_size, W=None, b=None):
+
+        # 1.3.12
+        # generating the parameters randomly as requested
         if W is None:
             W = np.random.randn(in_size, layer_size) / np.sqrt(layer_size)
         if b is None:
@@ -137,7 +140,17 @@ class My_FC_NN_Model(object):
             assert(0, f'the loss type {self.loss_type} is not supported')
         return L_der
 
-def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, samples_labels=None):
+
+# 1.3.10,11 - generating data samples for training and testing
+def gen_samples(func_ptr, n):
+    labels = []
+    samples = 4*np.random.rand(n, 2)-2
+    for sample in samples:
+        labels.append(func_ptr(sample[0], sample[1]))
+    return samples, np.array(labels)
+
+# 1.3.13
+def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, labels=None):
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
@@ -149,12 +162,7 @@ def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, 
 
     # Plot the surface.
     surf = ax.plot_surface(X_1, X_2, Z, cmap=cm.coolwarm,
-                           linewidth=0, antialiased=False)
-
-    if plot_samples:
-        for sample, label in zip(samples, samples_labels):
-            x_1, x_2 = sample
-            ax.scatter(x_1, x_2, label, marker='o', color='green', s=0.5)
+                           linewidth=0, antialiased=False, alpha=0.5)
 
     # Customize the z axis.
     ax.zaxis.set_major_locator(LinearLocator(10))
@@ -162,7 +170,12 @@ def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, 
     ax.zaxis.set_major_formatter('{x:.02f}')
 
     # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5, location='left')
+    #fig.colorbar(surf, shrink=0.5, aspect=5, location='left')
+
+    if plot_samples:
+        for sample, label in zip(samples, labels):
+            x_1, x_2 = sample
+            ax.scatter(x_1, x_2, label, marker='o', color='green', s=5)
 
     ax.set_xlabel(r'$x_1$')
     ax.set_xticks(np.arange(-2, 2, 1))
@@ -170,8 +183,8 @@ def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, 
     ax.set_yticks(np.arange(-2, 2, 1))
     ax.set_zlabel(r'$f(x_1,x_2)$')
     ax.set_zticks(np.arange(-2, 2, 0.2))
-    ax.set_zlim(-0.45, 0.45)
-    ax.view_init(azim=135,elev=20)
+    ax.set_zlim(-0.42, 0.42)
+    ax.view_init(azim=135,elev=30)
 
     plt.suptitle(title)
 
@@ -227,4 +240,6 @@ if __name__ == '__main__':
     print(f"gradients_vec {gradients_vec}")
     print(f"y_estimate {y_estimate}")
 
-    plot_func(f)
+
+    train_samples, train_labels = gen_samples(f, 200)
+    plot_func(f, plot_samples=True, samples=train_samples, labels=train_labels)
