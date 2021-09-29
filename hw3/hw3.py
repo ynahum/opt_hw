@@ -39,26 +39,30 @@ def get_data(num_of_samples, sample_vec_size):
 
 # 1.3.8,9,12
 class My_FC_NN_Model(object):
-    def __init__(self, loss_type='mse'):
+    def __init__(self, in_size, loss_type='mse'):
         self.layers = {}
         self.layer_index = 0
         self.loss_type = loss_type
+        self.input_size = in_size
+        self.last_layer_size = self.input_size
 
-    def add_layer(self, in_size, layer_size, W=None, b=None):
+    def add_layer(self, layer_size, W=None, b=None):
+        prev_layer_size = self.last_layer_size
 
         # 1.3.12
         # generating the parameters randomly as requested
         if W is None:
-            W = np.random.randn(in_size, layer_size) / np.sqrt(layer_size)
+            W = np.random.randn(prev_layer_size, layer_size) / np.sqrt(layer_size)
         if b is None:
             b = np.zeros((layer_size,1))
         assert (len(b) == layer_size)
         assert (W.shape[1] == layer_size)
-        assert (W.shape[0] == in_size)
+        assert (W.shape[0] == prev_layer_size)
         self.layer_index += 1
         self.layers[f'l{self.layer_index}'] = {}
         self.layers[f'l{self.layer_index}']['W'] = W
         self.layers[f'l{self.layer_index}']['b'] = b
+        self.last_layer_size = layer_size
 
     def print(self):
         for i in np.arange(1,self.layer_index+1):
@@ -205,29 +209,31 @@ if __name__ == '__main__':
 
     w_vec = np.arange(0,31)
     print(w_vec)
-    layers_sizes_dict = {'l1': (2,4), 'l2': (4,3), 'l3': (3,1)}
+    in_size = 2
+    layers_sizes_dict = {'l1': 4, 'l2': 3, 'l3': 1}
 
-    nn_model = My_FC_NN_Model()
+    nn_model = My_FC_NN_Model(in_size=in_size)
     layer_index = 1
     start_offset = 0
+    prev_layer_size = in_size
     for i in np.arange(1,len(layers_sizes_dict)+1):
         layer_size = layers_sizes_dict[f'l{layer_index}']
         print(f"layer size: {layer_size}")
         start_w = start_offset
         print(f"start_w: {start_w}")
-        end_w = start_w + layer_size[0] * layer_size[1]
+        end_w = start_w + prev_layer_size * layer_size
         print(f"end_w: {end_w}")
         start_b = end_w
         print(f"start_b: {start_b}")
-        end_b = start_b + layer_size[1]
+        end_b = start_b + layer_size
         print(f"end_b: {end_b}")
         nn_model.add_layer(
-            in_size=layer_size[0],
-            layer_size=layer_size[1],
-            W=w_vec[start_w:end_w].reshape(layer_size),
-            b=w_vec[start_b:end_b].reshape((layer_size[1],1))
+            layer_size=layer_size,
+            W=w_vec[start_w:end_w].reshape((prev_layer_size, layer_size)),
+            b=w_vec[start_b:end_b].reshape((layer_size,1))
         )
         start_offset = end_b
+        prev_layer_size = layer_size
         layer_index += 1
 
     nn_model.print()
@@ -241,5 +247,9 @@ if __name__ == '__main__':
     print(f"y_estimate {y_estimate}")
 
 
-    train_samples, train_labels = gen_samples(f, 200)
-    plot_func(f, plot_samples=True, samples=train_samples, labels=train_labels)
+    train_samples, train_labels = gen_samples(f, 500)
+    #plot_func(f, plot_samples=True, samples=train_samples, labels=train_labels)
+
+    test_samples, test_labels = gen_samples(f, 200)
+    plot_func(f, plot_samples=True, samples=test_samples, labels=test_labels)
+
