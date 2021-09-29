@@ -1,11 +1,13 @@
 import numpy as np
 from rosenbrock import *
 from BFGS import *
-
+import matplotlib.pyplot as plt
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator
 
 # 1.3.5
-def f(x):
-    return x[0] * np.exp(-(x[0] ** 2 + x[1] ** 2))
+def f(x_1, x_2):
+    return x_1 * np.exp(-(x_1 ** 2 + x_2 ** 2))
 
 
 # 1.3.6
@@ -43,9 +45,9 @@ class My_FC_NN_Model(object):
         self.loss_type = loss_type
 
     def add_layer(self, in_size, layer_size, W=None, b=None):
-        if W == None:
+        if W is None:
             W = np.random.randn(in_size, layer_size) / np.sqrt(layer_size)
-        if b == None:
+        if b is None:
             b = np.zeros((layer_size,1))
         assert (len(b) == layer_size)
         assert (W.shape[1] == layer_size)
@@ -105,7 +107,7 @@ class My_FC_NN_Model(object):
             params_list.append(grads[f'l{li}']['W'])
             params_list.append(grads[f'l{li}']['b'])
 
-        return outputs, np.concatenate(params_list), y_hat
+        return outputs, np.concatenate(params_list, axis=None), y_hat
 
     # 1.3.9
     def fwd_and_backprop_batch(self, inputs, labels):
@@ -134,6 +136,46 @@ class My_FC_NN_Model(object):
         else:
             assert(0, f'the loss type {self.loss_type} is not supported')
         return L_der
+
+def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, samples_labels=None):
+
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+    # Make data.
+    X_1 = np.arange(-2, 2, 0.2)
+    X_2 = np.arange(-2, 2, 0.2)
+    X_1, X_2 = np.meshgrid(X_1, X_2)
+    Z = func_ptr(X_1, X_2)
+
+    # Plot the surface.
+    surf = ax.plot_surface(X_1, X_2, Z, cmap=cm.coolwarm,
+                           linewidth=0, antialiased=False)
+
+    if plot_samples:
+        for sample, label in zip(samples, samples_labels):
+            x_1, x_2 = sample
+            ax.scatter(x_1, x_2, label, marker='o', color='green', s=0.5)
+
+    # Customize the z axis.
+    ax.zaxis.set_major_locator(LinearLocator(10))
+    # A StrMethodFormatter is used automatically
+    ax.zaxis.set_major_formatter('{x:.02f}')
+
+    # Add a color bar which maps values to colors.
+    #fig.colorbar(surf, shrink=0.5, aspect=5)
+
+    ax.set_xlabel(r'$x_1$')
+    ax.set_xticks(np.arange(-2, 2, 0.5))
+    ax.set_ylabel(r'$x_2$')
+    ax.set_yticks(np.arange(-2, 2, 0.5))
+    ax.set_zlabel(r'$f(x_1,x_2)$')
+    ax.set_zticks(np.arange(-2, 2, 0.5))
+
+    ax.view_init(azim=120,elev=20)
+
+    plt.suptitle(title)
+
+    plt.show()
 
 if __name__ == '__main__':
     run_rosenbrock_BFGS = False
@@ -169,8 +211,8 @@ if __name__ == '__main__':
         nn_model.add_layer(
             in_size=layer_size[0],
             layer_size=layer_size[1],
-            weights=w_vec[start_w:end_w].reshape(layer_size),
-            bias=w_vec[start_b:end_b].reshape((layer_size[1],1))
+            W=w_vec[start_w:end_w].reshape(layer_size),
+            b=w_vec[start_b:end_b].reshape((layer_size[1],1))
         )
         start_offset = end_b
         layer_index += 1
@@ -185,3 +227,4 @@ if __name__ == '__main__':
     print(f"gradients_vec {gradients_vec}")
     print(f"y_estimate {y_estimate}")
 
+    plot_func(f)
