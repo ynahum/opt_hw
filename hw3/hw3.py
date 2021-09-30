@@ -209,6 +209,29 @@ class My_FC_NN_Model(object):
         params_vec = np.concatenate(params_list, axis=None)
         return params_vec
 
+    def params_vec_to_dict(self, params_vec):
+        params_dict = {}
+        start_offset = 0
+        layer_size = 1
+        for li in np.arange(start=self.layer_index, stop=0, step=-1):
+            prev_layer_size = np.shape(self.layers[f'l{li}']['W'])[0]
+            start_w = start_offset
+            #print(f"start_w: {start_w}")
+            end_w = start_w + prev_layer_size * layer_size
+            #print(f"end_w: {end_w}")
+            start_b = end_w
+            #print(f"start_b: {start_b}")
+            end_b = start_b + layer_size
+            #print(f"end_b: {end_b}")
+            params_dict[f'l{li}'] = {}
+            W = params_vec[start_w:end_w].reshape((prev_layer_size, layer_size))
+            params_dict[f'l{li}']['W'] = W
+            b = params_vec[start_b:end_b].reshape((layer_size, 1))
+            params_dict[f'l{li}']['b'] = b
+            start_offset = end_b
+            layer_size = prev_layer_size
+        return params_dict
+
 # 1.3.10,11 - generating data samples for training and testing
 def gen_samples(func_ptr, n):
     labels = []
