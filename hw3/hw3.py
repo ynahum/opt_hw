@@ -78,7 +78,7 @@ class My_FC_NN_Model(object):
             layers_outputs[f'l{i}_lin'] = y
             next_layer_input = self.phi(y)
             layers_outputs[f'l{i}'] = next_layer_input
-        return layers_outputs, y
+        return y, layers_outputs
 
     # 1.3.6
     def phi(self, x):
@@ -124,16 +124,16 @@ class My_FC_NN_Model(object):
 
     # 1.3.8
     def fwd_and_backprop(self, input_vec, label):
-        outputs, y_hat = self.fwd(input_vec)
-        grad_z = self.loss_grad(label, y_hat)
+        prediction, layers_outputs = self.fwd(input_vec)
+        grad_z = self.loss_grad(label, prediction)
         grads = {}
         for li in np.arange(start=self.layer_index, stop=0, step=-1):
             if li > 1:
-                x = outputs[f'l{li-1}']
+                x = layers_outputs[f'l{li-1}']
             else:
                 x = input_vec
             W = self.layers[f'l{li}']['W']
-            y = outputs[f'l{li}_lin']
+            y = layers_outputs[f'l{li}_lin']
             grads[f'l{li}'] = {}
             # if we're not in the last layer then we have an activation function
             # and thus it's gradient needs to be considered
@@ -152,15 +152,18 @@ class My_FC_NN_Model(object):
             params_list.append(grads[f'l{li}']['W'])
             params_list.append(grads[f'l{li}']['b'])
 
-        return outputs, np.concatenate(params_list, axis=None), y_hat
+        grads = np.concatenate(params_list, axis=None)
+
+        return prediction, layers_outputs, grads
 
     # 1.3.9
     def batch_fwd_and_backprop(self, inputs, labels):
         n = len(labels)
-        _, params_vec, _ = self.fwd_and_backprop(inputs[0], labels[0])
+        # just to get the size of the grads vector
+        _, _, params_vec = self.fwd_and_backprop(inputs[0], labels[0])
         grads_sum = np.zeros_like(params_vec)
         for input, label in zip(inputs, labels):
-            _, params_vec, _ = self.fwd_and_backprop(input, label)
+            _, _, params_vec = self.fwd_and_backprop(input, label)
             grads_sum += params_vec
         grads_delta = grads_sum / n
         return grads_delta
@@ -263,7 +266,7 @@ if __name__ == '__main__':
             print(f'Start testing')
             predictions = []
             for x in test_samples:
-                _, prediction = nn_model.predict(x)
+                prediction, _  = nn_model.predict(x)
                 predictions.append(prediction)
             plot_func(f,
                       title=f'Predicted test samples with epsilon {epsilon}',
@@ -272,41 +275,39 @@ if __name__ == '__main__':
                       labels=predictions)
             print('Ended testing')
 
+    if True:
+        w_vec = np.arange(0,31)
+        print(w_vec)
+        in_size = 2
+        layers_sizes_dict = {'l1': 4, 'l2': 3, 'l3': 1}
 
-    '''
-    w_vec = np.arange(0,31)
-    print(w_vec)
-    in_size = 2
-    layers_sizes_dict = {'l1': 4, 'l2': 3, 'l3': 1}
-
-    nn_model = My_FC_NN_Model(in_size=in_size)
-    layer_index = 1
-    start_offset = 0
-    prev_layer_size = in_size
-    for i in np.arange(1,len(layers_sizes_dict)+1):
-        layer_size = layers_sizes_dict[f'l{layer_index}']
-        #print(f"layer size: {layer_size}")
-        start_w = start_offset
-        #print(f"start_w: {start_w}")
-        end_w = start_w + prev_layer_size * layer_size
-        #print(f"end_w: {end_w}")
-        start_b = end_w
-        #print(f"start_b: {start_b}")
-        end_b = start_b + layer_size
-        #print(f"end_b: {end_b}")
-        nn_model.add_layer(
-            layer_size=layer_size,
-            W=w_vec[start_w:end_w].reshape((prev_layer_size, layer_size)),
-            b=w_vec[start_b:end_b].reshape((layer_size,1))
-        )
-        start_offset = end_b
-        prev_layer_size = layer_size
-        layer_index += 1
-    fwd_outputs, y_estimate = nn_model.fwd([[1], [2]])
-    print(f"fwd_outputs: {fwd_outputs}")
-    print(f"y_estimate: {y_estimate}")
-    fwd_bwd_outputs, gradients_vec, y_estimate = nn_model.fwd_and_backprop([[1], [2]], label=1)
-    print(f"fwd_bwd_outputs: {fwd_bwd_outputs}")
-    print(f"gradients_vec {gradients_vec}")
-    print(f"y_estimate {y_estimate}")
-    '''
+        nn_model = My_FC_NN_Model(in_size=in_size)
+        layer_index = 1
+        start_offset = 0
+        prev_layer_size = in_size
+        for i in np.arange(1,len(layers_sizes_dict)+1):
+            layer_size = layers_sizes_dict[f'l{layer_index}']
+            #print(f"layer size: {layer_size}")
+            start_w = start_offset
+            #print(f"start_w: {start_w}")
+            end_w = start_w + prev_layer_size * layer_size
+            #print(f"end_w: {end_w}")
+            start_b = end_w
+            #print(f"start_b: {start_b}")
+            end_b = start_b + layer_size
+            #print(f"end_b: {end_b}")
+            nn_model.add_layer(
+                layer_size=layer_size,
+                W=w_vec[start_w:end_w].reshape((prev_layer_size, layer_size)),
+                b=w_vec[start_b:end_b].reshape((layer_size,1))
+            )
+            start_offset = end_b
+            prev_layer_size = layer_size
+            layer_index += 1
+        prediction, layers_outputs  = nn_model.fwd([[1], [2]])
+        print(f"prediction:\n {prediction}")
+        print(f"layers_outputs:\n {layers_outputs}")
+        prediction, layers_outputs, gradients_vec = nn_model.fwd_and_backprop([[1], [2]], label=1)
+        print(f"prediction:\n {prediction}")
+        print(f"layers_outputs:\n {layers_outputs}")
+        print(f"gradients_vec:\n {gradients_vec}")
