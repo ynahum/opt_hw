@@ -105,6 +105,16 @@ class My_FC_NN_Model(object):
             assert 0, f'the loss type {self.loss_type} is not supported'
         return L
 
+    def batch_loss(self, labels, predictions):
+        if self.loss_type == 'mse':
+            L = 0
+            for y, F in zip(labels, predictions):
+                L += self.loss(y, F)
+            L /= len(labels)
+        else:
+            assert 0, f'the loss type {self.loss_type} is not supported'
+        return L
+
     def loss_grad(self, y, F):
         if self.loss_type == 'mse':
             L_der = 2 * (F - y)
@@ -145,7 +155,7 @@ class My_FC_NN_Model(object):
         return outputs, np.concatenate(params_list, axis=None), y_hat
 
     # 1.3.9
-    def fwd_and_backprop_batch(self, inputs, labels):
+    def batch_fwd_and_backprop(self, inputs, labels):
         n = len(labels)
         _, params_vec, _ = self.fwd_and_backprop(inputs[0], labels[0])
         grads_sum = np.zeros_like(params_vec)
