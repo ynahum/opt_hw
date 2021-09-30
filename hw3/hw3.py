@@ -55,6 +55,46 @@ class My_FC_NN_Model(object):
     def predict(self, input_vec):
         return self.fwd(input_vec)
 
+    # API function for training the model parameters and optimizing it
+    def BFGS_fit(self, epsilon, inputs, labels):
+        H = np.identity(inputs.shape[0])
+        params_locations_list = []
+        losses_list = []
+        iteration_idx = 0
+        _, _, grads = self.batch_fwd_and_backprop(inputs, labels)
+        while np.linalg.norm(grads) > epsilon:
+            iteration_idx += 1
+            predictions = []
+            for input in inputs:
+                prediction, _ = self.predict(input)
+                predictions.append(prediction)
+            loss = self.batch_loss(labels, predictions)
+            print(f'it={iteration_idx} loss={loss}')
+            losses_list.append(loss)
+            params_vec = self.params_dict_to_vec(self.layers)
+            params_locations_list.append(params_vec)
+            d = - H @ grads
+
+            # TODO: implement
+            alpha = inexact_line_search(x, f, g, d, train_x, train_y)
+
+            prev_params_vec = params_vec
+            prev_grads = grads
+            params_vec = params_vec + alpha * d
+            s_k = params_vec - prev_params_vec
+
+            # TODO: params vec to model
+
+            _, _, grads = self.batch_fwd_and_backprop(inputs, labels)
+            y_k = grads - prev_grads
+            rho = (y_k.T @ s_k)
+            H = (np.identity(x.shape[0]) - ((s_k @ y_k.T) / rho)) @ H @ (
+                        np.identity(x.shape[0]) - ((y_k @ s_k.T) / rho)) + \
+                ((s_k @ s_k.T) / rho)
+
+        print(f'Optimization took: {iteration_idx} iterations')
+        return x, losses_list, params_locations_list
+
     # API function for printing the model layers' params
     def print(self):
         for i in np.arange(1,self.layer_index+1):
@@ -126,7 +166,7 @@ class My_FC_NN_Model(object):
     def fwd_and_backprop(self, input_vec, label):
         prediction, layers_outputs = self.fwd(input_vec)
         grad_z = self.loss_grad(label, prediction)
-        grads = {}
+        grads_dict = {}
         for li in np.arange(start=self.layer_index, stop=0, step=-1):
             if li > 1:
                 x = layers_outputs[f'l{li-1}']
@@ -134,7 +174,7 @@ class My_FC_NN_Model(object):
                 x = input_vec
             W = self.layers[f'l{li}']['W']
             y = layers_outputs[f'l{li}_lin']
-            grads[f'l{li}'] = {}
+            grads_dict[f'l{li}'] = {}
             # if we're not in the last layer then we have an activation function
             # and thus it's gradient needs to be considered
             if li < self.layer_index:
@@ -142,19 +182,13 @@ class My_FC_NN_Model(object):
                 phi_grad_diag = np.diagflat(grad_act)
             else:
                 phi_grad_diag = np.expand_dims(1, axis=(0, 1))
-            grads[f'l{li}']['x'] = W @ phi_grad_diag @ grad_z
-            grads[f'l{li}']['W'] = x @ grad_z.T @ phi_grad_diag
-            grads[f'l{li}']['b'] = phi_grad_diag @ grad_z
-            grad_z = grads[f'l{li}']['x']
+            grads_dict[f'l{li}']['x'] = W @ phi_grad_diag @ grad_z
+            grads_dict[f'l{li}']['W'] = x @ grad_z.T @ phi_grad_diag
+            grads_dict[f'l{li}']['b'] = phi_grad_diag @ grad_z
+            grad_z = grads_dict[f'l{li}']['x']
 
-        params_list = []
-        for li in np.arange(start=self.layer_index, stop=0, step=-1):
-            params_list.append(grads[f'l{li}']['W'])
-            params_list.append(grads[f'l{li}']['b'])
-
-        grads = np.concatenate(params_list, axis=None)
-
-        return prediction, layers_outputs, grads
+        grads_vec = self.params_dict_to_vec(grads_dict)
+        return prediction, layers_outputs, grads_vec
 
     # 1.3.9
     def batch_fwd_and_backprop(self, inputs, labels):
@@ -165,9 +199,15 @@ class My_FC_NN_Model(object):
         for input, label in zip(inputs, labels):
             _, _, params_vec = self.fwd_and_backprop(input, label)
             grads_sum += params_vec
-        grads_delta = grads_sum / n
-        return grads_delta
+        return grads_sum / n
 
+    def params_dict_to_vec(self, params_dict):
+        params_list = []
+        for li in np.arange(start=self.layer_index, stop=0, step=-1):
+            params_list.append(params_dict[f'l{li}']['W'])
+            params_list.append(params_dict[f'l{li}']['b'])
+        params_vec = np.concatenate(params_list, axis=None)
+        return params_vec
 
 # 1.3.10,11 - generating data samples for training and testing
 def gen_samples(func_ptr, n):
@@ -220,12 +260,29 @@ def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, 
     plt.show()
 
 
-# helper function to build the model layers
+# helper model wrapper functions
 def build_model(in_size, hidden_layers_sizes):
     nn_model = My_FC_NN_Model(in_size=in_size)
     for li in np.arange(1,len(hidden_layers_sizes)+1):
         nn_model.add_layer(layer_size=hidden_layers_sizes[li-1])
     return nn_model
+
+
+def get_model_batch_predictions(model, batch_samples):
+    predictions = []
+    for x in batch_samples:
+        prediction, _ = model.predict(x)
+        predictions.append(prediction)
+    return predictions
+
+
+def get_model_batch_loss(model, batch_labels, batch_predictions):
+    return model.batch_loss(batch_labels, batch_predictions)
+
+
+def get_model_batch_grads(model, batch_samples, batch_labels):
+    _, _, grads = model.batch_fwd_and_backprop(batch_samples, batch_labels)
+    return grads
 
 
 if __name__ == '__main__':
@@ -254,7 +311,8 @@ if __name__ == '__main__':
 
     run_func_approximation = False
     if run_func_approximation:
-        epsilons = [1e-1, 1e-2, 1e-3, 1e-4]
+        #epsilons = [1e-1, 1e-2, 1e-3, 1e-4]
+        epsilons = [1e-1]
 
         for epsilon in epsilons:
             print(f'Optimizing model with epsilon = {epsilon}')
@@ -275,7 +333,7 @@ if __name__ == '__main__':
                       labels=predictions)
             print('Ended testing')
 
-    if True:
+    if False:
         w_vec = np.arange(0,31)
         print(w_vec)
         in_size = 2
