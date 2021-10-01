@@ -325,12 +325,19 @@ if __name__ == '__main__':
     hidden_layers_sizes = (4,3,1)
     nn_model = build_model(in_size=in_size, hidden_layers_sizes=hidden_layers_sizes)
     nn_model.print()
+    #print(nn_model.layers)
+    #params_vec = nn_model.params_dict_to_vec(nn_model.layers)
+    #print(params_vec)
+    #params_dict = nn_model.params_vec_to_dict(params_vec)
+    #print(params_dict)
+    #params_vec2 = nn_model.params_dict_to_vec(params_dict)
+    #print(params_vec2)
 
     train_samples, train_labels = gen_samples(f, 500)
     #plot_func(f, plot_samples=True, samples=train_samples, labels=train_labels)
 
     test_samples, test_labels = gen_samples(f, 200)
-    plot_func(f, plot_samples=True, samples=test_samples, labels=test_labels)
+    #plot_func(f, plot_samples=True, samples=test_samples, labels=test_labels)
 
     run_func_approximation = False
     if run_func_approximation:
