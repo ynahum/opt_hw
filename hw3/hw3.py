@@ -5,234 +5,144 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator
 
-
 def f(x_1, x_2):
     return x_1 * np.exp(-(x_1 ** 2 + x_2 ** 2))
 
-
-# 1.3.5-9,12
+# calss that contains the architechture properties of the model
 class My_FC_NN_Model(object):
-    def __init__(self, in_size, loss_type='mse', activation_type='tanh'):
-        self.layers = {}
-        self.layer_index = 0
-        self.loss_type = loss_type
-        self.activation_type = activation_type
+
+    # Constructor
+    def __init__(self, in_size, hidden_layers_sizes):
+        self.layers_sizes = hidden_layers_sizes[:]
         self.input_size = in_size
-        self.last_layer_size = self.input_size
 
-    # API functions
 
-    # API function for adding a hidden layer with specified size
-    def add_layer(self, layer_size, W=None, b=None):
-        prev_layer_size = self.last_layer_size
-
-        # 1.3.12
-        # generating the parameters randomly if not given
-        if W is None:
+# Utils
+def params_vec_to_dict(model, params_vec=None):
+    params_dict = {}
+    start_offset = 0
+    prev_layer_size = model.input_size
+    for li, layer_size in enumerate(model.layers_sizes):
+        start_w = start_offset
+        #print(f"start_w: {start_w}")
+        end_w = start_w + prev_layer_size * layer_size
+        #print(f"end_w: {end_w}")
+        start_b = end_w
+        #print(f"start_b: {start_b}")
+        end_b = start_b + layer_size
+        #print(f"end_b: {end_b}")
+        params_dict[f'l{li}'] = {}
+        if params_vec is None:
             W = np.random.randn(prev_layer_size, layer_size) / np.sqrt(layer_size)
-        if b is None:
-            b = np.zeros((layer_size,1))
-        assert (len(b) == layer_size)
-        assert (W.shape[1] == layer_size)
-        assert (W.shape[0] == prev_layer_size)
-        self.layer_index += 1
-        self.layers[f'l{self.layer_index}'] = {}
-        self.layers[f'l{self.layer_index}']['W'] = W
-        self.layers[f'l{self.layer_index}']['b'] = b
-        self.last_layer_size = layer_size
-
-    # API function for setting loss type:
-    # 'mse' is the default
-    def set_loss_type(self, loss_type):
-        self.loss_type = loss_type
-
-    # API function for setting activation type:
-    # 'tanh' is the default
-    def set_activation_type(self, activation_type):
-        self.activation_type = activation_type
-
-    # API function for model prediction (wrapping above fwd)
-    def predict(self, input_vec):
-        return self.fwd(input_vec)
-
-    # API function for training the model parameters and optimizing it
-    def BFGS_fit(self, epsilon, inputs, labels):
-        H = np.identity(inputs.shape[0])
-        params_locations_list = []
-        losses_list = []
-        iteration_idx = 0
-        _, _, grads = self.batch_fwd_and_backprop(inputs, labels)
-        while np.linalg.norm(grads) > epsilon:
-            iteration_idx += 1
-            predictions = []
-            for input in inputs:
-                prediction, _ = self.predict(input)
-                predictions.append(prediction)
-            loss = self.batch_loss(labels, predictions)
-            print(f'it={iteration_idx} loss={loss}')
-            losses_list.append(loss)
-            params_vec = self.params_dict_to_vec(self.layers)
-            params_locations_list.append(params_vec)
-            d = - H @ grads
-
-            # TODO: implement
-            alpha = inexact_line_search(x, f, g, d, train_x, train_y)
-
-            prev_params_vec = params_vec
-            prev_grads = grads
-            params_vec = params_vec + alpha * d
-            s_k = params_vec - prev_params_vec
-
-            # TODO: params vec to model
-
-            _, _, grads = self.batch_fwd_and_backprop(inputs, labels)
-            y_k = grads - prev_grads
-            rho = (y_k.T @ s_k)
-            H = (np.identity(x.shape[0]) - ((s_k @ y_k.T) / rho)) @ H @ (
-                        np.identity(x.shape[0]) - ((y_k @ s_k.T) / rho)) + \
-                ((s_k @ s_k.T) / rho)
-
-        print(f'Optimization took: {iteration_idx} iterations')
-        return x, losses_list, params_locations_list
-
-    # API function for printing the model layers' params
-    def print(self):
-        for i in np.arange(1,self.layer_index+1):
-            print(f"layer {i}:")
-            W = self.layers[f'l{i}']['W']
-            print(f"W:\n{W}")
-            b = self.layers[f'l{i}']['b']
-            print(f"b:\n{b}")
-
-    # Internal functions
-
-    # 1.3.5
-    # Forwarding an input sample through the model layers
-    def fwd(self, input_vec):
-        layers_outputs = {}
-        next_layer_input = input_vec
-        for i in np.arange(1, self.layer_index+1):
-            W = self.layers[f'l{i}']['W']
-            b = self.layers[f'l{i}']['b']
-            y = np.dot(W.T, next_layer_input) + b
-            layers_outputs[f'l{i}_lin'] = y
-            next_layer_input = self.phi(y)
-            layers_outputs[f'l{i}'] = next_layer_input
-        return y, layers_outputs
-
-    # 1.3.6
-    def phi(self, x):
-        act_out = None
-        if self.activation_type == 'tanh':
-            act_out = np.tanh(x)
+            b = np.zeros((layer_size, 1))
         else:
-            assert 0, f'the activation type {self.activation_type} is not supported'
-        return act_out
-
-    def g_phi(self, x):
-        g_act_out = None
-        if self.activation_type == 'tanh':
-            g_act_out = 1 - (np.tanh(x) ** 2)
-        else:
-            assert 0, f'the activation type {self.activation_type} is not supported'
-        return g_act_out
-
-    # 1.3.7
-    def loss(self, y, F):
-        if self.loss_type == 'mse':
-            L = (F - y)**2
-        else:
-            assert 0, f'the loss type {self.loss_type} is not supported'
-        return L
-
-    def batch_loss(self, labels, predictions):
-        if self.loss_type == 'mse':
-            L = 0
-            for y, F in zip(labels, predictions):
-                L += self.loss(y, F)
-            L /= len(labels)
-        else:
-            assert 0, f'the loss type {self.loss_type} is not supported'
-        return L
-
-    def loss_grad(self, y, F):
-        if self.loss_type == 'mse':
-            L_der = 2 * (F - y)
-        else:
-            assert 0, f'the loss type {self.loss_type} is not supported'
-        return L_der
-
-    # 1.3.8
-    def fwd_and_backprop(self, input_vec, label):
-        prediction, layers_outputs = self.fwd(input_vec)
-        grad_z = self.loss_grad(label, prediction)
-        grads_dict = {}
-        for li in np.arange(start=self.layer_index, stop=0, step=-1):
-            if li > 1:
-                x = layers_outputs[f'l{li-1}']
-            else:
-                x = input_vec
-            W = self.layers[f'l{li}']['W']
-            y = layers_outputs[f'l{li}_lin']
-            grads_dict[f'l{li}'] = {}
-            # if we're not in the last layer then we have an activation function
-            # and thus it's gradient needs to be considered
-            if li < self.layer_index:
-                grad_act = self.g_phi(y)
-                phi_grad_diag = np.diagflat(grad_act)
-            else:
-                phi_grad_diag = np.expand_dims(1, axis=(0, 1))
-            grads_dict[f'l{li}']['x'] = W @ phi_grad_diag @ grad_z
-            grads_dict[f'l{li}']['W'] = x @ grad_z.T @ phi_grad_diag
-            grads_dict[f'l{li}']['b'] = phi_grad_diag @ grad_z
-            grad_z = grads_dict[f'l{li}']['x']
-
-        grads_vec = self.params_dict_to_vec(grads_dict)
-        return prediction, layers_outputs, grads_vec
-
-    # 1.3.9
-    def batch_fwd_and_backprop(self, inputs, labels):
-        n = len(labels)
-        # just to get the size of the grads vector
-        _, _, params_vec = self.fwd_and_backprop(inputs[0], labels[0])
-        grads_sum = np.zeros_like(params_vec)
-        for input, label in zip(inputs, labels):
-            _, _, params_vec = self.fwd_and_backprop(input, label)
-            grads_sum += params_vec
-        return grads_sum / n
-
-    def params_dict_to_vec(self, params_dict):
-        params_list = []
-        for li in np.arange(start=self.layer_index, stop=0, step=-1):
-            params_list.append(params_dict[f'l{li}']['W'])
-            params_list.append(params_dict[f'l{li}']['b'])
-        params_vec = np.concatenate(params_list, axis=None)
-        return params_vec
-
-    def params_vec_to_dict(self, params_vec):
-        params_dict = {}
-        start_offset = 0
-        layer_size = 1
-        for li in np.arange(start=self.layer_index, stop=0, step=-1):
-            prev_layer_size = np.shape(self.layers[f'l{li}']['W'])[0]
-            start_w = start_offset
-            #print(f"start_w: {start_w}")
-            end_w = start_w + prev_layer_size * layer_size
-            #print(f"end_w: {end_w}")
-            start_b = end_w
-            #print(f"start_b: {start_b}")
-            end_b = start_b + layer_size
-            #print(f"end_b: {end_b}")
-            params_dict[f'l{li}'] = {}
             W = params_vec[start_w:end_w].reshape((prev_layer_size, layer_size))
-            params_dict[f'l{li}']['W'] = W
             b = params_vec[start_b:end_b].reshape((layer_size, 1))
-            params_dict[f'l{li}']['b'] = b
-            start_offset = end_b
-            layer_size = prev_layer_size
-        return params_dict
+        params_dict[f'l{li}']['W'] = W
+        params_dict[f'l{li}']['b'] = b
+        start_offset = end_b
+        prev_layer_size = layer_size
+    return params_dict
 
-# 1.3.10,11 - generating data samples for training and testing
+def params_dict_to_vec(params_dict, num_of_layers):
+    params_list = []
+    for li in np.arange(0,num_of_layers):
+        params_list.append(params_dict[f'l{li}']['W'])
+        params_list.append(params_dict[f'l{li}']['b'])
+    params_vec = np.concatenate(params_list, axis=None)
+    return params_vec
+
+def print_params_dict(params_dict, num_of_layers):
+    for i in np.arange(0,num_of_layers):
+        print(f"layer {i}:")
+        W = params_dict[f'l{i}']['W']
+        print(f"W:\n{W}")
+        b = params_dict[f'l{i}']['b']
+        print(f"b:\n{b}")
+
+# 1.3.5
+def fwd(input_vec, params_dict, num_of_layers):
+    layers_outputs = {}
+    next_layer_input = input_vec
+    for li in np.arange(0,num_of_layers):
+        W = params_dict[f'l{li}']['W']
+        b = params_dict[f'l{li}']['b']
+        y = W.T @ next_layer_input + b
+        layers_outputs[f'l{li}_lin'] = y
+        next_layer_input = phi(y)
+        layers_outputs[f'l{li}'] = next_layer_input
+    return y, layers_outputs
+
+# 1.3.6
+def phi(x):
+    return np.tanh(x)
+
+def g_phi(x):
+    return 1 - (np.tanh(x) ** 2)
+
+# 1.3.7
+def loss(label, prediction):
+    return (prediction - label)**2
+
+def g_loss(label, prediction):
+    return 2 * (prediction - label)
+
+def batch_fwd(inputs, params_dict, num_of_layers):
+    predictions = []
+    for input in inputs:
+        input_vec = np.expand_dims(input, axis=1)
+        prediction, _ = fwd(input_vec, params_dict, num_of_layers)
+        predictions.append(prediction)
+    return predictions
+
+def batch_loss(inputs, labels, params_dict, num_of_layers):
+    sum_of_losses = 0
+    for input, label in zip(inputs, labels):
+        input_vec = np.expand_dims(input, axis=1)
+        prediction, _ = fwd(input_vec, params_dict, num_of_layers)
+        sum_of_losses += loss(label, prediction)
+    average_loss = sum_of_losses / len(labels)
+    return average_loss
+
+# 1.3.8
+def fwd_and_backprop(input_vec, label, params_dict, num_of_layers):
+    prediction, layers_outputs = fwd(input_vec, params_dict, num_of_layers)
+    grad_z = g_loss(label, prediction)
+    grads_dict = {}
+    for li in np.arange(start=num_of_layers-1, stop=-1, step=-1):
+        if li > 0:
+            x = layers_outputs[f'l{li-1}']
+        else:
+            x = input_vec
+        W = params_dict[f'l{li}']['W']
+        y = layers_outputs[f'l{li}_lin']
+        grads_dict[f'l{li}'] = {}
+        # if we're not in the last layer then we have an activation function
+        # and thus it's gradient needs to be considered
+        if li < num_of_layers-1:
+            grad_act = g_phi(y)
+            phi_grad_diag = np.diagflat(grad_act)
+        else:
+            phi_grad_diag = np.expand_dims(1, axis=(0, 1))
+        grads_dict[f'l{li}']['x'] = W @ phi_grad_diag @ grad_z
+        grads_dict[f'l{li}']['W'] = x @ grad_z.T @ phi_grad_diag
+        grads_dict[f'l{li}']['b'] = phi_grad_diag @ grad_z
+        grad_z = grads_dict[f'l{li}']['x']
+    return prediction, layers_outputs, grads_dict
+
+# 1.3.9
+def batch_fwd_and_backprop(inputs, labels, params_dict, num_of_layers):
+    n = len(labels)
+    params_vec = params_dict_to_vec(params_dict, num_of_layers)
+    grads_sum = np.zeros_like(params_vec)
+    for input, label in zip(inputs, labels):
+        input = np.expand_dims(input, axis=1)
+        _, _, grads_dict = fwd_and_backprop(input, label, params_dict, num_of_layers)
+        grads_vec = params_dict_to_vec(grads_dict, num_of_layers)
+        grads_sum += grads_vec
+    return grads_sum / n
+
+# 1.3.10-11 - generating data samples for training and testing
 def gen_samples(func_ptr, n):
     labels = []
     samples = 4*np.random.rand(n, 2)-2
@@ -240,6 +150,76 @@ def gen_samples(func_ptr, n):
         labels.append(func_ptr(sample[0], sample[1]))
     return samples, np.array(labels)
 
+def inexact_line_search(w_k, d, model, inputs, labels):
+    alpha_0 = 1
+    beta = 0.5
+    sigma = 0.25
+    c_2 = 0.9
+    alpha = alpha_0
+    num_of_layers = len(model.layers_sizes)
+    while True:
+        w_k_dict = params_vec_to_dict(model, w_k)
+        f_w_k = batch_loss(inputs, labels, w_k_dict, num_of_layers)
+        grad_w_k = batch_fwd_and_backprop(inputs, labels, w_k_dict, num_of_layers)
+        w_k_1 = w_k + alpha * d
+        w_k_1_dict = params_vec_to_dict(model, w_k_1)
+        f_w_k_1 = batch_loss(inputs, labels, w_k_1_dict, num_of_layers)
+        grad_w_k_1 = batch_fwd_and_backprop(inputs, labels, w_k_1_dict, num_of_layers)
+        decrease_cond =(f_w_k_1 <= f_w_k + sigma * alpha * d.T @ grad_w_k)
+        curvature_cond = (grad_w_k_1.T @ d >= c_2 * grad_w_k.T @ d)
+        if decrease_cond and curvature_cond:
+             break
+        alpha = beta * alpha
+    return alpha
+
+def NN_BFGS(model, epsilon, inputs, labels):
+
+    #initial model with random params based on model arch
+    w_k_dict = params_vec_to_dict(model)
+    num_of_layers = len(model.layers_sizes)
+    w_k = params_dict_to_vec(w_k_dict, num_of_layers)
+    g_w_k = batch_fwd_and_backprop(inputs, labels, w_k_dict, num_of_layers)
+
+    n = len(w_k)
+    I = np.identity(n)
+    B_k = np.identity(n)
+
+    w_k_list = []
+    losses_list = []
+    iteration_idx = 0
+
+    while True:
+        iteration_idx += 1
+        loss = batch_loss(inputs, labels, w_k_dict, num_of_layers)
+        loss = np.squeeze(loss)
+        print(f'it={iteration_idx} loss={loss}')
+        losses_list.append(loss)
+        w_k_list.append(w_k)
+        d = - B_k @ g_w_k
+
+        if np.linalg.norm(g_w_k) <= epsilon:
+            print(f'BFGS has converged after {iteration_idx} iterations')
+            break
+
+        alpha = inexact_line_search(w_k, d, model, inputs, labels)
+
+        w_k_next = w_k + alpha * d
+        w_k_next_dict = params_vec_to_dict(model, w_k)
+        g_w_k_next = batch_fwd_and_backprop(inputs, labels, w_k_next_dict, num_of_layers)
+        s_k = w_k_next - w_k
+        y_k = g_w_k_next - g_w_k
+
+        curve_factor = (y_k.T @ s_k)
+
+        B_k = (I - ((s_k @ y_k.T) / curve_factor)) @ B_k \
+              @ (I - ((y_k @ s_k.T) / curve_factor)) + \
+              ((s_k @ s_k.T) / curve_factor)
+
+        w_k = w_k_next
+        g_w_k = g_w_k_next
+
+    print(f'Optimization took: {iteration_idx} iterations')
+    return w_k, losses_list, w_k_list
 
 # 1.3.13
 def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, labels=None):
@@ -283,31 +263,6 @@ def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, 
     plt.show()
 
 
-# helper model wrapper functions
-def build_model(in_size, hidden_layers_sizes):
-    nn_model = My_FC_NN_Model(in_size=in_size)
-    for li in np.arange(1,len(hidden_layers_sizes)+1):
-        nn_model.add_layer(layer_size=hidden_layers_sizes[li-1])
-    return nn_model
-
-
-def get_model_batch_predictions(model, batch_samples):
-    predictions = []
-    for x in batch_samples:
-        prediction, _ = model.predict(x)
-        predictions.append(prediction)
-    return predictions
-
-
-def get_model_batch_loss(model, batch_labels, batch_predictions):
-    return model.batch_loss(batch_labels, batch_predictions)
-
-
-def get_model_batch_grads(model, batch_samples, batch_labels):
-    _, _, grads = model.batch_fwd_and_backprop(batch_samples, batch_labels)
-    return grads
-
-
 if __name__ == '__main__':
     run_rosenbrock_BFGS = False
     if run_rosenbrock_BFGS:
@@ -323,15 +278,18 @@ if __name__ == '__main__':
 
     in_size = 2
     hidden_layers_sizes = (4,3,1)
-    nn_model = build_model(in_size=in_size, hidden_layers_sizes=hidden_layers_sizes)
-    nn_model.print()
-    #print(nn_model.layers)
-    #params_vec = nn_model.params_dict_to_vec(nn_model.layers)
-    #print(params_vec)
-    #params_dict = nn_model.params_vec_to_dict(params_vec)
-    #print(params_dict)
-    #params_vec2 = nn_model.params_dict_to_vec(params_dict)
-    #print(params_vec2)
+    nn_model = My_FC_NN_Model(in_size, hidden_layers_sizes)
+    num_of_layers = len(nn_model.layers_sizes)
+    params_dict = params_vec_to_dict(nn_model)
+    print_params_dict(params_dict, num_of_layers)
+    params_vec = params_dict_to_vec(params_dict, num_of_layers)
+    #print(f"params_dict:\n {params_dict}")
+    #print(f"params_vec:\n {params_vec}")
+    params_dict2 = params_vec_to_dict(nn_model, params_vec)
+    #print(f"params_dict2:\n {params_dict2}")
+    params_vec2 = params_dict_to_vec(params_dict, num_of_layers)
+    #print(f"params_vec2:\n {params_vec2}")
+    #print(f"diff:\n {params_vec2- params_vec}")
 
     train_samples, train_labels = gen_samples(f, 500)
     #plot_func(f, plot_samples=True, samples=train_samples, labels=train_labels)
@@ -339,7 +297,7 @@ if __name__ == '__main__':
     test_samples, test_labels = gen_samples(f, 200)
     #plot_func(f, plot_samples=True, samples=test_samples, labels=test_labels)
 
-    run_func_approximation = False
+    run_func_approximation = True
     if run_func_approximation:
         #epsilons = [1e-1, 1e-2, 1e-3, 1e-4]
         epsilons = [1e-1]
@@ -347,14 +305,15 @@ if __name__ == '__main__':
         for epsilon in epsilons:
             print(f'Optimizing model with epsilon = {epsilon}')
             print(f'Start training')
-            #w_opt, values_list, points_list = BFGS(loss, batch_forward_backward, w, eps, x_train, y_train)
+            opt_params_vec, values_list, points_list = NN_BFGS(nn_model, epsilon, train_samples, train_labels)
             #plot(forward, x_train, y_train, False, f'F(x,W*) using epsilon={eps}', w_opt)
             print(f'Ended training')
             #print(f'Trained examples Loss = {values_list[-1]}')
             print(f'Start testing')
+            opt_params_dict = params_vec_to_dict(nn_model, opt_params_vec)
             predictions = []
-            for x in test_samples:
-                prediction, _  = nn_model.predict(x)
+            for test_sample in test_samples:
+                prediction, _  = fwd(test_sample, opt_params_dict, num_of_layers)
                 predictions.append(prediction)
             plot_func(f,
                       title=f'Predicted test samples with epsilon {epsilon}',
@@ -363,39 +322,3 @@ if __name__ == '__main__':
                       labels=predictions)
             print('Ended testing')
 
-    if False:
-        w_vec = np.arange(0,31)
-        print(w_vec)
-        in_size = 2
-        layers_sizes_dict = {'l1': 4, 'l2': 3, 'l3': 1}
-
-        nn_model = My_FC_NN_Model(in_size=in_size)
-        layer_index = 1
-        start_offset = 0
-        prev_layer_size = in_size
-        for i in np.arange(1,len(layers_sizes_dict)+1):
-            layer_size = layers_sizes_dict[f'l{layer_index}']
-            #print(f"layer size: {layer_size}")
-            start_w = start_offset
-            #print(f"start_w: {start_w}")
-            end_w = start_w + prev_layer_size * layer_size
-            #print(f"end_w: {end_w}")
-            start_b = end_w
-            #print(f"start_b: {start_b}")
-            end_b = start_b + layer_size
-            #print(f"end_b: {end_b}")
-            nn_model.add_layer(
-                layer_size=layer_size,
-                W=w_vec[start_w:end_w].reshape((prev_layer_size, layer_size)),
-                b=w_vec[start_b:end_b].reshape((layer_size,1))
-            )
-            start_offset = end_b
-            prev_layer_size = layer_size
-            layer_index += 1
-        prediction, layers_outputs  = nn_model.fwd([[1], [2]])
-        print(f"prediction:\n {prediction}")
-        print(f"layers_outputs:\n {layers_outputs}")
-        prediction, layers_outputs, gradients_vec = nn_model.fwd_and_backprop([[1], [2]], label=1)
-        print(f"prediction:\n {prediction}")
-        print(f"layers_outputs:\n {layers_outputs}")
-        print(f"gradients_vec:\n {gradients_vec}")
