@@ -189,10 +189,11 @@ def inexact_line_search(w_k, d, model, inputs, labels):
     c_2 = 0.9
     alpha = alpha_0
     num_of_layers = len(model.layers_sizes)
+    w_k_dict = params_vec_to_dict(model, w_k)
+    f_w_k = batch_loss(inputs, labels, w_k_dict, num_of_layers)
+    grad_w_k = batch_fwd_and_backprop(inputs, labels, w_k_dict, num_of_layers)
+
     while True:
-        w_k_dict = params_vec_to_dict(model, w_k)
-        f_w_k = batch_loss(inputs, labels, w_k_dict, num_of_layers)
-        grad_w_k = batch_fwd_and_backprop(inputs, labels, w_k_dict, num_of_layers)
         w_k_1 = w_k + alpha * d
         w_k_1_dict = params_vec_to_dict(model, w_k_1)
         f_w_k_1 = batch_loss(inputs, labels, w_k_1_dict, num_of_layers)
@@ -242,11 +243,14 @@ def NN_BFGS(w_0, model, epsilon, inputs, labels):
         s_k = w_k_next - w_k
         y_k = g_w_k_next - g_w_k
 
-        curve_factor = (y_k.T @ s_k)
+        s_k = s_k.reshape(n,1)
+        y_k = y_k.reshape(n,1)
 
-        B_k = (I - ((s_k @ y_k.T) / curve_factor)) @ B_k \
-              @ (I - ((y_k @ s_k.T) / curve_factor)) + \
-              ((s_k @ s_k.T) / curve_factor)
+        curve_factor = (y_k.T @ s_k)
+        A = (s_k @ y_k.T) / curve_factor
+        B = (y_k @ s_k.T) / curve_factor
+        C = (s_k @ s_k.T) / curve_factor
+        B_k = ((I - A ) @ B_k @ (I - B)) +  C
 
         w_k = w_k_next
         g_w_k = g_w_k_next
