@@ -198,7 +198,8 @@ def inexact_line_search(w_k, d, model, inputs, labels):
         f_w_k_1 = batch_loss(inputs, labels, w_k_1_dict, num_of_layers)
         grad_w_k_1 = batch_fwd_and_backprop(inputs, labels, w_k_1_dict, num_of_layers)
         decrease_cond =(f_w_k_1 <= f_w_k + sigma * alpha * d.T @ grad_w_k)
-        curvature_cond = (grad_w_k_1.T @ d >= c_2 * grad_w_k.T @ d)
+        #curvature_cond = (grad_w_k_1.T @ d >= c_2 * grad_w_k.T @ d)
+        curvature_cond = (np.abs(grad_w_k_1.T @ d) <= c_2 * np.abs(grad_w_k.T @ d))
         if decrease_cond and curvature_cond:
              break
         alpha = beta * alpha
@@ -206,10 +207,9 @@ def inexact_line_search(w_k, d, model, inputs, labels):
 
 def NN_BFGS(w_0, model, epsilon, inputs, labels):
 
-    #initial model with random params based on model arch
-    w_k_dict = params_vec_to_dict(model, w_0)
+    w_k = w_0
+    w_k_dict = params_vec_to_dict(model, w_k)
     num_of_layers = len(model.layers_sizes)
-    w_k = params_dict_to_vec(w_k_dict, num_of_layers)
     g_w_k = batch_fwd_and_backprop(inputs, labels, w_k_dict, num_of_layers)
 
     n = len(w_k)
@@ -222,6 +222,7 @@ def NN_BFGS(w_0, model, epsilon, inputs, labels):
 
     while True:
         iteration_idx += 1
+        w_k_dict = params_vec_to_dict(model, w_k)
         loss = batch_loss(inputs, labels, w_k_dict, num_of_layers)
         loss = np.squeeze(loss)
         print(f'it={iteration_idx} loss={loss}')
@@ -234,9 +235,9 @@ def NN_BFGS(w_0, model, epsilon, inputs, labels):
             break
 
         alpha = inexact_line_search(w_k, d, model, inputs, labels)
-
+        print(f"alpha {alpha}")
         w_k_next = w_k + alpha * d
-        w_k_next_dict = params_vec_to_dict(model, w_k)
+        w_k_next_dict = params_vec_to_dict(model, w_k_next)
         g_w_k_next = batch_fwd_and_backprop(inputs, labels, w_k_next_dict, num_of_layers)
         s_k = w_k_next - w_k
         y_k = g_w_k_next - g_w_k
@@ -323,21 +324,13 @@ if __name__ == '__main__':
 
     run_func_approximation = True
     if run_func_approximation:
-        #epsilons = [1e-1, 1e-2, 1e-3, 1e-4]
-        epsilons = [1e-1]
+        epsilons = [1e-1, 1e-2, 1e-3, 1e-4]
+        #epsilons = [1e-1]
 
         for epsilon in epsilons:
             print(f'Optimizing model with epsilon = {epsilon}')
             w_0_dict = nn_model.get_random_params_dict()
             w_0_vec = params_dict_to_vec(w_0_dict, num_of_layers)
-            #w_0_dict2 = params_vec_to_dict(nn_model, w_0_vec)
-            #w_0_vec2 = params_dict_to_vec(w_0_dict2, num_of_layers)
-            #print(f"diff = {w_0_vec2-w_0_vec}")
-            #break
-
-
-            print(f"w_0_vec:\n {w_0_vec}")
-            # print_params_dict(w_0_dict, num_of_layers)
             print(f'Start training')
             opt_params_vec, values_list, points_list =\
                 NN_BFGS(w_0_vec, nn_model, epsilon, train_samples, train_labels)
