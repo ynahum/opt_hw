@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator
 
+
 def f(x_1, x_2):
     return x_1 * np.exp(-(x_1 ** 2 + x_2 ** 2))
 
@@ -16,9 +17,39 @@ class My_FC_NN_Model(object):
         self.layers_sizes = hidden_layers_sizes[:]
         self.input_size = in_size
 
+    def get_random_params_dict(self):
+        params_dict = {}
+        for li in np.arange(start=num_of_layers - 1, stop=-1, step=-1):
+            layer_size = self.layers_sizes[li]
+            if li > 0:
+                prev_layer_size = self.layers_sizes[li-1]
+            else:
+                prev_layer_size = self.input_size
+            params_dict[f'l{li}'] = {}
+            params_dict[f'l{li}']['W'] = np.random.randn(prev_layer_size, layer_size) / np.sqrt(layer_size)
+            params_dict[f'l{li}']['b'] = np.zeros((layer_size, 1))
+        return params_dict
 
 # Utils
-def params_vec_to_dict(model, params_vec=None):
+def params_vec_to_dict(model, params_vec):
+    params_dict = {}
+    start_offset = 0
+    for li in np.arange(start=num_of_layers - 1, stop=-1, step=-1):
+        layer_size = model.layers_sizes[li]
+        if li > 0:
+            prev_layer_size = model.layers_sizes[li - 1]
+        else:
+            prev_layer_size = model.input_size
+        start_w = start_offset
+        end_w = start_w + prev_layer_size * layer_size
+        start_b = end_w
+        end_b = start_b + layer_size
+        params_dict[f'l{li}'] = {}
+        params_dict[f'l{li}']['W'] = params_vec[start_w:end_w].reshape((prev_layer_size, layer_size))
+        params_dict[f'l{li}']['b'] = params_vec[start_b:end_b].reshape((layer_size, 1))
+        start_offset = end_b
+    return params_dict
+
     params_dict = {}
     start_offset = 0
     prev_layer_size = model.input_size
@@ -44,20 +75,21 @@ def params_vec_to_dict(model, params_vec=None):
         prev_layer_size = layer_size
     return params_dict
 
+
 def params_dict_to_vec(params_dict, num_of_layers):
     params_list = []
-    for li in np.arange(0,num_of_layers):
+    for li in np.arange(start=num_of_layers - 1, stop=-1, step=-1):
         params_list.append(params_dict[f'l{li}']['W'])
         params_list.append(params_dict[f'l{li}']['b'])
     params_vec = np.concatenate(params_list, axis=None)
     return params_vec
 
 def print_params_dict(params_dict, num_of_layers):
-    for i in np.arange(0,num_of_layers):
-        print(f"layer {i}:")
-        W = params_dict[f'l{i}']['W']
+    for li in np.arange(start=num_of_layers - 1, stop=-1, step=-1):
+        print(f"layer {li}:")
+        W = params_dict[f'l{li}']['W']
         print(f"W:\n{W}")
-        b = params_dict[f'l{i}']['b']
+        b = params_dict[f'l{li}']['b']
         print(f"b:\n{b}")
 
 # 1.3.5
@@ -172,10 +204,10 @@ def inexact_line_search(w_k, d, model, inputs, labels):
         alpha = beta * alpha
     return alpha
 
-def NN_BFGS(model, epsilon, inputs, labels):
+def NN_BFGS(w_0, model, epsilon, inputs, labels):
 
     #initial model with random params based on model arch
-    w_k_dict = params_vec_to_dict(model)
+    w_k_dict = params_vec_to_dict(model, w_0)
     num_of_layers = len(model.layers_sizes)
     w_k = params_dict_to_vec(w_k_dict, num_of_layers)
     g_w_k = batch_fwd_and_backprop(inputs, labels, w_k_dict, num_of_layers)
@@ -276,26 +308,18 @@ if __name__ == '__main__':
         title += r'$log{(f(x_k)-f(x^*))}$ vs number of iterations'
         rosenbrock_plot(trajectory_points, title)
 
-    in_size = 2
-    hidden_layers_sizes = (4,3,1)
-    nn_model = My_FC_NN_Model(in_size, hidden_layers_sizes)
-    num_of_layers = len(nn_model.layers_sizes)
-    params_dict = params_vec_to_dict(nn_model)
-    print_params_dict(params_dict, num_of_layers)
-    params_vec = params_dict_to_vec(params_dict, num_of_layers)
-    #print(f"params_dict:\n {params_dict}")
-    #print(f"params_vec:\n {params_vec}")
-    params_dict2 = params_vec_to_dict(nn_model, params_vec)
-    #print(f"params_dict2:\n {params_dict2}")
-    params_vec2 = params_dict_to_vec(params_dict, num_of_layers)
-    #print(f"params_vec2:\n {params_vec2}")
-    #print(f"diff:\n {params_vec2- params_vec}")
+    np.random.seed(10)
 
     train_samples, train_labels = gen_samples(f, 500)
     #plot_func(f, plot_samples=True, samples=train_samples, labels=train_labels)
 
     test_samples, test_labels = gen_samples(f, 200)
     #plot_func(f, plot_samples=True, samples=test_samples, labels=test_labels)
+
+    in_size = 2
+    hidden_layers_sizes = (4,3,1)
+    nn_model = My_FC_NN_Model(in_size, hidden_layers_sizes)
+    num_of_layers = len(nn_model.layers_sizes)
 
     run_func_approximation = True
     if run_func_approximation:
@@ -304,8 +328,19 @@ if __name__ == '__main__':
 
         for epsilon in epsilons:
             print(f'Optimizing model with epsilon = {epsilon}')
+            w_0_dict = nn_model.get_random_params_dict()
+            w_0_vec = params_dict_to_vec(w_0_dict, num_of_layers)
+            #w_0_dict2 = params_vec_to_dict(nn_model, w_0_vec)
+            #w_0_vec2 = params_dict_to_vec(w_0_dict2, num_of_layers)
+            #print(f"diff = {w_0_vec2-w_0_vec}")
+            #break
+
+
+            print(f"w_0_vec:\n {w_0_vec}")
+            # print_params_dict(w_0_dict, num_of_layers)
             print(f'Start training')
-            opt_params_vec, values_list, points_list = NN_BFGS(nn_model, epsilon, train_samples, train_labels)
+            opt_params_vec, values_list, points_list =\
+                NN_BFGS(w_0_vec, nn_model, epsilon, train_samples, train_labels)
             #plot(forward, x_train, y_train, False, f'F(x,W*) using epsilon={eps}', w_opt)
             print(f'Ended training')
             #print(f'Trained examples Loss = {values_list[-1]}')
