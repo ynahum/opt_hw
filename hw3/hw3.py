@@ -212,6 +212,7 @@ def NN_BFGS(w_0, model, epsilon, inputs, labels):
     w_k_dict = params_vec_to_dict(model, w_k)
     num_of_layers = len(model.layers_sizes)
     g_w_k = batch_fwd_and_backprop(inputs, labels, w_k_dict, num_of_layers)
+    g_w_k_norm = np.linalg.norm(g_w_k)
 
     n = len(w_k)
     I = np.identity(n)
@@ -221,17 +222,16 @@ def NN_BFGS(w_0, model, epsilon, inputs, labels):
     losses_list = []
     iteration_idx = 0
 
-    while np.linalg.norm(g_w_k) > epsilon:
+    while g_w_k_norm > epsilon:
         iteration_idx += 1
         w_k_dict = params_vec_to_dict(model, w_k)
         loss = batch_loss(inputs, labels, w_k_dict, num_of_layers)
         loss = np.squeeze(loss)
-        print(f'it={iteration_idx} loss={loss}')
+        print(f'it={iteration_idx} grad_norm={g_w_k_norm} loss={loss}')
         losses_list.append(loss)
         w_k_list.append(w_k)
         d = - B_k @ g_w_k
         alpha = inexact_line_search(w_k, d, model, inputs, labels)
-        print(f"alpha {alpha}")
         w_k_next = w_k + alpha * d
         w_k_next_dict = params_vec_to_dict(model, w_k_next)
         g_w_k_next = batch_fwd_and_backprop(inputs, labels, w_k_next_dict, num_of_layers)
@@ -249,12 +249,13 @@ def NN_BFGS(w_0, model, epsilon, inputs, labels):
 
         w_k = w_k_next
         g_w_k = g_w_k_next
+        g_w_k_norm = np.linalg.norm(g_w_k)
 
     print(f'Optimization took: {iteration_idx} iterations')
     return w_k, losses_list, w_k_list
 
 # 1.3.13
-def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, predictions=None):
+def plot_func(func_ptr, title="", plot_samples=False, samples=None, predictions=None):
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
@@ -294,8 +295,53 @@ def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, 
 
     plt.show()
 
+def plot_model_func_approximation(fwd_func_ptr, model, params_vec, title=""):
+
+    params_dict = params_vec_to_dict(model, params_vec)
+
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+    # Make data.
+    X_1 = np.arange(-2, 2, 0.2)
+    X_2 = np.arange(-2, 2, 0.2)
+    X_1, X_2 = np.meshgrid(X_1, X_2)
+    Z_shape = np.shape(X_1)
+    Z = np.zeros((Z_shape[0] * Z_shape[1],1))
+    for i, t in enumerate(zip(X_1.ravel(), X_2.ravel())):
+        x = np.array([[t[0]],[t[1]]])
+        approx_value, _ = fwd_func_ptr(x, params_dict, len(model.layers_sizes))
+        Z[i] = approx_value
+    Z = Z.reshape(Z_shape)
+
+    # Plot the surface.
+    surf = ax.plot_surface(X_1, X_2, Z, cmap=cm.coolwarm,
+                           linewidth=0, antialiased=False, alpha=0.5)
+
+    # Customize the z axis.
+    ax.zaxis.set_major_locator(LinearLocator(10))
+    # A StrMethodFormatter is used automatically
+    ax.zaxis.set_major_formatter('{x:.02f}')
+
+    # Add a color bar which maps values to colors.
+    #fig.colorbar(surf, shrink=0.5, aspect=5, location='left')
+
+    ax.set_xlabel(r'$x_1$')
+    ax.set_xticks(np.arange(-2, 2, 1))
+    ax.set_ylabel(r'$x_2$')
+    ax.set_yticks(np.arange(-2, 2, 1))
+    ax.set_zlabel(r'$f(x_1,x_2)$')
+    ax.set_zticks(np.arange(-2, 2, 0.2))
+    ax.set_zlim(-0.42, 0.42)
+    ax.view_init(azim=135,elev=30)
+
+    plt.suptitle(title)
+
+    plt.show()
 
 if __name__ == '__main__':
+
+    # for getting the reports' plots (need also to disable the rosenbrock BFGS run)
+    #np.random.seed(10)
 
     run_rosenbrock_BFGS = True
     if run_rosenbrock_BFGS:
@@ -318,6 +364,7 @@ if __name__ == '__main__':
 
     run_func_approximation = True
     if run_func_approximation:
+
         epsilons = [1e-1, 1e-2, 1e-3, 1e-4]
 
         for epsilon in epsilons:
@@ -328,14 +375,22 @@ if __name__ == '__main__':
             print(f'Start training')
             opt_params_vec, values_list, points_list =\
                 NN_BFGS(w_0_vec, nn_model, epsilon, train_samples, train_labels)
-            #plot(forward, x_train, y_train, False, f'F(x,W*) using epsilon={eps}', w_opt)
             print(f'Ended training')
             print(f'Training loss = {values_list[-1]}')
             opt_params_dict = params_vec_to_dict(nn_model, opt_params_vec)
             predictions = batch_fwd(test_samples, opt_params_dict, num_of_layers)
+
+            print(f'Plot function approximation')
+            plot_model_func_approximation(
+                fwd_func_ptr=fwd,
+                model=nn_model,
+                params_vec=opt_params_vec,
+                title=f'F(x,W*) when epsilon={epsilon}')
+
             print(f'Plot predictions')
-            plot_func(f,
-                      title=f'Predicted test samples with epsilon {epsilon}',
-                      plot_samples=True,
-                      samples=test_samples,
-                      predictions=predictions)
+            plot_func(
+                func_ptr=f,
+                title=f'Predicted test samples over reference function when epsilon {epsilon}',
+                plot_samples=True,
+                samples=test_samples,
+                predictions=predictions)
