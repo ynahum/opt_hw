@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator
 
+save_plot_to_file = False
 
 def f(x_1, x_2):
     return x_1 * np.exp(-(x_1 ** 2 + x_2 ** 2))
@@ -255,7 +256,7 @@ def NN_BFGS(w_0, model, epsilon, inputs, labels):
     return w_k, losses_list, w_k_list
 
 # 1.3.13
-def plot_func(func_ptr, title="", plot_samples=False, samples=None, predictions=None):
+def plot_func(func_ptr, title="", plot_samples=False, samples=None, predictions=None, plot_filename=""):
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
@@ -295,7 +296,11 @@ def plot_func(func_ptr, title="", plot_samples=False, samples=None, predictions=
 
     plt.show()
 
-def plot_model_func_approximation(fwd_func_ptr, model, params_vec, title=""):
+    if save_plot_to_file and plot_filename != "":
+        print(f"saving plot to file {plot_filename}")
+        fig.savefig(plot_filename)
+
+def plot_model_func_approximation(fwd_func_ptr, model, params_vec, title="", plot_filename=""):
 
     params_dict = params_vec_to_dict(model, params_vec)
 
@@ -338,6 +343,10 @@ def plot_model_func_approximation(fwd_func_ptr, model, params_vec, title=""):
 
     plt.show()
 
+    if save_plot_to_file and plot_filename != "":
+        print(f"saving plot to file {plot_filename}")
+        fig.savefig(plot_filename)
+
 if __name__ == '__main__':
 
     # for getting the reports' plots (need also to disable the rosenbrock BFGS run)
@@ -367,7 +376,7 @@ if __name__ == '__main__':
 
         epsilons = [1e-1, 1e-2, 1e-3, 1e-4]
 
-        for epsilon in epsilons:
+        for i, epsilon in enumerate(epsilons):
 
             print(f'Optimizing model with epsilon = {epsilon}')
             w_0_dict = nn_model.get_random_params_dict()
@@ -385,7 +394,8 @@ if __name__ == '__main__':
                 fwd_func_ptr=fwd,
                 model=nn_model,
                 params_vec=opt_params_vec,
-                title=f'F(x,W*) when epsilon={epsilon}')
+                title=f'F(x,W*) when epsilon={epsilon}',
+                plot_filename=f'./plots/model_approx_epsilon_{i}.png')
 
             print(f'Plot predictions')
             plot_func(
@@ -393,4 +403,6 @@ if __name__ == '__main__':
                 title=f'Predicted test samples over reference function when epsilon {epsilon}',
                 plot_samples=True,
                 samples=test_samples,
-                predictions=predictions)
+                predictions=predictions,
+                plot_filename=f'./plots/model_test_over_ref_func_{i}.png')
+
