@@ -221,7 +221,7 @@ def NN_BFGS(w_0, model, epsilon, inputs, labels):
     losses_list = []
     iteration_idx = 0
 
-    while True:
+    while np.linalg.norm(g_w_k) > epsilon:
         iteration_idx += 1
         w_k_dict = params_vec_to_dict(model, w_k)
         loss = batch_loss(inputs, labels, w_k_dict, num_of_layers)
@@ -230,11 +230,6 @@ def NN_BFGS(w_0, model, epsilon, inputs, labels):
         losses_list.append(loss)
         w_k_list.append(w_k)
         d = - B_k @ g_w_k
-
-        if np.linalg.norm(g_w_k) <= epsilon:
-            print(f'BFGS has converged after {iteration_idx} iterations')
-            break
-
         alpha = inexact_line_search(w_k, d, model, inputs, labels)
         print(f"alpha {alpha}")
         w_k_next = w_k + alpha * d
@@ -259,7 +254,7 @@ def NN_BFGS(w_0, model, epsilon, inputs, labels):
     return w_k, losses_list, w_k_list
 
 # 1.3.13
-def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, labels=None):
+def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, predictions=None):
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
@@ -282,9 +277,9 @@ def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, 
     #fig.colorbar(surf, shrink=0.5, aspect=5, location='left')
 
     if plot_samples:
-        for sample, label in zip(samples, labels):
+        for sample, prediction in zip(samples, predictions):
             x_1, x_2 = sample
-            ax.scatter(x_1, x_2, label, marker='o', color='green', s=5)
+            ax.scatter(x_1, x_2, prediction, marker='o', color='green', s=5)
 
     ax.set_xlabel(r'$x_1$')
     ax.set_xticks(np.arange(-2, 2, 1))
@@ -301,7 +296,8 @@ def plot_func(func_ptr, title="", model=None, plot_samples=False, samples=None, 
 
 
 if __name__ == '__main__':
-    run_rosenbrock_BFGS = False
+
+    run_rosenbrock_BFGS = True
     if run_rosenbrock_BFGS:
         x_0 = np.ones((10, 1))
         print(f"rosenbrock func minimum at all ones vector: {rosenbrock_func(x_0)}")
@@ -313,25 +309,19 @@ if __name__ == '__main__':
         title += r'$log{(f(x_k)-f(x^*))}$ vs number of iterations'
         rosenbrock_plot(trajectory_points, title)
 
-    np.random.seed(10)
-
     train_samples, train_labels = gen_samples(f, 500)
-    #plot_func(f, plot_samples=True, samples=train_samples, labels=train_labels)
-
     test_samples, test_labels = gen_samples(f, 200)
-    #plot_func(f, plot_samples=True, samples=test_samples, labels=test_labels)
-
     in_size = 2
-    hidden_layers_sizes = (4,3,1)
+    hidden_layers_sizes = (4, 3, 1)
     nn_model = My_FC_NN_Model(in_size, hidden_layers_sizes)
     num_of_layers = len(nn_model.layers_sizes)
 
     run_func_approximation = True
     if run_func_approximation:
         epsilons = [1e-1, 1e-2, 1e-3, 1e-4]
-        #epsilons = [1e-1]
 
         for epsilon in epsilons:
+
             print(f'Optimizing model with epsilon = {epsilon}')
             w_0_dict = nn_model.get_random_params_dict()
             w_0_vec = params_dict_to_vec(w_0_dict, num_of_layers)
@@ -340,17 +330,12 @@ if __name__ == '__main__':
                 NN_BFGS(w_0_vec, nn_model, epsilon, train_samples, train_labels)
             #plot(forward, x_train, y_train, False, f'F(x,W*) using epsilon={eps}', w_opt)
             print(f'Ended training')
-            #print(f'Trained examples Loss = {values_list[-1]}')
-            print(f'Start testing')
+            print(f'Training loss = {values_list[-1]}')
             opt_params_dict = params_vec_to_dict(nn_model, opt_params_vec)
-            predictions = []
-            for test_sample in test_samples:
-                prediction, _  = fwd(test_sample, opt_params_dict, num_of_layers)
-                predictions.append(prediction)
+            predictions = batch_fwd(test_samples, opt_params_dict, num_of_layers)
+            print(f'Plot predictions')
             plot_func(f,
                       title=f'Predicted test samples with epsilon {epsilon}',
                       plot_samples=True,
                       samples=test_samples,
-                      labels=predictions)
-            print('Ended testing')
-
+                      predictions=predictions)
