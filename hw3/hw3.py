@@ -261,8 +261,8 @@ def plot_func(func_ptr, title="", plot_samples=False, samples=None, predictions=
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
     # Make data.
-    X_1 = np.arange(-2, 2, 0.2)
-    X_2 = np.arange(-2, 2, 0.2)
+    X_1 = np.arange(-2, 2.02, 0.2)
+    X_2 = np.arange(-2, 2.02, 0.2)
     X_1, X_2 = np.meshgrid(X_1, X_2)
     Z = func_ptr(X_1, X_2)
 
@@ -290,7 +290,7 @@ def plot_func(func_ptr, title="", plot_samples=False, samples=None, predictions=
     ax.set_zlabel(r'$f(x_1,x_2)$')
     ax.set_zticks(np.arange(-2, 2, 0.2))
     ax.set_zlim(-0.42, 0.42)
-    ax.view_init(azim=135,elev=30)
+    ax.view_init(azim=210,elev=15)
 
     plt.suptitle(title)
 
@@ -307,8 +307,8 @@ def plot_model_func_approximation(fwd_func_ptr, model, params_vec, title="", plo
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
     # Make data.
-    X_1 = np.arange(-2, 2, 0.2)
-    X_2 = np.arange(-2, 2, 0.2)
+    X_1 = np.arange(-2, 2.02, 0.2)
+    X_2 = np.arange(-2, 2.02, 0.2)
     X_1, X_2 = np.meshgrid(X_1, X_2)
     Z_shape = np.shape(X_1)
     Z = np.zeros((Z_shape[0] * Z_shape[1],1))
@@ -337,7 +337,7 @@ def plot_model_func_approximation(fwd_func_ptr, model, params_vec, title="", plo
     ax.set_zlabel(r'$f(x_1,x_2)$')
     ax.set_zticks(np.arange(-2, 2, 0.2))
     ax.set_zlim(-0.42, 0.42)
-    ax.view_init(azim=135,elev=30)
+    ax.view_init(azim=210,elev=15)
 
     plt.suptitle(title)
 
