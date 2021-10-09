@@ -65,7 +65,26 @@ $$\frac{\partial L}{\partial F\left(x^i, \mathcal{W} \right)} = \frac{\partial }
 \stepcounter{subsubsection}
 \stepcounter{subsubsection}
 \subsubsection{ Combining it All Together}
-\includegraphics[]{model_approx_epsilon_0.png}\\
+$\epsilon=0.1$:\\
+\includegraphics{model_approx_epsilon_0.png}\\
+\includegraphics{model_test_over_ref_func_0.png}\\
+As seen on plots, with $\epsilon=0.1$ the model approximation is still far and biased from the true function as we didn't train it enough to the needed accuracy (small enough loss or gradient norm).\\
+\newpage
+$\epsilon=0.01$:\\
+\includegraphics{model_approx_epsilon_1.png}\\
+\includegraphics{model_test_over_ref_func_1.png}\\
+With $\epsilon=0.01$, we get better approximation compared to the previous one, but still there is a lot of room for improvement as the bias is still big.
+\newpage
+$\epsilon=0.001$:\\
+\includegraphics{model_approx_epsilon_2.png}\\
+\includegraphics{model_test_over_ref_func_2.png}\\
+With $\epsilon=0.001$, we are very close to the true function but still there are mismatches and gaps at the corners as these locations suffer from less data to train on.\\ Training more (with even the same data but with more epochs) gives even better results as we will see next with even smaller $\epsilon$
+\newpage
+$\epsilon=0.0001$:\\
+\includegraphics{model_approx_epsilon_3.png}\\
+\includegraphics{model_test_over_ref_func_3.png}\\
+With $\epsilon=0.0001$, we get smaller less (better minimum point from all others) and due to longer training we get very accurate approximation of the true function.\\
+The danger with training on small amount of data is over fitting to the training data, but we can see we didn't get there yet. From plots and final loss it seems to predict almost perfectly the true function.
 
 \end{document}
 
