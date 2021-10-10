@@ -29,6 +29,33 @@
 \section{Constrained Optimization and Duality}
 
 \subsection{Question 1}
+We need to solve the following 
+\begin{equation}
+\label{eq:exp}
+\begin{split}
+    \min _x x^T M x + c^T x \\
+    \text{s.t. } Ax = b
+\end{split}
+\end{equation}
+Given:
+\begin{itemize}
+  \item $M \in \mathbb{R}^{n\times n},M \succ 0$
+  \item $A \in \mathbb{R}^{m\times n}$
+  \item $x,c \in \mathbb{R}^{n}$
+  \item $b \in \mathbb{R}^{m}$
+  \item Assuming $M$ and $AM^{-1}A^T$ are invertible.
+\end{itemize}
+The lagrangian is:
+$$L(x,u)=x^T M x + c^T x + u^T(Ax-b)$$
+We require the first KKT condition $\nabla_x L(x,u)=0$:
+$$\nabla_x L(x,u)=0 = (M+M^T)x + c + A^Tu \Rightarrow$$
+$$x^* = -(M+M^T)^{-1}(c + A^Tu)$$
+The $(M+M^T)$ is invertible since it is P.D. ( $M$ is P.D. $\Rightarrow M^T$ is P.D $\Rightarrow (M+M^T)$ P.D.) and therefore it's invertible.\\
+We denote $B=M+M^T$
+The third KKT condition gives $h_i(x)=Ax-b=0$, if we put the $x^*$ in it we can issolate and get $u^*$:\\
+$$-AB^{-1}(c + A^Tu) = b \Rightarrow$$
+$$b+AB^{-1}c = -AB^{-1}A^Tu$$
+The second KKT condition $0 = u^Th_i(x) = u^T(Ax-b)$:\\
 
 \end{document}
 
