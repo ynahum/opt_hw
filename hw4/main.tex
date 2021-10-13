@@ -63,7 +63,7 @@ $$\mu^* = -(AM^{-1}A^T)^{-1}(2b+AM^{-1}c)$$
 We put back in $x^*$ :\\
 $$x^* = -\frac{1}{2}M^{-1}(c + A^T\mu) =-\frac{1}{2}M^{-1}(c + A^T(-(AM^{-1}A^T)^{-1}(2b+AM^{-1}c))) \Rightarrow $$
 \rectres{$$x^* =  \frac{1}{2}M^{-1}(A^T(AM^{-1}A^T)^{-1}(2b+AM^{-1}c)-c)$$}
-
+\newpage
 \subsection{Question 2}
 
 We need to solve the following 
@@ -95,6 +95,8 @@ $$\mu^* = 2(AA^T)^{-1}(Ac-b)$$
 We put back in $x^*$ :\\
 $$x^* = c - \frac{1}{2} A^T\mu^* = c - \frac{1}{2} A^T (2(AA^T)^{-1}(Ac-b))  \Rightarrow  $$
 \rectres{$$x^* =   c - A^T(AA^T)^{-1}(Ac-b)$$}
+
+\newpage
 
 \subsection{Question 3}
 
@@ -187,9 +189,9 @@ $$\eta(\mu,\lambda) =  L(x^*,\mu,\lambda) = x^*_1^2 + 2x^*_1 + 2 - 1 + \lambda_1
 $$\frac{1}{4}(\mu_1 + 3)^2 + (\lambda_1-2) (\frac{1}{2}(\mu_1+3) + 1 - \lambda_1$$
 
 The dual problem is therefore:
-$$d* =  \max _{\mu_1,\lambda_1} [ \frac{1}{4}(\mu_1 + 3)^2 + (\lambda_1-2) (\frac{1}{2}(\mu_1+3) + 1 - \lambda_1 ]$$
-$$\text{s.t. } \mu_1 + \lambda_1 + 1 = 0, \lambda_1 \geq 0$$
-
+\rectres{
+$$d^* =  \max _{\mu_1,\lambda_1} [ \frac{1}{4}(\mu_1 + 3)^2 + (\lambda_1-2) (\frac{1}{2}(\mu_1+3) + 1 - \lambda_1 ] \\ \text{s.t. } \mu_1 + \lambda_1 + 1 = 0, \lambda_1 \geq 0$$
+}
 Solving the dual problem, we use the linear constraint (part of KKT conditions that the constraint holds) $ \lambda_1 = - \mu_1 - 1$ and put it in the target function:
 $$\eta(\mu,\lambda) = [ \frac{1}{4}(\mu_1 + 3)^2 + (\lambda_1-2) (\frac{1}{2}(\mu_1+3) + 1 - \lambda_1 ] = [ \frac{1}{4}(\mu_1 + 3)^2 - (\mu_1+3) (\frac{1}{2}(\mu_1+3) + 2 + \mu_1 ] = $$ $$\frac{\mu_1^2+6\mu + 9}{4} - \frac{\mu_1^2+6\mu_1 + 9}{2} + 2 + \mu_1 = - \frac{\mu_1^2+6\mu_1 + 9}{4} + 2 + \mu_1 =  \frac{-\mu_1^2 -6\mu_1 - 9 + 8 + 4\mu_1}{4}=$$
 $$\frac{-\mu_1^2 -2\mu_1 - 1}{4}$$
@@ -206,5 +208,57 @@ $$f*=p*=d*=\frac{-\mu_1^2 -2\mu_1 - 1}{4} = 0$$
 \rectres{
 $$x^* = \begin{bmatrix}  -1 \\ 1 \\ 1 \end{bmatrix}, f* = 0$$
 }
+\newpage
+\subsection{Question 4}
+We need to find and write the dual problem of the following linear programming problem:
+\setcounter{equation}{0}
+\begin{equation}
+\label{eq:min4}
+\begin{split}
+    \min _x c^T x \\
+    \text{s.t. }\\
+    Ax \leq b\\
+    x \geq 0
+\end{split}
+\end{equation}
+Given:
+\begin{itemize}
+  \item $A \in \mathbb{R}^{m\times n}$
+  \item $x,c \in \mathbb{R}^{n}$
+  \item $b \in \mathbb{R}^{m}$
+\end{itemize}
+First we will define the primal problem:
+$$p^*=\min_x \max_{\mu,\lambda \geq 0} L(x,y,\lambda)$$
+When the Lagrangian is:
+$$L(x,y,\lambda) = c^T x + y^T (Ax-b) -\lambda^T x$$
+$$\\y,\lambda \in \mathbb{R}^m$$
+
+The problem is convex with linear only constraints, so by Slater's condition we have strong duality.\\
+That is:
+$$p^*=\min_x \max_{y \geq 0,\lambda \geq 0} L(x,y,\lambda) = \max_{y \geq 0,\lambda \geq 0} \min_x  L(x,y,\lambda) = d^*$$
+The dual function $\eta(y,\lambda)$ is:
+$$\eta(y,\lambda) = \min_x  L(x,y,\lambda)$$
+To find the dual problem, we will compare the $\nabla_x (x,y,\lambda)$ to zero according to KKT conditions:\\
+$$\nabla_x (x,y,\lambda) = c + A^Ty - \lambda = 0$$
+This means that the dual problem has a constraint:\\
+$$c = \lambda-A^Ty $$
+From complementary slackness $y^T (Ax-b) -\lambda^T x= 0 \Rightarrow$:
+$$(y^T A - \lambda^T)x - y^Tb = 0 \Rightarrow $$
+$$-c^Tx - y^Tb = 0 \Rightarrow c^Tx = - y^Tb$$
+And therefore the Lagrangian doesn't depend on x:\\
+$$L(x,y,\lambda) = - y^Tb$$
+(BTW, we can also get the Lagrangian by just setting $c=\lambda -A^Ty$)\\
+So, the dual function is:
+$$\eta(y,\lambda) = \min_x  L(x,y,\lambda) = \begin{cases}
+			- y^Tb, & \text{if } c + A^Ty = \lambda\\
+            -\infty, & \text{otherwise}
+		 \end{cases}$$
+To conclude, the dual problem is:
+\rectres{
+$$f^* = p^* = d^* = \max_y - y^Tb$$\\
+$\text{s.t. } \lambda \geq 0, y \geq 0, c + A^Ty = \lambda$
+}
+
+
 \end{document}
 
