@@ -51,17 +51,17 @@ M is P.D $\Rightarrow$ it is Hermitian ($M=M^*$), and since $M \in \mathbb{R}^{n
 We require the KKT conditions (necessary conditions for $x^*$ to be optimal).\\
 These conditions hold as this is a convex problem with only linear constraints.
 The Lagrangian is:
-$$L(x,u)=x^T M x + c^T x + u^T(Ax-b)$$
-The first KKT condition $\nabla_x L(x,u)=0$:
-$$\nabla_x L(x,u)=0 = 2Mx + c + A^Tu \Rightarrow$$
-$$x^* = -\frac{1}{2}M^{-1}(c + A^Tu)$$
+$$L(x,\mu)=x^T M x + c^T x + \mu^T(Ax-b)$$
+The first KKT condition $\nabla_x L(x,\mu)=0$:
+$$\nabla_x L(x,\mu)=0 = 2Mx + c + A^T\mu \Rightarrow$$
+$$x^* = -\frac{1}{2}M^{-1}(c + A^T\mu^*)$$
 The $M$ is invertible since it is P.D.\\
-The third KKT condition gives $h_i(x)=Ax-b=0$, if we put the $x^*$ in it we can isolate and get $u^*$:\\
-$$-\frac{1}{2}AM^{-1}(c + A^Tu^*) = b \Rightarrow$$
-$$b+\frac{1}{2}AM^{-1}c = -\frac{1}{2}AM^{-1}A^Tu^* \Rightarrow$$
-$$u^* = -(AM^{-1}A^T)^{-1}(2b+AM^{-1}c)$$
+The third KKT condition gives $h_i(x)=Ax-b=0$, if we put the $x^*$ in it we can isolate and get $\mu^*$:\\
+$$-\frac{1}{2}AM^{-1}(c + A^T\mu^*) = b \Rightarrow$$
+$$b+\frac{1}{2}AM^{-1}c = -\frac{1}{2}AM^{-1}A^T\mu^* \Rightarrow$$
+$$\mu^* = -(AM^{-1}A^T)^{-1}(2b+AM^{-1}c)$$
 We put back in $x^*$ :\\
-$$x^* = -\frac{1}{2}M^{-1}(c + A^Tu) =-\frac{1}{2}M^{-1}(c + A^T(-(AM^{-1}A^T)^{-1}(2b+AM^{-1}c))) \Rightarrow $$
+$$x^* = -\frac{1}{2}M^{-1}(c + A^T\mu) =-\frac{1}{2}M^{-1}(c + A^T(-(AM^{-1}A^T)^{-1}(2b+AM^{-1}c))) \Rightarrow $$
 \rectres{$$x^* =  \frac{1}{2}M^{-1}(A^T(AM^{-1}A^T)^{-1}(2b+AM^{-1}c)-c)$$}
 
 \subsection{Question 2}
@@ -85,15 +85,15 @@ Given:
 We require the KKT conditions (necessary conditions for $x^*$ to be optimal).\\
 These conditions hold as this is a convex problem with only linear constraints.
 The Lagrangian is:
-$$L(x,u)=x^Tx -2c^T x + c^Tc + u^T(Ax-b)$$
-The first KKT condition $\nabla_x L(x,u)=0$:
-$$\nabla_x L(x,u)= 0 = 2x -2c + A^Tu \Rightarrow$$
-$$x^* = (c - \frac{1}{2} A^Tu)$$
-The third KKT condition gives $h_i(x)=Ax-b=0$, if we put the $x^*$ in it we can isolate and get $u^*$:\\
-$$b = A(c - \frac{1}{2} A^Tu) \Rightarrow$$
-$$u^* = 2(AA^T)^{-1}(Ac-b)$$
+$$L(x,\mu)=x^Tx -2c^T x + c^Tc + \mu^T(Ax-b)$$
+The first KKT condition $\nabla_x L(x,\mu)=0$:
+$$\nabla_x L(x,\mu)= 0 = 2x -2c + A^T\mu \Rightarrow$$
+$$x^* = (c - \frac{1}{2} A^T\mu^*)$$
+The third KKT condition gives $h_i(x)=Ax-b=0$, if we put the $x^*$ in it we can isolate and get $\mu^*$:\\
+$$b = A(c - \frac{1}{2} A^T\mu) \Rightarrow$$
+$$\mu^* = 2(AA^T)^{-1}(Ac-b)$$
 We put back in $x^*$ :\\
-$$x^* = c - \frac{1}{2} A^Tu^* = c - \frac{1}{2} A^T (2(AA^T)^{-1}(Ac-b))  \Rightarrow  $$
+$$x^* = c - \frac{1}{2} A^T\mu^* = c - \frac{1}{2} A^T (2(AA^T)^{-1}(Ac-b))  \Rightarrow  $$
 \rectres{$$x^* =   c - A^T(AA^T)^{-1}(Ac-b)$$}
 
 \subsection{Question 3}
@@ -133,7 +133,78 @@ To check this, we can check all the principal minors to be $M_{i,i}\geq 0$ or by
 \end{itemize}
 Bottom line, the problem is convex as $A$ is positive semi definite. 
 \subsubsection{Find and solve the dual problem}
-since the problem is convex and the constraints are linear and slater's condition (SC) is true (as $x = \begin{bmatrix}  0 \\ 1 \\ 0\\ \end{bmatrix}$ is strictly feasible and $x_3 = 0 < 1$)
+Since the problem is convex and the constraints are linear, the Slater's condition (SC) holds and the strong duality is valid.\\
+Let's first define the primal problem.\\
+The constraints:\\
+$$g_1(x)=\begin{bmatrix}  0 & 0 & 1 \end{bmatrix}^T x - 1\leq 0$$
+$$h_1(x)=1^T_3 x - 1 = 0$$
+The Lagrangian is as follows:\\
+$$L(x,\mu,\lambda)=x^T A x + b^T x + \mu_1 h_1(x) + \lambda_1 g_1(x)$$
+The primal problem is therefore:
+$$p* = \min _x \max _{\mu,\lambda \geq 0} L(x,\mu,\lambda)$$
+The dual function is:
+$$\eta(\mu,\lambda) = \min _x L(x,\mu,\lambda) $$
+The dual problem is therefore:
+$$d* =  \max _{\mu,\lambda \geq 0} \min _x L(x,\mu,\lambda) = \max _{\mu,\lambda \geq 0} \eta(\mu,\lambda)$$
+The KKT conditions hold. Let's solve the dual problem.\\
+We can find $\eta(\mu,\lambda) = \min _x L(x,\mu,\lambda)$ (the optimal $x^*$ for specific $\mu,\lambda$) by the KKT condition $\nabla_x L(x,\mu,\lambda) = 0$:
+$$\nabla_x L(x,\mu,\lambda) = 2Ax + b + \mu_1 1_3 + \lambda_1 \begin{bmatrix}  0 \\ 0 \\ 1 \end{bmatrix} = 0 \Rightarrow$$
+$$ 2 \begin{bmatrix} 1 & 1 & 0 \\ 1 & 2 & 0 \\ 0 & 0 & 0 \\ \end{bmatrix} x + 
+\begin{bmatrix}  \mu_1 + 1 \\ \mu_1 - 1 \\ \mu_1 + \lambda_1 + 1\\ \end{bmatrix} = 0 \Rightarrow$$
+We get 3 equations:\\
+\setcounter{equation}{0}
+\begin{equation}
+2x_1 + 2x_2 +\mu_1 + 1 = 0
+\end{equation}
+\begin{equation}
+2x_1 + 4x_2 +\mu_1 - 1 = 0
+\end{equation}
+\begin{equation}
+\mu_1 + \lambda_1 + 1 = 0
+\end{equation}
+By subtracting equations (2) - (1) we get $x_2$:
+$$2x_2 = 2 \Rightarrow x_2 = 1$$
+Therefore, $x_1$:
+$$x_1 = -\frac{1}{2}(\mu_1+3)$$
+From the third KKT condition (the constraints) we get:
+$$1_3^T x = 1 \Rightarrow$$
+$$x_3 = -x_1 = \frac{1}{2}(\mu_1+3)$$
+So, we got the following expression for $x*$:
+$$x^* = \begin{bmatrix}  -\frac{1}{2}(\mu_1+3) \\ 1 \\ \frac{1}{2}(\mu_1+3) \end{bmatrix}$$
+Providing the constraint:
+$$\mu_1 + \lambda_1 + 1 = 0$$
+Setting the $x^*$ in the Lagrangian, we get the dual function:
+$$\eta(\mu,\lambda) = \min _x L(x,\mu,\lambda) = L(x^*,\mu,\lambda) = x^{*T} A x^* + b^T x^* + \mu_1 (1_3^T x^* - 1) + \lambda_1 (x^*_3-1)$$
+$$x^{*T} A x^* = \begin{bmatrix}  x^*_1 & x^*_2 & x^*_3 \end{bmatrix} 
+\begin{bmatrix} 1 & 1 & 0 \\ 1 & 2 & 0 \\ 0 & 0 & 0 \\ \end{bmatrix} 
+\begin{bmatrix}  x^*_1 \\ x^*_2 \\ x^*_3 \end{bmatrix} = $$
+$$\begin{bmatrix} x^*_1+1  & x^*_1+2 & 0 \end{bmatrix}
+\begin{bmatrix}  x^*_1 \\ 1 \\ x^*_3 \end{bmatrix}
+ =x^*_1^2 + 2x^*_1 + 2$$
+$$ b^T x^* = \begin{bmatrix}  1 & -1 & 1 \end{bmatrix} \begin{bmatrix}  x^*_1 \\ 1 \\ -x^*_1 \end{bmatrix} = -1$$
+Combining it together we get the dual function after minimizing by x:
+$$\eta(\mu,\lambda) =  L(x^*,\mu,\lambda) = x^*_1^2 + 2x^*_1 + 2 - 1 + \lambda_1 (x^*_3-1) = x^*_1^2 + (2-\lambda_1) x^*_1 + 1 - \lambda_1  =$$
+$$\frac{1}{4}(\mu_1 + 3)^2 + (\lambda_1-2) (\frac{1}{2}(\mu_1+3) + 1 - \lambda_1$$
 
+The dual problem is therefore:
+$$d* =  \max _{\mu_1,\lambda_1} [ \frac{1}{4}(\mu_1 + 3)^2 + (\lambda_1-2) (\frac{1}{2}(\mu_1+3) + 1 - \lambda_1 ]$$
+$$\text{s.t. } \mu_1 + \lambda_1 + 1 = 0, \lambda_1 \geq 0$$
+
+Solving the dual problem, we use the linear constraint (part of KKT conditions that the constraint holds) $ \lambda_1 = - \mu_1 - 1$ and put it in the target function:
+$$\eta(\mu,\lambda) = [ \frac{1}{4}(\mu_1 + 3)^2 + (\lambda_1-2) (\frac{1}{2}(\mu_1+3) + 1 - \lambda_1 ] = [ \frac{1}{4}(\mu_1 + 3)^2 - (\mu_1+3) (\frac{1}{2}(\mu_1+3) + 2 + \mu_1 ] = $$ $$\frac{\mu_1^2+6\mu + 9}{4} - \frac{\mu_1^2+6\mu_1 + 9}{2} + 2 + \mu_1 = - \frac{\mu_1^2+6\mu_1 + 9}{4} + 2 + \mu_1 =  \frac{-\mu_1^2 -6\mu_1 - 9 + 8 + 4\mu_1}{4}=$$
+$$\frac{-\mu_1^2 -2\mu_1 - 1}{4}$$
+We can see that this is a concave function, therefore it has a maximum.\\
+Calculating the derivative and compare to 0 we get:
+$$\eta'(\mu_1) = \frac{-\mu_1 -1}{2} = 0 \Rightarrow$$
+$$\mu_1^* = -1$$
+And by the constraint:
+$$\lambda^*_1 = 0$$
+Putting it back in $x*$ we get:\\
+$$x^* = \begin{bmatrix}  -\frac{1}{2}(\mu_1+3) \\ 1 \\ \frac{1}{2}(\mu_1+3) \end{bmatrix} = \begin{bmatrix}  -1 \\ 1 \\ 1 \end{bmatrix}$$
+And the function minimum value:
+$$f*=p*=d*=\frac{-\mu_1^2 -2\mu_1 - 1}{4} = 0$$
+\rectres{
+$$x^* = \begin{bmatrix}  -1 \\ 1 \\ 1 \end{bmatrix}, f* = 0$$
+}
 \end{document}
 
