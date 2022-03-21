@@ -169,6 +169,19 @@ $$(**)\:\:\:\:\Big(\sum_{k=1}^p\sigma_k u_{k} v^T_{k}\Big)_{i,j}=\sum_{k=1}^p\si
 From $(*)$ and $(**)$ we get:
 $$A_{i,j}=\Big(\sum_{k=1}^p\sigma_k u_{k} v^T_{k}\Big)_{i,j}$$
 \qed\\
+Another simpler way to look at it and prove the identity, is to notice (linear algebra fact) that any matrix multiplication can be constructed using outer products of columns and rows:
+$$C \in \mathbb{R}^{m\times p}$$
+$$D \in \mathbb{R}^{p\times n}$$
+$$CD=\sum_{k=1}^p c_{k} d^T_{k}$$
+Thus,
+if we define $C=US, D=V^T$, we get that the vectors are actually:  
+$$c_{k}=\sigma_k u_{k}, d_{k}=v_{k}$$
+When:
+$$p=\min(m,n), k \in [1..p]$$
+$$c_{k} \in \mathbb{R}^{m}$$
+$$d_{k} \in \mathbb{R}^{n}$$
+And the identity is then driven straight forward.
+\qed\\
 \subsubsection*{Lemma2}
 $$f_i(A)=\sigma_i=u_i^T A v_i$$
 \subsubsection*{Proof}
