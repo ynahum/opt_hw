@@ -18,7 +18,7 @@
 \newcommand{\qed}{\hfill$\blacksquare$}
 
 \title{Introduction to Numerical Optimization\\Assignment 1}
-\author{Yair Nahum 034462796\\and\\blabla 11111111 }
+\author{Yair Nahum 034462796\\and\\Gadiel  }
 
 \begin{document}
 
@@ -76,28 +76,48 @@ by definition $dg=Hdx$, therefore:
 \newpage
 \subsubsection{Gradient and Hessian of $\phi$}
 Given the following $\phi:\mathbb{R}^3\rightarrow\mathbb{R}$ function:
-$$\phi \begin{pmatrix}x_1\\x_2\\x_3 \end{pmatrix} = sin(x_1x_2x_3)$$
+$$\phi \begin{pmatrix}x_1\\x_2\\x_3 \end{pmatrix} = cos(x_1x^2_2x_3)$$
 We need to calculate its gradient vector and hessian matrix.
 We can use the previous section results when there is a chain of functions to compute the gradient and hessian as we can define:
-$$f=sin:\mathbb{R}\rightarrow\mathbb{R}$$ and $$u=x_1x_2x_3:\mathbb{R}^3\rightarrow\mathbb{R}$$
+$$f=cos:\mathbb{R}\rightarrow\mathbb{R}$$ and $$u=x_1x^2_2x_3:\mathbb{R}^3\rightarrow\mathbb{R}$$
 Thus, the gradient is as follows:
-$$\nabla \phi = f'(u)\nabla u(x) = cos(x_1x_2x_3)\begin{pmatrix}x_2x_3\\x_1x_3\\x_1x_2 \end{pmatrix}$$
-\rectres{$\nabla \phi = cos(x_1x_2x_3)\begin{pmatrix}x_2x_3\\x_1x_3\\x_1x_2 \end{pmatrix}$}\\
+$$\nabla \phi = f'(u)\nabla u(x) = -sin(x_1x^2_2x_3)\begin{pmatrix}x^2_2x_3\\2x_1x_2x_3\\x_1x^2_2 \end{pmatrix}$$
+\rectres{$\nabla \phi = -sin(x_1x^2_2x_3)\begin{pmatrix}x^2_2x_3\\2x_1x_2x_3\\x_1x^2_2 \end{pmatrix}$}\\
 We can also use the hessian formula we got on the previous section and get:
 $$\nabla^2 \phi = f''(u(x))\nabla u(x)(\nabla u(x))^T + f'(u(x))\nabla^2 u(x)=$$
-$$-sin(x_1x_2x_3)\begin{pmatrix}x_2x_3\\x_1x_3\\x_1x_2 \end{pmatrix}\begin{pmatrix}x_2x_3 & x_1x_3 & x_1x_2 \end{pmatrix} + cos(x_1x_2x_3)\begin{pmatrix}0 & x_3 & x_2\\x_3 & 0 & x_1\\x_2 & x_1 & 0 \end{pmatrix} \Rightarrow$$
-\rectres{$\nabla^2 \phi = cos(x_1x_2x_3)\begin{pmatrix}0 & x_3 & x_2\\x_3 & 0 & x_1\\x_2 & x_1 & 0 \end{pmatrix} -sin(x_1x_2x_3)\begin{pmatrix}{x_2}^2{x_3}^2 & x_1x_2{x_3}^2 & x_1{x_2}^2x_3\\x_1x_2{x_3}^2 & {x_1}^2{x_3}^2 & {x_1}^2x_2x_3\\x_1{x_2}^2x_3 & {x_1}^2x_2x_3 & {x_1}^2{x_2}^2 \end{pmatrix}$}
+$$-cos(x_1x^2_2x_3)\begin{pmatrix}x^2_2x_3\\2x_1x_2x_3\\x_1x^2_2 \end{pmatrix}\begin{pmatrix}x^2_2x_3 & 2x_1x_2x_3 & x_1x^2_2 \end{pmatrix} - sin(x_1x^2_2x_3)\begin{pmatrix}0 & 2x_2x_3 & x^2_2\\2x_2x_3 & 2x_1x_3 & 2x_1x_2\\x^2_2 & 2x_1x_2 & 0 \end{pmatrix} \Rightarrow$$
+\rectres{$\nabla^2 \phi = -cos(x_1x^2_2x_3)\begin{pmatrix}x^4_2x^2_3 & 2x_1x^3_2x^2_3 & x_1x^4_2x_3\\2x_1x^3_2x^2_3 & 4x^2_1x^2_2x^2_3 & 2x^2_1x^3_2x_3\\x_1x^4_2x_3 & 2x^2_1x^3_2x_3 & x^2_1x^4_2 \end{pmatrix} - sin(x_1x^2_2x_3)\begin{pmatrix}0 & 2x_2x_3 & x^2_2\\2x_2x_3 & 2x_1x_3 & 2x_1x_2\\x^2_2 & 2x_1x_2 & 0 \end{pmatrix}$}
 
 \subsubsection{First and Second Derivatives of $h$}
-$$h=\sqrt{(1+x^2)}$$
+$$h=\sqrt{(1+sin^2(x)}$$
 We can solve directly using derivative formulas and we can use the external gradient definition.\\
-We can denote $f=sqrt$ and $u=1+x^2 \Rightarrow h=f(u), du=2xdx \Rightarrow$
-$$dh=\frac{1}{2}\frac{1}{\sqrt{u}}du=\frac{1}{2}\frac{1}{\sqrt{(1+x^2)}}2xdx=\frac{x}{\sqrt{(1+x^2)}}dx\Rightarrow$$\\
-\rectres{$h'(x)=\frac{x}{\sqrt{(1+x^2)}}$}
-For the second derivative we can compute again:\\
-$$dh'=\frac{dx}{\sqrt{(1+x^2)}}+xd(\frac{1}{\sqrt{(1+x^2)}})=\frac{dx}{\sqrt{(1+x^2)}}-x\frac{1}{(1+x^2)}\frac{x}{\sqrt{(1+x^2)}}dx=$$
-$$\frac{((1+x^2)-x^2)dx}{(1+x^2)\sqrt{(1+x^2)}}=\frac{dx}{(1+x^2)\sqrt{(1+x^2)}} \Rightarrow$$
-\rectres{$h''(x)=\frac{1}{(1+x^2)^{\frac{3}{2}}}$}
+We can denote $v(x)=sin(x),u(v)=1+v^2$ and $h = f(u)=\sqrt{u} \Rightarrow$ 
+$$h=f(u(v)) \Rightarrow$$
+$$dv=d(sin(x))=cos(x)dx$$
+$$ du=2vdv$$
+$$ dh=df(u)=\frac{1}{2}\frac{1}{\sqrt{u}}du$$
+$$\Rightarrow$$
+$$dh=\frac{1}{2}\frac{1}{\sqrt{u}}du=\frac{1}{2}\frac{1}{\sqrt{1+v^2}}2vdv=\frac{sin(x)cos(x)}{\sqrt{1+sin^2(x)}}dx \Rightarrow$$\\
+\rectres{$h'(x)=\frac{sin(x)cos(x)}{\sqrt{1+sin^2(x)}}$}
+For the second derivative we can define the following functions and compute again using total derivative rules:\\
+$$v(x)=sin(x)$$ 
+$$t(x)=cos(x)$$
+$$u(v)=1+v^2$$
+$$z(u)=\sqrt{u}$$
+$$q(z)=\frac{1}{z}$$
+$$h' = f(q,v,t)=vtq\Rightarrow$$
+$$dv=cos(x)dx$$
+$$dt=-sin(x)dx$$
+$$du=2vdv$$
+$$dz=\frac{1}{2\sqrt{u}}du$$
+$$dq=-\frac{1}{z^2}dz$$
+We also know according to total differential:\\
+$$dh'=d(f(v,t,q))=d(vtq)=qtdv+qvdt+vtdq$$
+We put the previous differentials and get:\\
+$$dh'=qtdv+qvdt+vtdq=\frac{tdv+vdt}{z}-\frac{vt}{z^2}dz=\frac{tdv+vdt}{\sqrt{u}}-\frac{vt}{u}\frac{1}{2\sqrt{u}}du=$$
+$$\frac{tdv+vdt}{\sqrt{1+v^2}}-\frac{vt}{2(1+v^2)\sqrt{1+v^2}}2vdv=\frac{cos^2(x)-sin^2(x)}{\sqrt{1+sin^2(x)}}dx-\frac{sin^2(x)cos^2(x)}{(1+sin^2(x))^{\frac{3}{2}}}dx$$
+$$\Rightarrow$$
+\rectres{$h''(x)=\frac{cos^2(x)-sin^2(x)}{\sqrt{1+sin^2(x)}}-\frac{sin^2(x)cos^2(x)}{(1+sin^2(x))^{\frac{3}{2}}}$}
 
 \subsubsection{Analytical Evaluation}
 in code
