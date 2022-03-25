@@ -24,7 +24,7 @@ def calc_phi_value_grad_hessian(x, calc_grad=True, calc_hessian=True):
         H2_13 = x[0] * np.power(x[1],4) * x[2]
         H2_22 = 4 * np.power(x[0],2) * np.power(x[1],2) * np.power(x[2],2)
         H2_23 = 2 * np.power(x[0],2) * np.power(x[1],3) * x[2]
-        H2_33 = np.power(x[0],2) * np.power(x[1],2)
+        H2_33 = np.power(x[0],2) * np.power(x[1],4)
         H2 = np.array([[H2_11, H2_12, H2_13],
                        [H2_12, H2_22, H2_23],
                        [H2_13, H2_23, H2_33]])
