@@ -99,7 +99,7 @@ $$ dh=df(u)=\frac{1}{2}\frac{1}{\sqrt{u}}du$$
 $$\Rightarrow$$
 $$dh=\frac{1}{2}\frac{1}{\sqrt{u}}du=\frac{1}{2}\frac{1}{\sqrt{1+v^2}}2vdv=\frac{sin(x)cos(x)}{\sqrt{1+sin^2(x)}}dx \Rightarrow$$\\
 \rectres{$h'(x)=\frac{sin(x)cos(x)}{\sqrt{1+sin^2(x)}}$}
-For the second derivative we can define the following functions and compute again using total derivative rules:\\
+For the second derivative we can define the following functions and compute again using total differential and the product rule of differentials $d(f(x)g(x))=df(x)g(x) + f(x)dg(x)$:\\
 $$v(x)=sin(x)$$ 
 $$t(x)=cos(x)$$
 $$u(v)=1+v^2$$
@@ -140,17 +140,19 @@ f1 gradient min infinity norm error : 1.1572293470707429e-11\\
 epsilon exponent: -17\\
 epsilon value: 7.62939453125e-06\\
 \includegraphics[scale=0.7]{f1_hessian_plot}\\
-f1 hessian min infinity norm error : 0.04802431446692193 \\
-epsilon exponent: -3\\
-epsilon value: 0.125\\
+f1 hessian min infinity norm error : 4.915796936177941e-12\\ 
+epsilon exponent: -20\\
+epsilon value: 9.5367431640625e-07\\
 \includegraphics[scale=0.7]{f2_grad_plot}\\
 f2 gradient min infinity norm error : 3.077997186522305e-12\\
 epsilon exponent: -16\\
 epsilon value: 1.52587890625e-05\\
 \includegraphics[scale=0.7]{f2_hessian_plot}\\
-f2 hessian min infinity norm error : 8.908884781362483e-05\\
-epsilon exponent: -24\\
-epsilon value: 5.960464477539063e-08\\
+f2 hessian min infinity norm error : 4.519438310732465e-15\\
+epsilon exponent: -25\\
+epsilon value: 2.9802322387695312e-08\\
+
+\end{document}
 
 \newpage
 \section{SVD}
