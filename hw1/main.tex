@@ -18,7 +18,7 @@
 \newcommand{\qed}{\hfill$\blacksquare$}
 
 \title{Introduction to Numerical Optimization\\Assignment 1}
-\author{Yair Nahum 034462796\\and\\Gaddiel Nabet 342468147  }
+%\author{Yair Nahum 034462796\\and\\Gaddiel Nabet 342468147  }
 
 \begin{document}
 
@@ -139,18 +139,26 @@ With random seed set to 10 we got the following results:\\
 f1 gradient min infinity norm error : 1.1572293470707429e-11\\
 epsilon exponent: -17\\
 epsilon value: 7.62939453125e-06\\
+We get the optimal $\epsilon$ for f1 gradient min infinity norm error at $2^{-17}$\\
+We can explain the graph as getting better when $\epsilon \rightarrow 0$\\
+up to a certain value from which, numerical errors starts to happen due to our PC limited accuracy and numerical problems when dividing by a very small values.
+This causes inaccuracies compared to the analytical computation.
+At some point the diff in f seems like there is no diff and we get a flat line of a constant value (around $2^{-50})$\\
 \includegraphics[scale=0.7]{f1_hessian_plot}\\
 f1 hessian min infinity norm error : 4.915796936177941e-12\\ 
 epsilon exponent: -20\\
 epsilon value: 9.5367431640625e-07\\
+The same explanation as for the gradient norm graph. except that we don't see the flat line at the end. probably since the gradients values are small and thus adding $\epsilon$ still makes a difference (compared to function values that are higher and thus adding small $\epsilon$ is not observable due to max float range of our PC)\\
 \includegraphics[scale=0.7]{f2_grad_plot}\\
 f2 gradient min infinity norm error : 3.077997186522305e-12\\
 epsilon exponent: -16\\
 epsilon value: 1.52587890625e-05\\
+The same explanation as to f1 gradient norm.\\
 \includegraphics[scale=0.7]{f2_hessian_plot}\\
 f2 hessian min infinity norm error : 4.519438310732465e-15\\
 epsilon exponent: -25\\
 epsilon value: 2.9802322387695312e-08\\
+The same explanation as to f1 hessian norm.
 
 \end{document}
 
