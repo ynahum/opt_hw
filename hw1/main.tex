@@ -18,7 +18,7 @@
 \newcommand{\qed}{\hfill$\blacksquare$}
 
 \title{Introduction to Numerical Optimization\\Assignment 1}
-%\author{Yair Nahum 034462796\\and\\Gaddiel Nabet 342468147  }
+\author{}%Yair Nahum 034462796\\and\\Gaddiel Nabet 342468147  }
 
 \begin{document}
 
@@ -65,7 +65,7 @@ $$df_2= dh = h'(t)dt = h'(\phi(x))(\nabla \phi(x))^Tdx=$$
 Since $h'(t)$ is scalar, it doesn't change on transpose operation:
 $$\langle h'(\phi(x))\nabla \phi(x), dx \rangle \Rightarrow$$
 \rectres{$\nabla f_2 = h'(\phi(x))\nabla \phi(x)$}
-Next, We denote $\nabla f_2= g(x)$:
+Next, We denote $\nabla f_2 \equiv g(x)$:
 $$dg = d(h'(\phi(x))\nabla \phi(x)) =  d(h'(\phi(x)))\nabla \phi(x) + h'(\phi(x))d(\nabla \phi(x))=$$
 $$h''(\phi(x))((\nabla \phi(x))^Tdx)\nabla \phi(x) + h'(\phi(x))\nabla^2 \phi(x)dx=$$
 $$h''(\phi(x))\nabla \phi(x)((\nabla \phi(x))^Tdx) + h'(\phi(x))\nabla^2 \phi(x)dx=$$
@@ -89,7 +89,7 @@ $$-cos(x_1x^2_2x_3)\begin{pmatrix}x^2_2x_3\\2x_1x_2x_3\\x_1x^2_2 \end{pmatrix}\b
 \rectres{$\nabla^2 \phi = -cos(x_1x^2_2x_3)\begin{pmatrix}x^4_2x^2_3 & 2x_1x^3_2x^2_3 & x_1x^4_2x_3\\2x_1x^3_2x^2_3 & 4x^2_1x^2_2x^2_3 & 2x^2_1x^3_2x_3\\x_1x^4_2x_3 & 2x^2_1x^3_2x_3 & x^2_1x^4_2 \end{pmatrix} - sin(x_1x^2_2x_3)\begin{pmatrix}0 & 2x_2x_3 & x^2_2\\2x_2x_3 & 2x_1x_3 & 2x_1x_2\\x^2_2 & 2x_1x_2 & 0 \end{pmatrix}$}
 
 \subsubsection{First and Second Derivatives of $h$}
-$$h=\sqrt{(1+sin^2(x)}$$
+$$h=\sqrt{1+sin^2(x)}$$
 We can solve directly using derivative formulas and we can use the external gradient definition.\\
 We can denote $v(x)=sin(x),u(v)=1+v^2$ and $h = f(u)=\sqrt{u} \Rightarrow$ 
 $$h=f(u(v)) \Rightarrow$$
@@ -99,20 +99,20 @@ $$ dh=df(u)=\frac{1}{2}\frac{1}{\sqrt{u}}du$$
 $$\Rightarrow$$
 $$dh=\frac{1}{2}\frac{1}{\sqrt{u}}du=\frac{1}{2}\frac{1}{\sqrt{1+v^2}}2vdv=\frac{sin(x)cos(x)}{\sqrt{1+sin^2(x)}}dx \Rightarrow$$\\
 \rectres{$h'(x)=\frac{sin(x)cos(x)}{\sqrt{1+sin^2(x)}}$}
-For the second derivative we can define the following functions and compute again using total differential and the product rule of differentials $d(f(x)g(x))=df(x)g(x) + f(x)dg(x)$:\\
-$$v(x)=sin(x)$$ 
+For the second derivative we can define the following functions and compute again:\\ $$v(x)=sin(x)$$ 
 $$t(x)=cos(x)$$
 $$u(v)=1+v^2$$
 $$z(u)=\sqrt{u}$$
 $$q(z)=\frac{1}{z}$$
-$$h' = f(q,v,t)=vtq\Rightarrow$$
+$$h'(q,v,t)=vtq\Rightarrow$$
 $$dv=cos(x)dx$$
 $$dt=-sin(x)dx$$
 $$du=2vdv$$
 $$dz=\frac{1}{2\sqrt{u}}du$$
 $$dq=-\frac{1}{z^2}dz$$
-We also know according to total differential:\\
-$$dh'=d(f(v,t,q))=d(vtq)=qtdv+qvdt+vtdq$$
+Using the fact that we can take the differential with respect to each inner variable function ($df(u,v)=\nabla_u f(u,v)^Tdu + \nabla_v f(u,v)^Tdv$)\\
+And in our case:
+$$dh'(v,t,q))=d(vtq)=qtdv+qvdt+vtdq$$
 We put the previous differentials and get:\\
 $$dh'=qtdv+qvdt+vtdq=\frac{tdv+vdt}{z}-\frac{vt}{z^2}dz=\frac{tdv+vdt}{\sqrt{u}}-\frac{vt}{u}\frac{1}{2\sqrt{u}}du=$$
 $$\frac{tdv+vdt}{\sqrt{1+v^2}}-\frac{vt}{2(1+v^2)\sqrt{1+v^2}}2vdv=\frac{cos^2(x)-sin^2(x)}{\sqrt{1+sin^2(x)}}dx-\frac{sin^2(x)cos^2(x)}{(1+sin^2(x))^{\frac{3}{2}}}dx$$
