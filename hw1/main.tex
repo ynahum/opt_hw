@@ -76,17 +76,17 @@ by definition $dg=Hdx$, therefore:
 \newpage
 \subsubsection{Gradient and Hessian of $\phi$}
 Given the following $\phi:\mathbb{R}^3\rightarrow\mathbb{R}$ function:
-$$\phi \begin{pmatrix}x_1\\x_2\\x_3 \end{pmatrix} = cos(x_1x^2_2x_3)$$
+$$\phi \begin{pmatrix}x_1\\x_2\\x_3 \end{pmatrix} = cos^2(x_1x^2_2x_3)$$
 We need to calculate its gradient vector and hessian matrix.
 We can use the previous section results when there is a chain of functions to compute the gradient and hessian as we can define:
-$$f=cos:\mathbb{R}\rightarrow\mathbb{R}$$ and $$u=x_1x^2_2x_3:\mathbb{R}^3\rightarrow\mathbb{R}$$
+$$f(u)=cos^2(u):\mathbb{R}\rightarrow\mathbb{R}$$ and $$u=x_1x^2_2x_3:\mathbb{R}^3\rightarrow\mathbb{R}$$
 Thus, the gradient is as follows:
-$$\nabla \phi = f'(u)\nabla u(x) = -sin(x_1x^2_2x_3)\begin{pmatrix}x^2_2x_3\\2x_1x_2x_3\\x_1x^2_2 \end{pmatrix}$$
-\rectres{$\nabla \phi = -sin(x_1x^2_2x_3)\begin{pmatrix}x^2_2x_3\\2x_1x_2x_3\\x_1x^2_2 \end{pmatrix}$}\\
+$$\nabla \phi = f'(u)\nabla u(x) = -2cos(x_1x^2_2x_3)sin(x_1x^2_2x_3)\begin{pmatrix}x^2_2x_3\\2x_1x_2x_3\\x_1x^2_2 \end{pmatrix}$$
+\rectres{$\nabla \phi = -sin(2x_1x^2_2x_3)\begin{pmatrix}x^2_2x_3\\2x_1x_2x_3\\x_1x^2_2 \end{pmatrix}$}\\
 We can also use the hessian formula we got on the previous section and get:
 $$\nabla^2 \phi = f''(u(x))\nabla u(x)(\nabla u(x))^T + f'(u(x))\nabla^2 u(x)=$$
-$$-cos(x_1x^2_2x_3)\begin{pmatrix}x^2_2x_3\\2x_1x_2x_3\\x_1x^2_2 \end{pmatrix}\begin{pmatrix}x^2_2x_3 & 2x_1x_2x_3 & x_1x^2_2 \end{pmatrix} - sin(x_1x^2_2x_3)\begin{pmatrix}0 & 2x_2x_3 & x^2_2\\2x_2x_3 & 2x_1x_3 & 2x_1x_2\\x^2_2 & 2x_1x_2 & 0 \end{pmatrix} \Rightarrow$$
-\rectres{$\nabla^2 \phi = -cos(x_1x^2_2x_3)\begin{pmatrix}x^4_2x^2_3 & 2x_1x^3_2x^2_3 & x_1x^4_2x_3\\2x_1x^3_2x^2_3 & 4x^2_1x^2_2x^2_3 & 2x^2_1x^3_2x_3\\x_1x^4_2x_3 & 2x^2_1x^3_2x_3 & x^2_1x^4_2 \end{pmatrix} - sin(x_1x^2_2x_3)\begin{pmatrix}0 & 2x_2x_3 & x^2_2\\2x_2x_3 & 2x_1x_3 & 2x_1x_2\\x^2_2 & 2x_1x_2 & 0 \end{pmatrix}$}
+$$-2cos(2x_1x^2_2x_3)\begin{pmatrix}x^2_2x_3\\2x_1x_2x_3\\x_1x^2_2 \end{pmatrix}\begin{pmatrix}x^2_2x_3 & 2x_1x_2x_3 & x_1x^2_2 \end{pmatrix} - sin(2x_1x^2_2x_3)\begin{pmatrix}0 & 2x_2x_3 & x^2_2\\2x_2x_3 & 2x_1x_3 & 2x_1x_2\\x^2_2 & 2x_1x_2 & 0 \end{pmatrix} \Rightarrow$$
+\rectres{$\nabla^2 \phi = -2cos(2x_1x^2_2x_3)\begin{pmatrix}x^4_2x^2_3 & 2x_1x^3_2x^2_3 & x_1x^4_2x_3\\2x_1x^3_2x^2_3 & 4x^2_1x^2_2x^2_3 & 2x^2_1x^3_2x_3\\x_1x^4_2x_3 & 2x^2_1x^3_2x_3 & x^2_1x^4_2 \end{pmatrix} - sin(2x_1x^2_2x_3)\begin{pmatrix}0 & 2x_2x_3 & x^2_2\\2x_2x_3 & 2x_1x_3 & 2x_1x_2\\x^2_2 & 2x_1x_2 & 0 \end{pmatrix}$}
 
 \subsubsection{First and Second Derivatives of $h$}
 $$h=\sqrt{1+sin^2(x)}$$
@@ -136,28 +136,28 @@ in code
 See hw1.py for the code that does the comparison.
 With random seed set to 10 we got the following results:\\
 \includegraphics[scale=0.7]{f1_grad_plot}\\
-f1 gradient min infinity norm error : 1.1572293470707429e-11\\
-epsilon exponent: -17\\
-epsilon value: 7.62939453125e-06\\
-We get the optimal $\epsilon$ for f1 gradient min infinity norm error at $2^{-17}$\\
+f1 gradient min infinity norm error : 1.2963581597080776e-11\\ 
+epsilon exponent: -19\\
+epsilon value: 1.9073486328125e-06\\
+We get the optimal $\epsilon$ for f1 gradient min infinity norm error at $2^{-19}$\\
 We can explain the graph as getting better when $\epsilon \rightarrow 0$\\
 up to a certain value from which, numerical errors starts to happen due to our PC limited accuracy and numerical problems when dividing by a very small values.
 This causes inaccuracies compared to the analytical computation.
 At some point the diff in f seems like there is no diff and we get a flat line of a constant value (around $2^{-50})$\\
 \includegraphics[scale=0.7]{f1_hessian_plot}\\
-f1 hessian min infinity norm error : 4.915796936177941e-12\\ 
+f1 hessian min infinity norm error : 6.99799940218071e-12\\
 epsilon exponent: -20\\
 epsilon value: 9.5367431640625e-07\\
 The same explanation as for the gradient norm graph. except that we don't see the flat line at the end. probably since the gradients values are small and thus adding $\epsilon$ still makes a difference (compared to function values that are higher and thus adding small $\epsilon$ is not observable due to max float range of our PC)\\
 \includegraphics[scale=0.7]{f2_grad_plot}\\
-f2 gradient min infinity norm error : 3.077997186522305e-12\\
+f2 gradient min infinity norm error : 7.186284802077752e-12\\
 epsilon exponent: -16\\
 epsilon value: 1.52587890625e-05\\
 The same explanation as to f1 gradient norm.\\
 \includegraphics[scale=0.7]{f2_hessian_plot}\\
-f2 hessian min infinity norm error : 4.519438310732465e-15\\
-epsilon exponent: -25\\
-epsilon value: 2.9802322387695312e-08\\
+f2 hessian min infinity norm error : 5.16661468111506e-15\\
+epsilon exponent: -24\\
+epsilon value: 5.960464477539063e-08\\
 The same explanation as to f1 hessian norm.
 
 \end{document}
