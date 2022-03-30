@@ -7,6 +7,7 @@ from func_cmp_analyt_vs_num import func_compare_analytical_vs_numerical
 run_on_f1 = True
 run_on_f2 = True
 
+
 def compare_analytical_vs_numerical():
 
     np.random.seed(10)
