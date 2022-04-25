@@ -3,6 +3,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{comment}
 
 \graphicspath{ {./plots/} }
 
@@ -180,7 +181,7 @@ $$\frac{1}{n} \sum_{i=1}^n x_i \geq \sqrt[n]{\prod_{i=1}^n x_i}$$
 
 \newpage
 
-\section{Multivariate Optimization - Gradient Descent
+\section{Gradient Descent
 and Newton’s Method}
 
 \subsection{Quadratic Form}
@@ -212,7 +213,7 @@ We will compare it to 0 and get the $\alpha$ that minimizes it:
 $$(x + \alpha r)^T (Q^T + Q)r=0 \Rightarrow$$
 $$\alpha = -\frac{x^T(Q + Q^T)r}{r^T(Q + Q^T)r}$$
 
-\subsection{The Rosenbrock Function}
+\subsection{Rosenbrock Function}
 
 \subsubsection{Gradient and Hessian}
 We need to derive the gradient and hessian of the Rosenbrock function:
@@ -266,7 +267,8 @@ In code. see grad\_descent.py file.
 \subsection{Newton’s Method Implementation}
 In code. see grad\_descent.py file. see newton\_method.py and newton\_method\_utils.py file.
 \newpage
-\subsection{Finding the Minimum of a Quadratic Form}
+\subsection{Minimize a Quadratic Form}
+\begin{comment}
 \subsubsection{The results of Gradient Descent with exact line search:}
 \includegraphics[scale=0.5]{grad_descent_exact_1.png}\\
 We can see that we are zigzaging when going at the steepest descent direction. this is since the next direction will always be orthogonal to the current one (directional derivative result of exact line search $\nabla f^T r = 0$ ). this is also related to the convergence rate constant $1 - \frac{\lambda_{min}}{\lambda_{max}}$. In our case it is close to $1$, therefore we converge slowly. In this case we converged after $\bold{63}$ iterations.\\
@@ -292,8 +294,8 @@ Also, on inexact line search we do not oscillate since we start with $\alpha_0=1
 \includegraphics[scale=0.5]{nm_inexact_1.png}\\
 \includegraphics[scale=0.5]{nm_inexact_2_circle.png}\\
 \includegraphics[scale=0.5]{nm_inexact_3_elipse_easy_start_point.png}\\
-\subsection{}
-\subsection{Find  the  Minimum  of  the  Rosenbrock  Function}
+\end{comment}
+\subsection{Minimize  Rosenbrock  Function}
 The Rosenbrock function gets its minimum at $x = (1,1,1...,1)$ point. we can calculate the value and see that it is 0. which is the minimum as $$Rosenbrock\_f(x) \geq 0\; \forall x \in \mathbb{R}^n$$
 Therefore, the difference to optimal value is actualy the function value at each trajectory point in our search for the optimal point.\\
 \includegraphics[scale=0.5]{r_f_gd.png}\\
