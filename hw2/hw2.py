@@ -7,29 +7,20 @@ from rosenbrock import *
 if __name__ == '__main__':
 
     Qs = np.array([
-            [[10, 0.],
-            [0, 1]],
             [[3, 0.],
              [0, 3]],
             [[10, 0.],
              [0, 1]],
-            [[10, 0.],
-             [0, 1]],
-            [[3, 0.],
-             [0, 3]],
             [[10, 0.],
              [0, 1]],
         ])
     x_0s = np.array([
-            [[-0.2], [-2.]],
-            [[-0.2], [-2.]],
-            [[-2], [0]],
-            [[-0.2], [-2.]],
-            [[-0.2], [-2.]],
-            [[-2], [0]],
+            [[1.5], [2.]],
+            [[1.5], [2.]],
+            [[1.5], [2.]],
         ])
 
-    exact_line_search_config = [ True, True, True, False, False, False]
+    exact_line_search_config = [ True, True, False]
 
     run_grad_descent = True
 
