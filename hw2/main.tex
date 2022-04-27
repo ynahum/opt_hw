@@ -268,6 +268,53 @@ In code. see grad\_descent.py file.
 In code. see grad\_descent.py file. see newton\_method.py and newton\_method\_utils.py file.
 \newpage
 \subsection{Minimize a Quadratic Form}
+\begin{enumerate}
+\item  Exact line search. Quadratic form matrix:
+$Q =  \begin{bmatrix}
+    3 & 0\\
+    0 & 3
+\end{bmatrix} $
+
+\textbf{\textit{Gradient Descent}}\\
+\includegraphics[scale=0.5]{grad_descent_exact_4_circle.png}\\
+When the hessian eigen values are the same $\lambda_{min} = \lambda_{max} = 3$, we don't zigzag and with only one exact line search iteration we find the minimum. this is related to the convergence rate constant $1 - \frac{\lambda_{min}}{\lambda_{max}}$. In our case it is 0, therefore we converge after $\bold{1}$ iteration.\\
+
+\newpage
+\textbf{\textit{Newton’s Method}}\\
+\includegraphics[scale=0.5]{hw2/plots/nm_exact_4_circle.png}
+At all runs of newton method, we converged after a single iteration. These results are due to the fact that we try to optimize a quadratic function and in newton method the quadratic approximation calculated matches exactly the actual function. Thus, by calculating the correct direction/displacement to the minimum and following exact line search, we hit the optimum directly.\\
+\newpage
+ \item  Exact line search, $Q =  \begin{bmatrix}
+                                10 & 0\\
+                                0 & 1
+                            \end{bmatrix} $
+
+\textbf{\textit{Gradient Descent}}\\
+\includegraphics[scale=0.5]{hw2/plots/grad_descent_exact_5_elipse.png}\\
+We can see that we are zigzaging when going at the steepest descent direction. this is since the next direction will always be orthogonal to the current one (directional derivative result of exact line search $\nabla f^T r = 0$ ). this is also related to the convergence rate constant $1 - \frac{\lambda_{min}}{\lambda_{max}}$. In our case it is close to $1$, therefore we converge slowly.\\
+
+\newpage
+\textbf{\textit{Newton’s Method}}\\
+\includegraphics[scale=0.5]{hw2/plots/nm_exact_5_elipse.png}\\
+Again we converged after a single iteration. This is due to the fact that we try to optimize a quadratic function and in newton method the quadratic approximation calculated matches exactly the actual function. Thus, by calculating the correct direction/displacement to the minimum and following exact line search, we hit the optimum directly.\\
+
+\newpage
+\item   Inexact line search,  $Q =  \begin{bmatrix}
+                                10 & 0\\
+                                0 & 1
+                            \end{bmatrix} $
+
+\textbf{\textit{Gradient Descent}}\\
+\includegraphics[scale=0.5]{hw2/plots/grad_descent_inexact_6_elipse.png}\\
+Again we converged after a single iteration. This is due to the fact that we try to optimize a quadratic function and in newton method the quadratic approximation calculated matches exactly the actual function.\\
+With inexact line search, we zigzag less than steepest descent as we don't go to the exact minimum in which we will have an orthogonal next direction, but rather find better step size according to armijo rule.\\
+
+\newpage
+\textbf{\textit{Newton’s Method}}\\
+\includegraphics[scale=0.5]{hw2/plots/nm_inexact_6_elipse.png}\\
+Also, on inexact line search we do not oscillate since we start with $\alpha_0=1$ in which we start at the exact approximation of the displacement for the quadratic function.\\
+
+\end{enumerate}
 \begin{comment}
 \subsubsection{The results of Gradient Descent with exact line search:}
 \includegraphics[scale=0.5]{grad_descent_exact_1.png}\\
