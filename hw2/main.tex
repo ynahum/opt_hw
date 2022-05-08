@@ -21,6 +21,7 @@
 \newcommand{\qed}{\hfill$\blacksquare$}
 
 \title{Introduction to Numerical Optimization\\Assignment 2}
+\author{}
 %\author{Yair Nahum 034462796\\and\\blabla 11111111 }
 
 \begin{document}
@@ -35,7 +36,7 @@
 Need to prove that if we have 2 convex functions $f_1$ and $f_2$ over convex set $C$, then $$g(x)=\max\limits_{i=1,2} f_i(x)$$ is also a convex function over convex set $C$
 \subsubsection*{Proof}
 Let's pick some points $s,t \in C$\\
-We need to show that $$g(\alpha s + (1-\alpha)t) \leq \alpha g(s) + (1-\alpha)g(t) \hspace{20} \forall \alpha \in [0,1]$$
+We need to show that $$g(\alpha s + (1-\alpha)t) \leq \alpha g(s) + (1-\alpha)g(t), \forall \alpha \in [0,1]$$
 $f_1$ is convex $\Rightarrow$
 $$f_1(\alpha s + (1-\alpha)t) \leq \alpha f_1(s) + (1-\alpha)f_1(t)$$
 $f_2$ is convex $\Rightarrow$
@@ -278,7 +279,7 @@ $Q =  \begin{bmatrix}
 
 \textbf{\textit{Gradient Descent}}\\
 \includegraphics[scale=0.5]{grad_descent_exact_4_circle.png}\\
-When the hessian eigen values are the same $\lambda_{min} = \lambda_{max} = 3$, we don't zigzag and with only one exact line search iteration we find the minimum. this is related to the convergence rate constant $1 - \frac{\lambda_{min}}{\lambda_{max}}$. In our case it is 0, therefore we converge after $\bold{1}$ iteration.\\
+When the hessian eigen values are the same $\lambda_{min} = \lambda_{max} = 3$, we don't zigzag and with only one exact line search iteration we find the minimum. this is related to the convergence rate constant $1 - \frac{\lambda_{min}}{\lambda_{max}}$. In our case it is 0, therefore we converge after $\mathbf{1}$ iteration.\\
 
 \newpage
 \textbf{\textit{Newton’s Method}}\\
