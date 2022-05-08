@@ -191,7 +191,8 @@ We need to derive the Gradient and Hessian of the form:
 $$f(x)=\frac{1}{2} x^T Q x$$
 Where $Q \in \mathbb{R}^{n \times n}$ and $x \in \mathbb{R}$\\
 \\
-(1) Gradient: $$d(f(x)) = \frac{1}{2}(dx^T Q x + x^T Q dx) = \frac{1}{2}((x^T Q dx)^T + x^T Q dx) = \frac{1}{2} x^T (Q^T + Q) dx$$
+(1) Gradient: $$d(f(x)) = \frac{1}{2}(dx^T Q x + x^T Q dx) = \frac{1}{2}((dx^T Q x)^T + x^T Q dx) = \frac{1}{2}(x^T Q^T dx + x^T Q dx) = \frac{1}{2} x^T (Q^T + Q) dx$$
+( the second transition is due to the fact that a transpose over a scalar doesn't change it)\\
 Therefore, from the external definition of the gradient:
 $$\nabla f(x) = \frac{1}{2} (Q + Q^T)x$$
 \\
