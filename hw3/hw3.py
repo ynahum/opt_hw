@@ -7,11 +7,13 @@ from matplotlib.ticker import LinearLocator
 
 save_plot_to_file = False
 
+
 def f(x_1, x_2):
     return x_1 * np.exp(-(x_1 ** 2 + x_2 ** 2))
 
-# calss that contains the architechture properties of the model
-class My_FC_NN_Model(object):
+
+# class that contains the arch properties of the model
+class MyFullConnectedNeuralNetModel(object):
 
     # Constructor
     def __init__(self, in_size, hidden_layers_sizes):
@@ -30,6 +32,7 @@ class My_FC_NN_Model(object):
             params_dict[f'l{li}']['W'] = np.random.randn(prev_layer_size, layer_size) / np.sqrt(layer_size)
             params_dict[f'l{li}']['b'] = np.zeros((layer_size, 1))
         return params_dict
+
 
 # Utils
 def params_vec_to_dict(model, params_vec):
@@ -85,6 +88,7 @@ def params_dict_to_vec(params_dict, num_of_layers):
     params_vec = np.concatenate(params_list, axis=None)
     return params_vec
 
+
 def print_params_dict(params_dict, num_of_layers):
     for li in np.arange(start=num_of_layers - 1, stop=-1, step=-1):
         print(f"layer {li}:")
@@ -92,6 +96,7 @@ def print_params_dict(params_dict, num_of_layers):
         print(f"W:\n{W}")
         b = params_dict[f'l{li}']['b']
         print(f"b:\n{b}")
+
 
 # 1.3.5
 def fwd(input_vec, params_dict, num_of_layers):
@@ -106,19 +111,24 @@ def fwd(input_vec, params_dict, num_of_layers):
         layers_outputs[f'l{li}'] = next_layer_input
     return y, layers_outputs
 
+
 # 1.3.6
 def phi(x):
     return np.tanh(x)
 
+
 def g_phi(x):
     return 1 - (np.tanh(x) ** 2)
+
 
 # 1.3.7
 def loss(label, prediction):
     return (prediction - label)**2
 
+
 def g_loss(label, prediction):
     return 2 * (prediction - label)
+
 
 def batch_fwd(inputs, params_dict, num_of_layers):
     predictions = []
@@ -128,6 +138,7 @@ def batch_fwd(inputs, params_dict, num_of_layers):
         predictions.append(prediction)
     return predictions
 
+
 def batch_loss(inputs, labels, params_dict, num_of_layers):
     sum_of_losses = 0
     for input, label in zip(inputs, labels):
@@ -136,6 +147,7 @@ def batch_loss(inputs, labels, params_dict, num_of_layers):
         sum_of_losses += loss(label, prediction)
     average_loss = sum_of_losses / len(labels)
     return average_loss
+
 
 # 1.3.8
 def fwd_and_backprop(input_vec, label, params_dict, num_of_layers):
@@ -163,6 +175,7 @@ def fwd_and_backprop(input_vec, label, params_dict, num_of_layers):
         grad_z = grads_dict[f'l{li}']['x']
     return prediction, layers_outputs, grads_dict
 
+
 # 1.3.9
 def batch_fwd_and_backprop(inputs, labels, params_dict, num_of_layers):
     n = len(labels)
@@ -175,6 +188,7 @@ def batch_fwd_and_backprop(inputs, labels, params_dict, num_of_layers):
         grads_sum += grads_vec
     return grads_sum / n
 
+
 # 1.3.10-11 - generating data samples for training and testing
 def gen_samples(func_ptr, n):
     labels = []
@@ -182,6 +196,7 @@ def gen_samples(func_ptr, n):
     for sample in samples:
         labels.append(func_ptr(sample[0], sample[1]))
     return samples, np.array(labels)
+
 
 def inexact_line_search(w_k, d, model, inputs, labels):
     alpha_0 = 1
@@ -206,6 +221,7 @@ def inexact_line_search(w_k, d, model, inputs, labels):
              break
         alpha = beta * alpha
     return alpha
+
 
 def NN_BFGS(w_0, model, epsilon, inputs, labels):
 
@@ -255,6 +271,7 @@ def NN_BFGS(w_0, model, epsilon, inputs, labels):
     print(f'Optimization took: {iteration_idx} iterations')
     return w_k, losses_list, w_k_list
 
+
 # 1.3.13
 def plot_func(func_ptr, title="", plot_samples=False, samples=None, predictions=None, plot_filename=""):
 
@@ -299,6 +316,7 @@ def plot_func(func_ptr, title="", plot_samples=False, samples=None, predictions=
     if save_plot_to_file and plot_filename != "":
         print(f"saving plot to file {plot_filename}")
         fig.savefig(plot_filename)
+
 
 def plot_model_func_approximation(fwd_func_ptr, model, params_vec, title="", plot_filename=""):
 
@@ -347,6 +365,7 @@ def plot_model_func_approximation(fwd_func_ptr, model, params_vec, title="", plo
         print(f"saving plot to file {plot_filename}")
         fig.savefig(plot_filename)
 
+
 if __name__ == '__main__':
 
     # for getting the reports' plots (need also to disable the rosenbrock BFGS run)
@@ -368,13 +387,14 @@ if __name__ == '__main__':
     test_samples, test_labels = gen_samples(f, 200)
     in_size = 2
     hidden_layers_sizes = (4, 3, 1)
-    nn_model = My_FC_NN_Model(in_size, hidden_layers_sizes)
+    nn_model = MyFullConnectedNeuralNetModel(in_size, hidden_layers_sizes)
     num_of_layers = len(nn_model.layers_sizes)
 
     run_func_approximation = True
     if run_func_approximation:
 
         epsilons = [1e-1, 1e-2, 1e-3, 1e-4]
+        #epsilons = [ 1e-4]
 
         for i, epsilon in enumerate(epsilons):
 
