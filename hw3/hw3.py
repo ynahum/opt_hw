@@ -54,31 +54,6 @@ def params_vec_to_dict(model, params_vec):
         start_offset = end_b
     return params_dict
 
-    params_dict = {}
-    start_offset = 0
-    prev_layer_size = model.input_size
-    for li, layer_size in enumerate(model.layers_sizes):
-        start_w = start_offset
-        #print(f"start_w: {start_w}")
-        end_w = start_w + prev_layer_size * layer_size
-        #print(f"end_w: {end_w}")
-        start_b = end_w
-        #print(f"start_b: {start_b}")
-        end_b = start_b + layer_size
-        #print(f"end_b: {end_b}")
-        params_dict[f'l{li}'] = {}
-        if params_vec is None:
-            W = np.random.randn(prev_layer_size, layer_size) / np.sqrt(layer_size)
-            b = np.zeros((layer_size, 1))
-        else:
-            W = params_vec[start_w:end_w].reshape((prev_layer_size, layer_size))
-            b = params_vec[start_b:end_b].reshape((layer_size, 1))
-        params_dict[f'l{li}']['W'] = W
-        params_dict[f'l{li}']['b'] = b
-        start_offset = end_b
-        prev_layer_size = layer_size
-    return params_dict
-
 
 def params_dict_to_vec(params_dict, num_of_layers):
     params_list = []
