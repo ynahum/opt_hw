@@ -26,8 +26,7 @@ if __name__ == '__main__':
     g2 = x1 - x2
     g3 = -x1 - x2
 
-    cntr = ax.contour(x1, x2, obj, [0.5, 1, 2, 4, 8, 16, 32, 64],
-                      colors='blue')
+    cntr = ax.contour(x1, x2, obj, [0.5, 1, 2, 4, 8, 16, 32, 37.66666, 64], colors='green')
     ax.clabel(cntr, fmt="%2.1f", use_clabeltext=True)
 
     cg1 = ax.contour(x1, x2, g1, [0], colors='sandybrown')
