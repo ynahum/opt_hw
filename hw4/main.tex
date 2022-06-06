@@ -76,30 +76,92 @@ when:
 
 We plot the objective function contours (ellipses as we have different eigen values in our A matrix) and the constraints:\\
 \includegraphics[scale=0.5]{hw4/plots/plot_1.png}\\
-\includegraphics[scale=0.5]{hw4/plots/plot_2.png}\\
-From plot, we can see the active constraints are the red and yellow together (the intersection point) and the blue ($-x_1- x_2 \leq 0$) is none active.
+From plot, we can see the active constraints are the red and yellow together (the intersection point) and the blue ($-x_1- x_2 \leq 0$) is none active.\\
+\includegraphics[scale=1]{hw4/plots/plot_2.png}\\
 
 \subsection{Optimal Solution}
 
 The intersection of the 2 active constraints is both are satisfied:
 $$x_1=x_2, 0.5x_1+x_2=1 \Rightarrow x=(x_1,x_2)=(\frac{2}{3},\frac{2}{3}), f^*(x) = 37\frac{2}{3}$$
 
-\subsection{Optimal Solution}
+\subsection{KKT conditions}
+
+The Lagrangian is defined as follows:
+$$L(x,\lambda)=f(x) + \lambda^Tg(x) = f(x) + \Sigma_{i=1}^3\lambda_ig_i(x)$$
+
+According to KKT, if $x^*$ is an optimal solution and $\nabla g_i(x)$ are independent (and we can see they are for any $x$ according to plot), there exist $\lambda^* \in \mathbb{R}^3$ for which:\\
+1. $\nabla_x L(x^*,\lambda^*) = 0$\\
+2. $g(x^*)\leq0$\\
+3. $\lambda_i^* \geq 0, i \in I_a$\\
+4. $\lambda_i^* = 0, i \notin I_a$\\
+$\Rightarrow$ And the complementary slackness:\\
+5. $\Sigma_{i=1}^3\lambda_i^*g_i(x^*) = 0$\\
+
+Let's find it:\\
+
+1. $\nabla_x L(x^*,\lambda^*) = 0 \Rightarrow$\\
+$$\nabla_{x_1} L(x^*,\lambda^*) = \nabla_{x_1} f(x^*) + \Sigma_{i=1}^3\lambda_i\nabla_{x_1} g_i(x^*) = 0\Rightarrow$$
+$$\nabla_x_1 L(x^*,\lambda^*) = 4(x_1-5) + 0.5\lambda_1 + \lambda_2 -\lambda_3 = 0$$
+$$\nabla_x_2 L(x^*,\lambda^*) = \nabla_{x_2} f(x^*) + \Sigma_{i=1}^3\lambda_i\nabla_{x_2} g_i(x^*) = 0\Rightarrow$$
+$$\nabla_{x_2} L(x^*,\lambda^*) = (x_2-1) + \lambda_1 - \lambda_2 -\lambda_3 = 0$$
+
+2. $g(x^*)\leq0$\\
+$$ g_1(x^*) = 0.5x_1 +x_2 -1 \leq 0$$
+$$ g_2(x^*) = x_1 -x_2 \leq 0$$
+$$ g_3(x^*) = -x_1 -x_2 \leq 0$$
+
+3. $\lambda_i^* \geq 0, i \in I_a$\\
+
+4. $\lambda_i^* = 0, i \notin I_a$\\
+
+5. $\Sigma_{i=1}^3\lambda_i^*g_i(x^*) = 0$\\
+$$ \lambda_1^*g_1(x^*) = \lambda_1^*(0.5x_1 +x_2 -1) = 0$$
+$$ \lambda_2^*g_2(x^*) = \lambda_2^*(x_1 -x_2) = 0$$
+$$ \lambda_3^*g_3(x^*) = \lambda_3^*(-x_1 -x_2) = 0$$
+
+From the last 2 equations of comp. slackness:\\
+We have:\\
+1. $x_1=x_2$ or $\lambda_2^*=0$\\
+2. $x_1=-x_2$ or $\lambda_3^*=0$\\
+
+If we assume $x_1=x_2 = -x_2$ we get the optimal point is $x_1=x_2=0 \Rightarrow \lambda_1 = 0, \lambda_3 = \frac{-21}{2} <0$ and we get a contradiction.\\
+
+So, $x_1=x_2,\lambda_3=0$ or $x_1=-x_2,\lambda_2=0$\\
+
+if $x_1=-x_2,\lambda_2=0$\\
+From $$\lambda_1^*(0.5x_1 +x_2 -1) = 0\Rightarrow$$
+$$\lambda_1^*(-0.5x_1 -1) = 0$$
+We get $\lambda_1^*=0$ or $x_1=-2, x_2=2$\\
+from first equations we get:\\
+$$4(x_1-5) + 0.5\lambda_1 -\lambda_3 = 0$$
+$$(-x_1-1) + \lambda_1 -\lambda_3 = 0 \Rightarrow$$
+$$5x_1-19 - 0.5\lambda_1 = 0\Rightarrow$$
+$\lambda_1<0$ and we get a contradiction again as $\lambda_1\geq 0$\\
+
+if $\lambda_1^*=0$\\
+from first equations we get:\\
+$$4(x_1-5) -\lambda_3 = 0$$
+$$(-x_1-1) -\lambda_3 = 0 \Rightarrow$$
+$$x_1=\frac{19}{5}, \lambda_3 <0$$ and again we get a contradiction as $\lambda_3\geq 0$\\
+
+For now we are left with:\\
+$$x_1=x_2,\lambda_3=0$$
+From $$\lambda_1^*(0.5x_1 +x_2 -1) = 0\Rightarrow$$
+$$\lambda_1^*(1.5x_1 -1) = 0$$
+We get $\lambda_1^*=0$ or $x_1=\frac{2}{3}, x_2=\frac{2}{3}$\\
+
+if $\lambda_1^*=0$\\
+from first equations we get:\\
+$$4(x_1-5) +\lambda_2 = 0$$
+$$(x_1-1) -\lambda_2 = 0 \Rightarrow$$
+$$x_1=\frac{21}{5}, \lambda_2 = \frac{16}{5}$$
+
+TODO: find a contradiction
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+Bottom line, we are left with:\\
+$$x_1=x_2=\frac{2}{3},\lambda_3=0$$
 
 
 
