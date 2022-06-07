@@ -205,16 +205,82 @@ Therefore:\\
 $$\nabla_x L(x,\lambda) = 2Ax + b + B^T\lambda = 0 \Rightarrow$$
 $$ x^* = -\frac{1}{2}A^{-1}(B^T\lambda + b)$$
 
-We next put it in the Lagrangian to get the dual function:
 
+We next put it in the Lagrangian to get the dual function:\\
+Note: A is diagonal in our case so it's also symmetric (and its inverse as well).\\
 
+$$\eta(\lambda) = L(x^*,\lambda) = \frac{1}{4}(B^T\lambda + b)^TA^{-1}(B^T\lambda + b) -\frac{1}{2}b^TA^{-1}(B^T\lambda + b) + \lambda^T (-\frac{1}{2}BA^{-1}(B^T\lambda + b) + d)=$$
+$$=\frac{1}{4}\lambda^TBA^{-1}B^T\lambda+\frac{1}{2}b^TA^{-1}B^T\lambda+\frac{1}{4}b^TA^{-1}b-\frac{1}{2}b^TA^{-1}B^T\lambda-\frac{1}{2}b^TA^{-1}b-\frac{1}{2}\lambda^TBA^{-1}B^T\lambda$$
+$$-\frac{1}{2}\lambda^TBA^{-1}b + \lambda^Td=$$
+$$=-\frac{1}{4}\lambda^TBA^{-1}B^T\lambda -\frac{1}{2}\lambda^TBA^{-1}b-\frac{1}{4}b^TA^{-1}b + \lambda^Td $$
 
+As expected, this is a concave function in $\lambda$
 
+So, the dual problem is:
+\rectres{$\max_{\lambda \geq 0} \eta(\lambda)=\max_{\lambda \geq 0}-\frac{1}{4}\lambda^TBA^{-1}B^T\lambda -\frac{1}{2}\lambda^TBA^{-1}b-\frac{1}{4}b^TA^{-1}b + \lambda^Td$}
 
+When:\\
+\begin{itemize}
+  \item $A \in \mathbb{R}^{2 \times 2}, A = \begin{bmatrix}
+               2 & 0 \\
+               0 & 1 \\
+  \end{bmatrix}, x,b \in \mathbb{R}^{2}, b = \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix}, c \in \mathbb{R}, c= 101$ 
+  \item $B \in \mathbb{R}^{3 \times 2}, B = \begin{bmatrix}
+               0.5 & 1 \\
+               1 & -1 \\
+               -1 & -1 \\
+  \end{bmatrix}, d \in \mathbb{R}^{3}, d = \begin{bmatrix}   -1 \\ 0\\ 0\\\end{bmatrix}$
+\end{itemize}
 
+\subsection{Dual Optimum}
 
+Let's check that optimal $x^*$ is achieved when setting the optimal multipliers:
 
-
+$$ x^* = -\frac{1}{2}A^{-1}(B^T\lambda + b)$$
+When:\\
+$ \lambda^* = \begin{bmatrix} 
+    \frac{82}{9} \\
+    \frac{85}{9}\\
+    0\\
+    \end{bmatrix}
+  A^{-1} = \begin{bmatrix}
+               \frac{1}{2} & 0 \\
+               0 & 1 \\
+  \end{bmatrix},
+  B^T = \begin{bmatrix}
+               0.5 & 1 & -1\\
+               1 & -1 & -1\\
+  \end{bmatrix},
+  b = \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix}$\\
+Therefore:\\
+$$ x^* = -\frac{1}{2}A^{-1}(B^T\lambda + b)=-\frac{1}{2}
+  \begin{bmatrix}
+               \frac{1}{2} & 0 \\
+               0 & 1 \\
+  \end{bmatrix}(
+  \begin{bmatrix}
+               0.5 & 1 & -1\\
+               1 & -1 & -1\\
+  \end{bmatrix}
+  \begin{bmatrix} 
+    \frac{82}{9} \\
+    \frac{85}{9}\\
+    0\\
+  \end{bmatrix}
+    +
+  \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix})    
+  =$$
+  $$=-\frac{1}{2}
+  \begin{bmatrix}
+               \frac{1}{2} & 0 \\
+               0 & 1 \\
+  \end{bmatrix}(\begin{bmatrix} \frac{126}{9} \\ -\frac{1}{3}\\ \end{bmatrix} + \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix})=$$
+  $$=-\frac{1}{2}
+  \begin{bmatrix}
+               \frac{1}{2} & 0 \\
+               0 & 1 \\
+  \end{bmatrix}\begin{bmatrix}   -6 \\ -\frac{7}{3}\\ \end{bmatrix}=$$
+$$=\begin{bmatrix} \frac{3}{2} & \frac{7}{6}\\ \end{bmatrix}^T$$
 
 
 
