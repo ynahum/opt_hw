@@ -46,7 +46,7 @@ We need to consider the following quadratic programming problem:
 \end{gather*}
 Which can be written as:
 \begin{gather*}
-    \min_{x_1,x_2}  2x^2_1-20x_1+100  + x^2_2-2x_2+1 \\
+    \min_{x_1,x_2}  2x^2_1-20x_1+50  + x^2_2-2x_2+1 \\
     \text{s.t \quad}\begin{array}{lr}
         0.5x_1 + x_2 -1 \leq 0  \\
         x_1- x_2 \leq 0 \\
@@ -66,7 +66,7 @@ when:
   \item $A \in \mathbb{R}^{2 \times 2}, A = \begin{bmatrix}
                2 & 0 \\
                0 & 1 \\
-  \end{bmatrix}, x,b \in \mathbb{R}^{2}, b = \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix}, c \in \mathbb{R}, c= 101$ 
+  \end{bmatrix}, x,b \in \mathbb{R}^{2}, b = \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix}, c \in \mathbb{R}, c= 51$ 
   \item $B \in \mathbb{R}^{3 \times 2}, B = \begin{bmatrix}
                0.5 & 1 \\
                1 & -1 \\
@@ -81,7 +81,7 @@ From plot, we can see the active constraints are the red and yellow together (th
 
 \subsection{Optimal Solution}
 
-The intersection of the 2 active constraints is both are satisfied:
+The intersection of the 2 active constraints when both are satisfied:
 $$x_1=x_2, 0.5x_1+x_2=1 \Rightarrow x=(x_1,x_2)=(\frac{2}{3},\frac{2}{3}), f^*(x) = 37\frac{2}{3}$$
 
 \subsection{KKT conditions}
@@ -126,7 +126,7 @@ We have:\\
 1. $x_1=x_2$ or $\lambda_2^*=0$\\
 2. $x_1=-x_2$ or $\lambda_3^*=0$\\
 
-If we assume $x_1=x_2 = -x_2$ we get the optimal point is $x_1=x_2=0 \Rightarrow \lambda^*_1 = 0, \lambda^*_3 = \frac{-21}{2} <0$ and we get a contradiction.\\
+If we assume $x_1=x_2 = -x_2$ we get the optimal point is $x_1=x_2=0 \Rightarrow \lambda^*_1 = 0, \lambda^*_3 = \frac{-21}{2} <0$ (from $\lambda_1^*(0.5x_1 +x_2 -1) = 0$ and $\nabla_x L(x^*,\lambda^*) = 0$), and we get a contradiction.\\
 
 So, $x_1=x_2,\lambda^*_3=0$ or $x_1=-x_2,\lambda^*_2=0$\\
 
@@ -134,6 +134,8 @@ if $x_1=-x_2,\lambda^*_2=0$\\
 From $$\lambda_1^*(0.5x_1 +x_2 -1) = 0\Rightarrow$$
 $$\lambda_1^*(-0.5x_1 -1) = 0$$
 We get $\lambda_1^*=0$ or $x_1=-2, x_2=2$\\
+
+if $x_1=-2, x_2=2$\\
 from first equations we get:\\
 $$4(x_1-5) + 0.5\lambda^*_1 -\lambda^*_3 = 0$$
 $$(-x_1-1) + \lambda^*_1 -\lambda^*_3 = 0 \Rightarrow$$
@@ -146,7 +148,7 @@ $$4(x_1-5) -\lambda^*_3 = 0$$
 $$(-x_1-1) -\lambda^*_3 = 0 \Rightarrow$$
 $$x_1=\frac{19}{5}, \lambda^*_3 <0$$ and again we get a contradiction as $\lambda^*_3\geq 0$\\
 
-For now we are left with:\\
+Thus, we are left with:\\
 $$x_1=x_2,\lambda^*_3=0$$
 From $$\lambda^*_1(0.5x_1 +x_2 -1) = 0\Rightarrow$$
 $$\lambda^*_1(1.5x_1 -1) = 0$$
@@ -167,10 +169,10 @@ $$x_1=x_2=\frac{2}{3},\lambda^*_3=0$$
 From first equations we get:\\
 $$4(x_1-5)  + 0.5\lambda^*_1 +\lambda^*_2 = 0$$
 $$(x_1-1)  + \lambda^*_1 -\lambda^*_2 = 0 \Rightarrow$$
-$$\frac{-42}{3}  + 0.5\lambda^*_1 +\lambda^*_2 = 0$$
-$$\frac{1}{3}  + \lambda^*_1 -\lambda^*_2 = 0 \Rightarrow$$
-$$\frac{3}{2}\lambda^*_1 = \frac{41}{3} \Rightarrow$$
-\rectres{$\lambda^*_1 = \frac{82}{9},\lambda^*_2 = \frac{85}{9}, \lambda^*_3=0$}
+$$\frac{-52}{3}  + 0.5\lambda^*_1 +\lambda^*_2 = 0$$
+$$-\frac{1}{3}  + \lambda^*_1 -\lambda^*_2 = 0 \Rightarrow$$
+$$\frac{3}{2}\lambda^*_1 = \frac{53}{3} \Rightarrow$$
+\rectres{$\lambda^*_1 = \frac{106}{9},\lambda^*_2 = \frac{103}{9}, \lambda^*_3=0$}
 
 \subsection{Dual Problem}
 
@@ -192,7 +194,7 @@ When:\\
   \item $A \in \mathbb{R}^{2 \times 2}, A = \begin{bmatrix}
                2 & 0 \\
                0 & 1 \\
-  \end{bmatrix}, x,b \in \mathbb{R}^{2}, b = \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix}, c \in \mathbb{R}, c= 101$ 
+  \end{bmatrix}, x,b \in \mathbb{R}^{2}, b = \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix}, c \in \mathbb{R}, c= 51$ 
   \item $B \in \mathbb{R}^{3 \times 2}, B = \begin{bmatrix}
                0.5 & 1 \\
                1 & -1 \\
@@ -239,8 +241,8 @@ Let's check that optimal $x^*$ is achieved when setting the optimal multipliers:
 $$ x^* = -\frac{1}{2}A^{-1}(B^T\lambda + b)$$
 When:\\
 $ \lambda^* = \begin{bmatrix} 
-    \frac{82}{9} \\
-    \frac{85}{9}\\
+    \frac{106}{9} \\
+    \frac{103}{9}\\
     0\\
     \end{bmatrix}
   A^{-1} = \begin{bmatrix}
@@ -263,8 +265,8 @@ $$ x^* = -\frac{1}{2}A^{-1}(B^T\lambda + b)=-\frac{1}{2}
                1 & -1 & -1\\
   \end{bmatrix}
   \begin{bmatrix} 
-    \frac{82}{9} \\
-    \frac{85}{9}\\
+    \frac{106}{9} \\
+    \frac{103}{9}\\
     0\\
   \end{bmatrix}
     +
@@ -274,13 +276,13 @@ $$ x^* = -\frac{1}{2}A^{-1}(B^T\lambda + b)=-\frac{1}{2}
   \begin{bmatrix}
                \frac{1}{2} & 0 \\
                0 & 1 \\
-  \end{bmatrix}(\begin{bmatrix} \frac{126}{9} \\ -\frac{1}{3}\\ \end{bmatrix} + \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix})=$$
+  \end{bmatrix}(\begin{bmatrix} \frac{166}{9} \\ \frac{1}{3}\\ \end{bmatrix} + \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix})=$$
   $$=-\frac{1}{2}
   \begin{bmatrix}
                \frac{1}{2} & 0 \\
                0 & 1 \\
-  \end{bmatrix}\begin{bmatrix}   -6 \\ -\frac{7}{3}\\ \end{bmatrix}=$$
-$$=\begin{bmatrix} \frac{3}{2} & \frac{7}{6}\\ \end{bmatrix}^T$$
+  \end{bmatrix}\begin{bmatrix}   -\frac{14}{9} \\ -\frac{5}{3}\\ \end{bmatrix}=$$
+$$=\begin{bmatrix} \frac{3}{2} & \frac{5}{6}\\ \end{bmatrix}^T$$
 
 
 
