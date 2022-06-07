@@ -26,7 +26,7 @@ if __name__ == '__main__':
     g2 = x1 - x2
     g3 = -x1 - x2
 
-    cntr = ax.contour(x1, x2, obj, [0.5, 1, 2, 4, 8, 16, 32, 37.66666, 64], colors='green')
+    cntr = ax.contour(x1, x2, obj, [0.5, 1, 2, 4, 8, 16, 32, 37.66666, 64], colors='mediumblue')
     ax.clabel(cntr, fmt="%2.1f", use_clabeltext=True)
 
     cg1 = ax.contour(x1, x2, g1, [0], colors='sandybrown')
@@ -37,9 +37,12 @@ if __name__ == '__main__':
     plt.setp(cg2.collections,
              path_effects=[patheffects.withTickedStroke(angle=60, length=2)])
 
-    cg3 = ax.contour(x1, x2, g3, [0], colors='mediumblue')
+    cg3 = ax.contour(x1, x2, g3, [0], colors='green')
     plt.setp(cg3.collections,
              path_effects=[patheffects.withTickedStroke(spacing=7)])
+
+    ax.axhline(y=0, color='gray')
+    ax.axvline(x=0, color='gray')
 
     ax.set_xlim(-3, 8)
     ax.set_ylim(-3, 5)
