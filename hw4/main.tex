@@ -105,7 +105,7 @@ Let's find the optimal point and multipliers:\\
 $$\nabla_{x_1} L(x^*,\lambda^*) = \nabla_{x_1} f(x^*) + \Sigma_{i=1}^3\lambda^*_i\nabla_{x_1} g_i(x^*) = 0\Rightarrow$$
 $$\nabla_x_1 L(x^*,\lambda^*) = 4(x_1-5) + 0.5\lambda^*_1 + \lambda^*_2 -\lambda^*_3 = 0$$
 $$\nabla_x_2 L(x^*,\lambda^*) = \nabla_{x_2} f(x^*) + \Sigma_{i=1}^3\lambda^*_i\nabla_{x_2} g_i(x^*) = 0\Rightarrow$$
-$$\nabla_{x_2} L(x^*,\lambda^*) = (x_2-1) + \lambda^*_1 - \lambda^*_2 -\lambda^*_3 = 0$$
+$$\nabla_{x_2} L(x^*,\lambda^*) = 2(x_2-1) + \lambda^*_1 - \lambda^*_2 -\lambda^*_3 = 0$$
 
 2. $g(x^*)\leq0$\\
 $$ g_1(x^*) = 0.5x_1 +x_2 -1 \leq 0$$
@@ -126,7 +126,7 @@ We have:\\
 1. $x_1=x_2$ or $\lambda_2^*=0$\\
 2. $x_1=-x_2$ or $\lambda_3^*=0$\\
 
-If we assume $x_1=x_2 = -x_2$ we get the optimal point is $x_1=x_2=0 \Rightarrow \lambda^*_1 = 0, \lambda^*_3 = \frac{-21}{2} <0$ (from $\lambda_1^*(0.5x_1 +x_2 -1) = 0$ and $\nabla_x L(x^*,\lambda^*) = 0$), and we get a contradiction.\\
+If we assume $x_1=x_2 = -x_2$ we get the optimal point is $x_1=x_2=0 \Rightarrow \lambda^*_1 = 0, \lambda^*_3 = \frac{-22}{2}=-11<0$ (from $\lambda_1^*(0.5x_1 +x_2 -1) = 0$ and $\nabla_x L(x^*,\lambda^*) = 0$), and we get a contradiction.\\
 
 So, $x_1=x_2,\lambda^*_3=0$ or $x_1=-x_2,\lambda^*_2=0$\\
 
@@ -138,15 +138,15 @@ We get $\lambda_1^*=0$ or $x_1=-2, x_2=2$\\
 if $x_1=-2, x_2=2$\\
 from first equations we get:\\
 $$4(x_1-5) + 0.5\lambda^*_1 -\lambda^*_3 = 0$$
-$$(-x_1-1) + \lambda^*_1 -\lambda^*_3 = 0 \Rightarrow$$
-$$5x_1-19 - 0.5\lambda^*_1 = 0\Rightarrow$$
+$$2(-x_1-1) + \lambda^*_1 -\lambda^*_3 = 0 \Rightarrow$$
+$$6x_1-18 - 0.5\lambda^*_1 = 0\Rightarrow$$
 $\lambda^*_1<0$ and we get a contradiction again as $\lambda^*_1\geq 0$\\
 
 if $\lambda^*_1=0$\\
 from first equations we get:\\
 $$4(x_1-5) -\lambda^*_3 = 0$$
-$$(-x_1-1) -\lambda^*_3 = 0 \Rightarrow$$
-$$x_1=\frac{19}{5}, \lambda^*_3 <0$$ and again we get a contradiction as $\lambda^*_3\geq 0$\\
+$$2(-x_1-1) -\lambda^*_3 = 0 \Rightarrow$$
+$$x_1=3, \lambda^*_3 <0$$ and again we get a contradiction as $\lambda^*_3\geq 0$\\
 
 Thus, we are left with:\\
 $$x_1=x_2,\lambda^*_3=0$$
@@ -157,8 +157,8 @@ We get $\lambda^*_1=0$ or $x_1=\frac{2}{3}, x_2=\frac{2}{3}$\\
 if $\lambda^*_1=0$\\
 from first equations we get:\\
 $$4(x_1-5) +\lambda^*_2 = 0$$
-$$(x_1-1) -\lambda^*_2 = 0 \Rightarrow$$
-$$x_1=\frac{21}{5}, \lambda^*_2 = \frac{16}{5}$$
+$$2(x_1-1) -\lambda^*_2 = 0 \Rightarrow$$
+$$x_1=\frac{22}{6}, \lambda^*_2 = \frac{16}{3}$$
 
 But in this case we get a contradiction from:
 $$ g_1(x^*) = 0.5x_1 +x_2 -1 \leq 0$$\\
@@ -168,11 +168,11 @@ $$x_1=x_2=\frac{2}{3},\lambda^*_3=0$$
 
 From first equations we get:\\
 $$4(x_1-5)  + 0.5\lambda^*_1 +\lambda^*_2 = 0$$
-$$(x_1-1)  + \lambda^*_1 -\lambda^*_2 = 0 \Rightarrow$$
+$$2(x_1-1)  + \lambda^*_1 -\lambda^*_2 = 0 \Rightarrow$$
 $$\frac{-52}{3}  + 0.5\lambda^*_1 +\lambda^*_2 = 0$$
-$$-\frac{1}{3}  + \lambda^*_1 -\lambda^*_2 = 0 \Rightarrow$$
-$$\frac{3}{2}\lambda^*_1 = \frac{53}{3} \Rightarrow$$
-\rectres{$\lambda^*_1 = \frac{106}{9},\lambda^*_2 = \frac{103}{9}, \lambda^*_3=0$}
+$$-\frac{2}{3}  + \lambda^*_1 -\lambda^*_2 = 0 \Rightarrow$$
+$$\frac{3}{2}\lambda^*_1 = \frac{54}{3} = 18 \Rightarrow$$
+\rectres{$\lambda^*_1 = 12,\lambda^*_2 = 11\frac{1}{3}, \lambda^*_3=0$}
 
 \subsection{Dual Problem}
 
@@ -241,8 +241,8 @@ Let's check that optimal $x^*$ is achieved when setting the optimal multipliers:
 $$ x^* = -\frac{1}{2}A^{-1}(B^T\lambda + b)$$
 When:\\
 $ \lambda^* = \begin{bmatrix} 
-    \frac{106}{9} \\
-    \frac{103}{9}\\
+    12 \\
+    11\frac{1}{3}\\
     0\\
     \end{bmatrix}
   A^{-1} = \begin{bmatrix}
@@ -265,8 +265,8 @@ $$ x^* = -\frac{1}{2}A^{-1}(B^T\lambda + b)=-\frac{1}{2}
                1 & -1 & -1\\
   \end{bmatrix}
   \begin{bmatrix} 
-    \frac{106}{9} \\
-    \frac{103}{9}\\
+    12 \\
+    \frac{34}{3}\\
     0\\
   \end{bmatrix}
     +
@@ -276,17 +276,24 @@ $$ x^* = -\frac{1}{2}A^{-1}(B^T\lambda + b)=-\frac{1}{2}
   \begin{bmatrix}
                \frac{1}{2} & 0 \\
                0 & 1 \\
-  \end{bmatrix}(\begin{bmatrix} \frac{166}{9} \\ \frac{1}{3}\\ \end{bmatrix} + \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix})=$$
+  \end{bmatrix}(\begin{bmatrix} \frac{52}{3} \\ \frac{2}{3}\\ \end{bmatrix} + \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix})=$$
   $$=-\frac{1}{2}
   \begin{bmatrix}
                \frac{1}{2} & 0 \\
                0 & 1 \\
-  \end{bmatrix}\begin{bmatrix}   -\frac{14}{9} \\ -\frac{5}{3}\\ \end{bmatrix}=$$
-$$=\begin{bmatrix} \frac{3}{2} & \frac{5}{6}\\ \end{bmatrix}^T$$
+  \end{bmatrix}\begin{bmatrix}   -\frac{8}{3} \\ -\frac{4}{3}\\ \end{bmatrix}=$$
+$$=\begin{bmatrix} \frac{2}{3} & \frac{2}{3}\\ \end{bmatrix}^T \Rightarrow$$
 
+\rectres{$x^*=\begin{bmatrix} \frac{2}{3} & \frac{2}{3}\\ \end{bmatrix}^T$}
 
+Exactly like we got at the primal problem solution. So we conclude that the dual optimum is achieved at that point as expected due to strong duality in this case.
 
+\subsection{Augmented Lagrangian Solver}
+In code.
 
+\subsection{Testing solver}
+
+\subsection{Plots}
 
 
 \begin{comment}
