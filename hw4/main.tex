@@ -89,7 +89,7 @@ $$x_1=x_2, 0.5x_1+x_2=1 \Rightarrow x=(x_1,x_2)=(\frac{2}{3},\frac{2}{3}), f^*(x
 The Lagrangian is defined as follows:
 $$L(x,\lambda)=f(x) + \lambda^Tg(x) = f(x) + \Sigma_{i=1}^3\lambda_ig_i(x)$$
 
-According to KKT, if $x^*$ is an optimal solution and $\nabla g_i(x)$ are independent (and we can see they are for any $x$ according to plot), there exist $\lambda^* \in \mathbb{R}^3$ for which:\\
+According to KKT, if $x^*$ is an optimal solution and $\nabla g_i(x)$ are independent (and we can see they are for any $x$ according to plot), we have $\lambda^* \in \mathbb{R}^3$ for which:\\
 1. $\nabla_x L(x^*,\lambda^*) = 0$\\
 2. $g(x^*)\leq0$\\
 3. $\lambda_i^* \geq 0, i \in I_a$\\
@@ -97,13 +97,15 @@ According to KKT, if $x^*$ is an optimal solution and $\nabla g_i(x)$ are indepe
 $\Rightarrow$ And the complementary slackness:\\
 5. $\Sigma_{i=1}^3\lambda_i^*g_i(x^*) = 0$\\
 
-Let's find it:\\
+Note: since the constraints ($g_i(x)$) are affine functions then we stand with LCQ condition and no need for the independence condition for the above KKT first order conditions to hold.\\
+
+Let's find the optimal point and multipliers:\\
 
 1. $\nabla_x L(x^*,\lambda^*) = 0 \Rightarrow$\\
-$$\nabla_{x_1} L(x^*,\lambda^*) = \nabla_{x_1} f(x^*) + \Sigma_{i=1}^3\lambda_i\nabla_{x_1} g_i(x^*) = 0\Rightarrow$$
-$$\nabla_x_1 L(x^*,\lambda^*) = 4(x_1-5) + 0.5\lambda_1 + \lambda_2 -\lambda_3 = 0$$
-$$\nabla_x_2 L(x^*,\lambda^*) = \nabla_{x_2} f(x^*) + \Sigma_{i=1}^3\lambda_i\nabla_{x_2} g_i(x^*) = 0\Rightarrow$$
-$$\nabla_{x_2} L(x^*,\lambda^*) = (x_2-1) + \lambda_1 - \lambda_2 -\lambda_3 = 0$$
+$$\nabla_{x_1} L(x^*,\lambda^*) = \nabla_{x_1} f(x^*) + \Sigma_{i=1}^3\lambda^*_i\nabla_{x_1} g_i(x^*) = 0\Rightarrow$$
+$$\nabla_x_1 L(x^*,\lambda^*) = 4(x_1-5) + 0.5\lambda^*_1 + \lambda^*_2 -\lambda^*_3 = 0$$
+$$\nabla_x_2 L(x^*,\lambda^*) = \nabla_{x_2} f(x^*) + \Sigma_{i=1}^3\lambda^*_i\nabla_{x_2} g_i(x^*) = 0\Rightarrow$$
+$$\nabla_{x_2} L(x^*,\lambda^*) = (x_2-1) + \lambda^*_1 - \lambda^*_2 -\lambda^*_3 = 0$$
 
 2. $g(x^*)\leq0$\\
 $$ g_1(x^*) = 0.5x_1 +x_2 -1 \leq 0$$
@@ -124,51 +126,100 @@ We have:\\
 1. $x_1=x_2$ or $\lambda_2^*=0$\\
 2. $x_1=-x_2$ or $\lambda_3^*=0$\\
 
-If we assume $x_1=x_2 = -x_2$ we get the optimal point is $x_1=x_2=0 \Rightarrow \lambda_1 = 0, \lambda_3 = \frac{-21}{2} <0$ and we get a contradiction.\\
+If we assume $x_1=x_2 = -x_2$ we get the optimal point is $x_1=x_2=0 \Rightarrow \lambda^*_1 = 0, \lambda^*_3 = \frac{-21}{2} <0$ and we get a contradiction.\\
 
-So, $x_1=x_2,\lambda_3=0$ or $x_1=-x_2,\lambda_2=0$\\
+So, $x_1=x_2,\lambda^*_3=0$ or $x_1=-x_2,\lambda^*_2=0$\\
 
-if $x_1=-x_2,\lambda_2=0$\\
+if $x_1=-x_2,\lambda^*_2=0$\\
 From $$\lambda_1^*(0.5x_1 +x_2 -1) = 0\Rightarrow$$
 $$\lambda_1^*(-0.5x_1 -1) = 0$$
 We get $\lambda_1^*=0$ or $x_1=-2, x_2=2$\\
 from first equations we get:\\
-$$4(x_1-5) + 0.5\lambda_1 -\lambda_3 = 0$$
-$$(-x_1-1) + \lambda_1 -\lambda_3 = 0 \Rightarrow$$
-$$5x_1-19 - 0.5\lambda_1 = 0\Rightarrow$$
-$\lambda_1<0$ and we get a contradiction again as $\lambda_1\geq 0$\\
+$$4(x_1-5) + 0.5\lambda^*_1 -\lambda^*_3 = 0$$
+$$(-x_1-1) + \lambda^*_1 -\lambda^*_3 = 0 \Rightarrow$$
+$$5x_1-19 - 0.5\lambda^*_1 = 0\Rightarrow$$
+$\lambda^*_1<0$ and we get a contradiction again as $\lambda^*_1\geq 0$\\
 
-if $\lambda_1^*=0$\\
+if $\lambda^*_1=0$\\
 from first equations we get:\\
-$$4(x_1-5) -\lambda_3 = 0$$
-$$(-x_1-1) -\lambda_3 = 0 \Rightarrow$$
-$$x_1=\frac{19}{5}, \lambda_3 <0$$ and again we get a contradiction as $\lambda_3\geq 0$\\
+$$4(x_1-5) -\lambda^*_3 = 0$$
+$$(-x_1-1) -\lambda^*_3 = 0 \Rightarrow$$
+$$x_1=\frac{19}{5}, \lambda^*_3 <0$$ and again we get a contradiction as $\lambda^*_3\geq 0$\\
 
 For now we are left with:\\
-$$x_1=x_2,\lambda_3=0$$
-From $$\lambda_1^*(0.5x_1 +x_2 -1) = 0\Rightarrow$$
-$$\lambda_1^*(1.5x_1 -1) = 0$$
-We get $\lambda_1^*=0$ or $x_1=\frac{2}{3}, x_2=\frac{2}{3}$\\
+$$x_1=x_2,\lambda^*_3=0$$
+From $$\lambda^*_1(0.5x_1 +x_2 -1) = 0\Rightarrow$$
+$$\lambda^*_1(1.5x_1 -1) = 0$$
+We get $\lambda^*_1=0$ or $x_1=\frac{2}{3}, x_2=\frac{2}{3}$\\
 
-if $\lambda_1^*=0$\\
+if $\lambda^*_1=0$\\
 from first equations we get:\\
-$$4(x_1-5) +\lambda_2 = 0$$
-$$(x_1-1) -\lambda_2 = 0 \Rightarrow$$
-$$x_1=\frac{21}{5}, \lambda_2 = \frac{16}{5}$$
+$$4(x_1-5) +\lambda^*_2 = 0$$
+$$(x_1-1) -\lambda^*_2 = 0 \Rightarrow$$
+$$x_1=\frac{21}{5}, \lambda^*_2 = \frac{16}{5}$$
 
 But in this case we get a contradiction from:
 $$ g_1(x^*) = 0.5x_1 +x_2 -1 \leq 0$$\\
 
 Bottom line, we are left with:\\
-$$x_1=x_2=\frac{2}{3},\lambda_3=0$$
+$$x_1=x_2=\frac{2}{3},\lambda^*_3=0$$
 
 From first equations we get:\\
-$$4(x_1-5)  + 0.5\lambda_1 +\lambda_2 = 0$$
-$$(x_1-1)  + \lambda_1 -\lambda_2 = 0 \Rightarrow$$
-$$\frac{-42}{3}  + 0.5\lambda_1 +\lambda_2 = 0$$
-$$\frac{1}{3}  + \lambda_1 -\lambda_2 = 0 \Rightarrow$$
-$$\frac{3}{2}\lambda_1 = \frac{41}{3} \Rightarrow$$
-\rectres{$\lambda_1 = \frac{82}{9},\lambda_2 = \frac{85}{9}, \lambda_3=0$}
+$$4(x_1-5)  + 0.5\lambda^*_1 +\lambda^*_2 = 0$$
+$$(x_1-1)  + \lambda^*_1 -\lambda^*_2 = 0 \Rightarrow$$
+$$\frac{-42}{3}  + 0.5\lambda^*_1 +\lambda^*_2 = 0$$
+$$\frac{1}{3}  + \lambda^*_1 -\lambda^*_2 = 0 \Rightarrow$$
+$$\frac{3}{2}\lambda^*_1 = \frac{41}{3} \Rightarrow$$
+\rectres{$\lambda^*_1 = \frac{82}{9},\lambda^*_2 = \frac{85}{9}, \lambda^*_3=0$}
+
+\subsection{Dual Problem}
+
+Since we have KKT conditions with a convex problem (convex objective function, convex constraints (even linear in our case)), then strong duality holds. Meaning:\\
+$$f^*(x^*,\lambda^*) = min_x \{max_{\lambda \geq 0} L(x,\lambda)\} =  max_{\lambda \geq 0}\{min_x L(x,\lambda)\}$$
+
+Let's define the dual function $\eta(\lambda) = min_x L(x,\lambda)$:\\
+
+First we find $x^*$ by taking the derivative of the Lagrangian and comparing it to 0. This is enough for finding the optimal point as the Lagrangian is a convex function.\\
+
+The Lagrangian:
+\begin{gather*}
+    L(x,\lambda) =  x^TAx + b^Tx + c + \lambda^T (Bx + d)\\
+\end{gather*}
+
+When:\\
+
+\begin{itemize}
+  \item $A \in \mathbb{R}^{2 \times 2}, A = \begin{bmatrix}
+               2 & 0 \\
+               0 & 1 \\
+  \end{bmatrix}, x,b \in \mathbb{R}^{2}, b = \begin{bmatrix}   -20 \\ -2\\ \end{bmatrix}, c \in \mathbb{R}, c= 101$ 
+  \item $B \in \mathbb{R}^{3 \times 2}, B = \begin{bmatrix}
+               0.5 & 1 \\
+               1 & -1 \\
+               -1 & -1 \\
+  \end{bmatrix}, d \in \mathbb{R}^{3}, d = \begin{bmatrix}   -1 \\ 0\\ 0\\\end{bmatrix}$
+\end{itemize}
+
+Therefore:\\
+
+$$\nabla_x L(x,\lambda) = 2Ax + b + B^T\lambda = 0 \Rightarrow$$
+$$ x^* = -\frac{1}{2}A^{-1}(B^T\lambda + b)$$
+
+We next put it in the Lagrangian to get the dual function:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \begin{comment}
 
