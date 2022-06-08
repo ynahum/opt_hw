@@ -1,6 +1,7 @@
-import numpy as np
 from newton_method import newton_method
 from rosenbrock import *
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def traj_plot(trajectory_points, f_func, title=''):
@@ -18,7 +19,7 @@ def traj_plot(trajectory_points, f_func, title=''):
 
 if __name__ == '__main__':
 
-    test_rosen = False
+    test_rosen = True
     if test_rosen:
         x_0 = np.zeros((10, 1))
 

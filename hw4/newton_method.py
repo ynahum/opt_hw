@@ -1,5 +1,5 @@
-import numpy as np
 from newton_method_utils import *
+import numpy as np
 
 
 def inexact_line_search_armijo_rule_backtrack(f_func, f_grad, d, x, alpha_0=1, beta=0.5, sigma=0.25):
