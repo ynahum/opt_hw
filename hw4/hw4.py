@@ -1,48 +1,29 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import cm
-from matplotlib.ticker import LinearLocator
-from matplotlib import patheffects
+from newton_method import newton_method
+from rosenbrock import *
 
+
+def traj_plot(trajectory_points, f_func, title=''):
+
+    f = [ f_func(x) for x in trajectory_points]
+    #f = [ np.log10(rosenbrock_func(x)) for x in trajectory_points]
+    fig = plt.figure()
+    fig.suptitle(title)
+    plt.yscale("log")
+    plt.xlabel(r'Number of iterations (tolerance on gradient norm = $10^{-5}$)')
+    plt.ylabel(r'$log{(f(x_k)-f(x^*))}$')
+    plt.plot(f, 'k')
+    plt.show()
 
 
 if __name__ == '__main__':
 
-    fig, ax = plt.subplots(figsize=(6, 6))
+    test_rosen = False
+    if test_rosen:
+        x_0 = np.zeros((10, 1))
 
-    nx = 101
-    ny = 105
+        trajectory_points = newton_method(x_0, f_func=rosenbrock_func, f_grad=rosenbrock_grad, f_hessian=rosenbrock_hessian)
+        title = f'Newton Method over rosenbrock trajectory plot'
+        traj_plot(trajectory_points, rosenbrock_func, title=title)
 
-    # Set up survey vectors
-    xvec = np.linspace(0.001, 4.0, nx)
-    yvec = np.linspace(0.001, 4.0, ny)
 
-    # Set up survey matrices.  Design disk loading and gear ratio.
-    x1, x2 = np.meshgrid(xvec, yvec)
-
-    # Evaluate some stuff to plot
-    obj = x1 ** 2 + x2 ** 2 - 2 * x1 - 2 * x2 + 2
-    g1 = -(3 * x1 + x2 - 5.5)
-    g2 = -(x1 + 2 * x2 - 4.5)
-    g3 = 0.8 + x1 ** -3 - x2
-
-    cntr = ax.contour(x1, x2, obj, [0.01, 0.1, 0.5, 1, 2, 4, 8, 16],
-                      colors='black')
-    ax.clabel(cntr, fmt="%2.1f", use_clabeltext=True)
-
-    cg1 = ax.contour(x1, x2, g1, [0], colors='sandybrown')
-    plt.setp(cg1.collections,
-             path_effects=[patheffects.withTickedStroke(angle=135)])
-
-    cg2 = ax.contour(x1, x2, g2, [0], colors='orangered')
-    plt.setp(cg2.collections,
-             path_effects=[patheffects.withTickedStroke(angle=60, length=2)])
-
-    cg3 = ax.contour(x1, x2, g3, [0], colors='mediumblue')
-    plt.setp(cg3.collections,
-             path_effects=[patheffects.withTickedStroke(spacing=7)])
-
-    ax.set_xlim(0, 4)
-    ax.set_ylim(0, 4)
-
-    plt.show()
