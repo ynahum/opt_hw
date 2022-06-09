@@ -1,13 +1,16 @@
-from newton_method import newton_method
 from rosenbrock import *
-from optim_problem import *
 from plot_utils import *
+from augmented_lagrangian_multipliers_algo import *
+from newton_method import newton_method
+from optim_problem import *
+from penalty import *
 import numpy as np
 
 
 if __name__ == '__main__':
 
-    test_rosen = True
+
+    test_rosen = False
     if test_rosen:
         x_0 = np.zeros((10, 1))
 
@@ -18,4 +21,12 @@ if __name__ == '__main__':
         title = f'Newton Method over rosenbrock trajectory plot'
         traj_plot(trajectory_points, rosenbrock_func, title=title)
 
-
+    test_augmented = True
+    if test_augmented:
+        x_0 = np.zeros((10, 1))
+        f = Func(func=rosenbrock_func, grad=rosenbrock_grad, hessian=rosenbrock_hessian)
+        penalty_f = Func(func=penalty_func, grad=penalty_first_derivative, hessian=penalty_second_derivative)
+        rosen_op_problem = OptimizationProblem(objective_func=f)
+        x_traj = augmented_lagrangian_mult_algo(rosen_op_problem, penalty_f, x_0)
+        title = f'Augmented Lagrangian over rosenbrock trajectory plot'
+        traj_plot(x_traj, rosenbrock_func, title=title)
