@@ -2,7 +2,6 @@ from optim_problem import *
 from newton_method import newton_method
 
 
-
 class PenaltyAggregateFunction:
     def __init__(self, optim_problem: OptimizationProblem, penalty_func: Func, p_init=100, alpha=2):
         self.optim_problem = optim_problem
@@ -13,16 +12,28 @@ class PenaltyAggregateFunction:
     def func(self, x):
         f_value = self.optim_problem.func(x)
         for i, _ in enumerate(self.optim_problem.ineq_constraints):
-            f_value += (1 / self.p) * self.penalty_func(self.p * self.optim_problem.ineq_func(x, i))
+            f_value += (1 / self.p) * self.penalty_func.func(self.p * self.optim_problem.ineq_func(x, i))
         return f_value
 
     def grad(self, x):
-        # TODO: add ineq
-        return self.optim_problem.grad(x)
+        g_value = self.optim_problem.grad(x)
+        for i, _ in enumerate(self.optim_problem.ineq_constraints):
+            g_i_x = self.optim_problem.ineq_func(x, i)
+            nabla_g_i_x = self.optim_problem.ineq_grad(x, i)
+            g_value += self.penalty_func.grad(self.p * g_i_x) * nabla_g_i_x
+        return g_value
 
     def hessian(self, x):
-        # TODO: add ineq
-        return self.optim_problem.hessian(x)
+        h_value = self.optim_problem.hessian(x)
+        for i, _ in enumerate(self.optim_problem.ineq_constraints):
+            g_i_x = self.optim_problem.ineq_func(x, i)
+            nabla_g_i_x = self.optim_problem.ineq_grad(x, i)
+            first_comp = (self.p * self.penalty_func.hessian(self.p * g_i_x) *
+                          nabla_g_i_x @ nabla_g_i_x.T)
+            nabla_square_g_i_x = self.optim_problem.ineq_hessian(x, i)
+            second_comp = (self.penalty_func.grad(self.p * g_i_x) * nabla_square_g_i_x)
+            h_value += first_comp + second_comp
+        return h_value
 
 
 def augmented_lagrangian_mult_algo(optim_problem: OptimizationProblem, penalty_func: Func, x_0, init_p=100, alpha=2):
