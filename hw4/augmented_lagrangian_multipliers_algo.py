@@ -59,8 +59,8 @@ class AugmentedLagrangianSolver:
         x_trajectory = []
         aggregate_grads = []
         mult_trajectory = []
-        current_multipliers = np.ones((self.num_of_constraints, 1))
-        mult_trajectory.append(current_multipliers)
+
+        current_multipliers = np.zeros((self.num_of_constraints, 1))
 
         func_aggregate = Func(self.func, self.grad, self.hessian)
 
@@ -82,12 +82,12 @@ class AugmentedLagrangianSolver:
 
             aggregate_grads.extend(returned_hash['grad_list'])
 
-            # calculate new multiplier phi'(x_optimal)
-            self.update_multipliers(x_optimal)
-            current_multipliers = np.zeros((self.num_of_constraints, 1))
             for i, _ in enumerate(self.optim_problem.ineq_constraints):
                 current_multipliers[i] = self.penalty[i].multiplier
-            mult_trajectory.append(current_multipliers)
+            mult_trajectory.append(current_multipliers.copy())
+
+            # calculate new multiplier phi'(x_optimal)
+            self.update_multipliers(x_optimal)
 
             # increase p by alpha
             self.p *= self.alpha

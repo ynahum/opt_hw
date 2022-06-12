@@ -1,5 +1,5 @@
 from func import Func
-
+import numpy as np
 
 class OptimizationProblem:
 
@@ -30,8 +30,8 @@ class OptimizationProblem:
         return self.ineq_constraints[i].hessian(x)
 
     def calc_maximal_constraint_violation(self,x_list):
-        max_const_violation = []
-        for x in x_list:
-            values = [self.ineq_func(x,i) for i,_ in enumerate(self.ineq_constraints)]
-            max_const_violation.append(max(values))
+        max_const_violation = np.zeros((len(x_list),1))
+        for j, x in enumerate(x_list):
+            values = [max(self.ineq_func(x,i),0) for i,_ in enumerate(self.ineq_constraints)]
+            max_const_violation[j] = max(values)
         return max_const_violation

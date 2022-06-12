@@ -50,7 +50,11 @@ def modifiedChol(G):
 	C[ee,j] = G[ee,j]
 	theta[j] = np.max(np.abs(C[ee,j]))
 
-	d[j] = np.max(np.array([ eps, np.abs(C[j,j]), (theta[j]**2)/beta2 ]).T)
+	vec = np.empty((3,1))
+	vec[0] = eps
+	vec[1] = np.abs(C[j,j])
+	vec[2] = (theta[j]**2)/beta2
+	d[j] = np.max(vec.T)
 	e[j] = d[j] - C[j,j]
 
 	ind = [(i,i) for i in range(n)]
@@ -81,7 +85,11 @@ def modifiedChol(G):
 	C[ee, j] = G[ee, j] - ((C[np.ix_(ee, bb)]) @ (L[j, bb].T))
 	theta[j] = 0
 
-	d[j] = np.max(np.array([ eps, np.abs(C[j,j]), (theta[j]**2)/beta2 ]).T)
+	vec = np.empty((3,1))
+	vec[0] = eps
+	vec[1] = np.abs(C[j,j])
+	vec[2] = (theta[j]**2)/beta2
+	d[j] = np.max(vec.T)
 	e[j] = d[j] - C[j,j]
 
 	#	Add ones on the diagonal:

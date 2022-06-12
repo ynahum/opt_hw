@@ -51,12 +51,10 @@ def x_diff_plot(trajectory_points, x_optimal, y_scale_to_log=True, title=''):
     plt.plot(diff, 'k')
     plt.show()
 
-def multipliers_diff_plot(multipliers, optimal_multiplier, y_scale_to_log=True, title=''):
+def multipliers_diff_plot(multipliers, optimal_multiplier, title=''):
     diff = [np.linalg.norm(mult-optimal_multiplier) for mult in multipliers]
     fig = plt.figure()
     fig.suptitle(title)
-    if y_scale_to_log:
-        plt.yscale("log")
     plt.xlabel(r'Number of iterations')
     plt.ylabel(r'$||\lambda-\lambda^*||_2$')
     plt.plot(diff, 'k')

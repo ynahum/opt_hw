@@ -16,9 +16,9 @@ if __name__ == '__main__':
         f = Func(func=rosenbrock_func, grad=rosenbrock_grad, hessian=rosenbrock_hessian)
         rosen_op_problem = OptimizationProblem(objective_func=f)
 
-        trajectory_points = newton_method(x_0, rosen_op_problem)
+        trajectory_points = newton_method(x_0, rosen_op_problem)['x_list']
         title = f'Newton Method over rosenbrock trajectory plot'
-        traj_plot(trajectory_points, rosenbrock_func, title=title)
+        f_abs_diff_plot(trajectory_points, rosenbrock_func, np.ones((10, 1)), y_scale_to_log=False, title=title)
 
     test_unconst_rosen_2 = False
     if test_unconst_rosen_2:
@@ -38,7 +38,9 @@ if __name__ == '__main__':
 
     test_augmented = True
     if test_augmented:
-        x_0 = np.zeros((2, 1))
+        x_0 = np.zeros((2,1))
+        x_0[0] = 0
+        x_0[1] = -0.2
 
         f = Func(func=obj_func, grad=obj_grad, hessian=obj_hessian)
 
@@ -64,9 +66,11 @@ if __name__ == '__main__':
         max_violations = op_problem.calc_maximal_constraint_violation(x_traj)
         maximal_cont_violation_plot(max_violations, title=title)
 
-        analitical_x_optimal = [2.0/3, 2.0/3]
+        analitical_x_optimal = np.zeros((2,1))
+        analitical_x_optimal[0] = 2.0/3
+        analitical_x_optimal[1] = 2.0/3
         title = r'$|f(x_k)-f(x^*)|$'
-        print(x_traj)
+        print(f"x_traj={x_traj}")
         f_abs_diff_plot(x_traj, augmented_lagrangian_solver.func, analitical_x_optimal, y_scale_to_log=False, title=title)
 
 
@@ -74,7 +78,10 @@ if __name__ == '__main__':
         #print(x_traj)
         x_diff_plot(x_traj, analitical_x_optimal, title=title)
 
-        analitical_lambda_optimal = np.array([12.0, (34.0/3), 0.0])
+        analitical_lambda_optimal = np.zeros((3,1))
+        analitical_lambda_optimal[0] = 12
+        analitical_lambda_optimal[1] = (34.0/3)
         title = r'$||\lambda-\lambda^*||_2$'
+        print(f"multipliers={mults}")
         multipliers_diff_plot(mults, analitical_lambda_optimal, title=title)
 
