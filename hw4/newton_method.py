@@ -32,7 +32,7 @@ def newton_method(x_0, optim_problem: OptimizationProblem, grad_norm_thresh=(10*
         d = newton_direction(optim_problem.hessian(x), grad_k_list[-1])
 
         x_k_list.append(x)
-        if np.linalg.norm(d, ord=2) <= grad_norm_thresh:
+        if np.linalg.norm(grad_k_list[-1], ord=2) <= grad_norm_thresh:
             print(f'Newton Method has converged after {num_of_iteration} iterations')
             break
 

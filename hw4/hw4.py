@@ -34,7 +34,7 @@ if __name__ == '__main__':
         grads = returned_hash['grad_list']
 
         title = f'Augmented Lagrangian over rosenbrock trajectory plot'
-        traj_plot(x_traj, rosenbrock_func, title=title)
+        f_abs_diff_plot(x_traj, rosenbrock_func, x_traj[-1], title=title)
 
     test_augmented = True
     if test_augmented:
@@ -56,7 +56,15 @@ if __name__ == '__main__':
         x_traj = returned_hash['x_list']
         grads = returned_hash['grad_list']
 
-        title = f'Augmented Lagrangian over report problem trajectory plot'
+        title = r'$||\nabla F_{p,\mu}(x_k)||_2$'
+        augmented_grads_plot(grads, title=title)
+
+        title = f'Maximal constraints violation'
+        max_violations = op_problem.calc_maximal_constraint_violation(x_traj)
+        maximal_cont_violation_plot(max_violations, title=title)
+
+        analitical_x_optimal = [2.0/3, 2.0/3]
+        title = r'$|(f(x_k)-f(x^*))|$'
         print(x_traj)
-        traj_plot(x_traj, augmented_lagrangian_solver.func, y_scale_to_log=False, title=title)
+        f_abs_diff_plot(x_traj, augmented_lagrangian_solver.func, analitical_x_optimal, y_scale_to_log=False, title=title)
         #traj_plot(x_traj, augmented_lagrangian_solver.func, title=title)

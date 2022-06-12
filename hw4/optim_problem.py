@@ -28,3 +28,10 @@ class OptimizationProblem:
     def ineq_hessian(self, x, i):
         assert(0 <= i < len(self.ineq_constraints))
         return self.ineq_constraints[i].hessian(x)
+
+    def calc_maximal_constraint_violation(self,x_list):
+        max_const_violation = []
+        for x in x_list:
+            values = [self.ineq_func(x,i) for i,_ in enumerate(self.ineq_constraints)]
+            max_const_violation.append(max(values))
+        return max_const_violation
