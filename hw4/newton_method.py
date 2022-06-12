@@ -21,8 +21,6 @@ def newton_method(x_0, optim_problem: OptimizationProblem, grad_norm_thresh=(10*
     x_k_list = []
     grad_k_list = []
 
-    print('Started Newton Method with:')
-
     x = x_0
     num_of_iteration = 0
 
