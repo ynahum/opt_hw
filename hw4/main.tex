@@ -349,12 +349,23 @@ array([[1.],[1.],[1.]]),\\
        [ 0.03703704]])}
        
 \subsection{Plots}
+\subsubsection{}
 \includegraphics[scale=0.5]{hw4/plots/plot_3.png}\\
-\includegraphics[scale=0.5]{hw4/plots/plot_4.png}\\
-\includegraphics[scale=0.5]{hw4/plots/plot_5.png}\\
-\includegraphics[scale=0.5]{hw4/plots/plot_6.png}\\
-\includegraphics[scale=0.5]{hw4/plots/plot_7.png}\\
+We can see in above plot that the gradients on each newton iteration converged in a polynomial convergence rate. In between, we ruin our current point a bit as we change the penalty parameter (increase by $\alpha=2$) and multipliers (derivative at active points).\\
 
+\subsubsection{}
+\includegraphics[scale=0.5]{hw4/plots/plot_4.png}\\
+Above is the plot of the maximum constraint violation $\max_i(g_i(x)) \geq 0$ at each x in the trajectory we've followed.\\
+
+\subsubsection{}
+\includegraphics[scale=0.5]{hw4/plots/plot_5.png}\\
+The absolute value of the diff between the x trajectory function's values and the optimal x function value (for the constrained problem). we can see we eventually converge to the optimal value (diff is zero)\\
+
+\subsubsection{}
+\includegraphics[scale=0.5]{hw4/plots/plot_6.png}\\
+We can see the distance between trajectory x values and optimal x converges to 0. The same bumps as we saw due to restating a new unconstrained optimization problem with different penalty and multipliers.\\
+\includegraphics[scale=0.5]{hw4/plots/plot_7.png}\\
+On multipliers, we can see we converge to the optimal monotonically as we update them between new unconstrained optimization problems (defined on new penalty function aggregate)\\
 
 \begin{comment}
 
