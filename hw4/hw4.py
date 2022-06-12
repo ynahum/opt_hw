@@ -28,7 +28,8 @@ if __name__ == '__main__':
         f = Func(func=rosenbrock_func, grad=rosenbrock_grad, hessian=rosenbrock_hessian)
         penalty_f = Func(func=penalty_func, grad=penalty_first_derivative, hessian=penalty_second_derivative)
         rosen_op_problem = OptimizationProblem(objective_func=f)
-        x_traj = augmented_lagrangian_mult_algo(rosen_op_problem, penalty_f, x_0)
+        augmented_lagrangian_solver = AugmentedLagrangianSolver(rosen_op_problem, penalty_f)
+        x_traj = augmented_lagrangian_solver.solve(x_0)
         title = f'Augmented Lagrangian over rosenbrock trajectory plot'
         traj_plot(x_traj, rosenbrock_func, title=title)
 
@@ -42,7 +43,8 @@ if __name__ == '__main__':
         ineq_const = [g1, g2, g3]
         penalty_f = Func(func=penalty_func, grad=penalty_first_derivative, hessian=penalty_second_derivative)
         op_problem = OptimizationProblem(objective_func=f, ineq_constraints=ineq_const)
-        x_traj = augmented_lagrangian_mult_algo(op_problem, penalty_f, x_0)
+        augmented_lagrangian_solver = AugmentedLagrangianSolver(op_problem, penalty_f)
+        x_traj = augmented_lagrangian_solver.solve(x_0)
         title = f'Augmented Lagrangian over report problem trajectory plot'
         print(x_traj)
         traj_plot(x_traj, obj_func, title=title)
