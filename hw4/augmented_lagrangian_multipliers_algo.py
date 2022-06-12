@@ -25,7 +25,7 @@ class AugmentedLagrangianSolver:
         for i, _ in enumerate(self.optim_problem.ineq_constraints):
             g_i_x = self.optim_problem.ineq_func(x, i)
             nabla_g_i_x = self.optim_problem.ineq_grad(x, i)
-            g_value += self.penalty[i].grad(g_i_x) * nabla_g_i_x
+            g_value += self.penalty[i].first_derivative(g_i_x) * nabla_g_i_x
         return g_value
 
     def hessian(self, x):
@@ -33,9 +33,9 @@ class AugmentedLagrangianSolver:
         for i, _ in enumerate(self.optim_problem.ineq_constraints):
             g_i_x = self.optim_problem.ineq_func(x, i)
             nabla_g_i_x = self.optim_problem.ineq_grad(x, i)
-            first_comp = (self.penalty[i].hessian(g_i_x) * nabla_g_i_x @ nabla_g_i_x.T)
+            first_comp = (self.penalty[i].second_derivative(g_i_x) * nabla_g_i_x @ nabla_g_i_x.T)
             nabla_square_g_i_x = self.optim_problem.ineq_hessian(x, i)
-            second_comp = (self.penalty[i].grad(g_i_x) * nabla_square_g_i_x)
+            second_comp = (self.penalty[i].first_derivative(g_i_x) * nabla_square_g_i_x)
             h_value += first_comp + second_comp
         return h_value
 

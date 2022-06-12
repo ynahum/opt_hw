@@ -34,14 +34,20 @@ if __name__ == '__main__':
     test_augmented = True
     if test_augmented:
         x_0 = np.zeros((2, 1))
+
         f = Func(func=obj_func, grad=obj_grad, hessian=obj_hessian)
+
         g1 = Func(func=g1_func, grad=g1_grad, hessian=g1_hessian)
         g2 = Func(func=g2_func, grad=g2_grad, hessian=g2_hessian)
         g3 = Func(func=g3_func, grad=g3_grad, hessian=g3_hessian)
         ineq_const = [g1, g2, g3]
+
         op_problem = OptimizationProblem(objective_func=f, ineq_constraints=ineq_const)
+
         augmented_lagrangian_solver = AugmentedLagrangianSolver(op_problem, p_init=100)
+
         x_traj = augmented_lagrangian_solver.solve(x_0)
+
         title = f'Augmented Lagrangian over report problem trajectory plot'
         print(x_traj)
         traj_plot(x_traj, augmented_lagrangian_solver.func, title=title)

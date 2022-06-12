@@ -40,8 +40,8 @@ class Penalty:
     def func(self,x):
         return (1.0/self.p) * penalty_func(self.p * x, self.mu)
 
-    def grad(self,x):
+    def first_derivative(self,x):
         return penalty_first_derivative(self.p * x, self.mu)
 
-    def hessian(self,x):
+    def second_derivative(self,x):
         return self.p * penalty_second_derivative(self.p * x)
