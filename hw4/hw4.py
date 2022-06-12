@@ -50,4 +50,4 @@ if __name__ == '__main__':
 
         title = f'Augmented Lagrangian over report problem trajectory plot'
         print(x_traj)
-        traj_plot(x_traj, augmented_lagrangian_solver.func, title=title)
+        traj_plot(x_traj, augmented_lagrangian_solver.func, y_scale_to_log=False, title=title)
