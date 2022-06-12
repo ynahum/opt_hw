@@ -1,17 +1,17 @@
 import numpy as np
 
 
-def penalty_func(t):
+def penalty_func(t, mu_multiplier=1):
     if t >= -0.5:
-        f = 0.5*(t**2) + t
+        f = 0.5*(t**2) + mu_multiplier * t
     else:
         f = -0.25*np.log(-2*t) - 0.375
     return f
 
 
-def penalty_first_derivative(t):
+def penalty_first_derivative(t, mu_multiplier=1):
     if t >= -0.5:
-        f = t + 1
+        f = t + mu_multiplier
     else:
         f = -0.25/t
     return f
@@ -25,3 +25,23 @@ def penalty_second_derivative(t):
     return f
 
 
+class Penalty:
+
+    def __init__(self, p_init, multiplier_init=1):
+        self.p = p_init
+        self.mu = multiplier_init
+
+    def set_p(self, p):
+        self.p = p
+
+    def set_mu(self, multiplier):
+        self.mu = multiplier
+
+    def func(self,x):
+        return (1.0/self.p) * penalty_func(self.p * x, self.mu)
+
+    def grad(self,x):
+        return penalty_first_derivative(self.p * x, self.mu)
+
+    def hessian(self,x):
+        return self.p * penalty_second_derivative(self.p * x)

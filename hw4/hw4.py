@@ -10,9 +10,8 @@ import numpy as np
 
 if __name__ == '__main__':
 
-
-    test_rosen = False
-    if test_rosen:
+    test_unconst_rosen = False
+    if test_unconst_rosen:
         x_0 = np.zeros((10, 1))
 
         f = Func(func=rosenbrock_func, grad=rosenbrock_grad, hessian=rosenbrock_hessian)
@@ -22,13 +21,12 @@ if __name__ == '__main__':
         title = f'Newton Method over rosenbrock trajectory plot'
         traj_plot(trajectory_points, rosenbrock_func, title=title)
 
-    test_augmented_rosen = False
-    if test_augmented_rosen:
+    test_unconst_rosen_2 = False
+    if test_unconst_rosen_2:
         x_0 = np.zeros((10, 1))
         f = Func(func=rosenbrock_func, grad=rosenbrock_grad, hessian=rosenbrock_hessian)
-        penalty_f = Func(func=penalty_func, grad=penalty_first_derivative, hessian=penalty_second_derivative)
         rosen_op_problem = OptimizationProblem(objective_func=f)
-        augmented_lagrangian_solver = AugmentedLagrangianSolver(rosen_op_problem, penalty_f)
+        augmented_lagrangian_solver = AugmentedLagrangianSolver(rosen_op_problem)
         x_traj = augmented_lagrangian_solver.solve(x_0)
         title = f'Augmented Lagrangian over rosenbrock trajectory plot'
         traj_plot(x_traj, rosenbrock_func, title=title)
@@ -41,10 +39,9 @@ if __name__ == '__main__':
         g2 = Func(func=g2_func, grad=g2_grad, hessian=g2_hessian)
         g3 = Func(func=g3_func, grad=g3_grad, hessian=g3_hessian)
         ineq_const = [g1, g2, g3]
-        penalty_f = Func(func=penalty_func, grad=penalty_first_derivative, hessian=penalty_second_derivative)
         op_problem = OptimizationProblem(objective_func=f, ineq_constraints=ineq_const)
-        augmented_lagrangian_solver = AugmentedLagrangianSolver(op_problem, penalty_f)
+        augmented_lagrangian_solver = AugmentedLagrangianSolver(op_problem, p_init=100)
         x_traj = augmented_lagrangian_solver.solve(x_0)
         title = f'Augmented Lagrangian over report problem trajectory plot'
         print(x_traj)
-        traj_plot(x_traj, obj_func, title=title)
+        traj_plot(x_traj, augmented_lagrangian_solver.func, title=title)

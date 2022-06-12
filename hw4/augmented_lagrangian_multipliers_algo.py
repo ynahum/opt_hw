@@ -1,18 +1,23 @@
 from optim_problem import *
+from penalty import *
 from newton_method import newton_method
+import numpy as np
 
 
 class AugmentedLagrangianSolver:
-    def __init__(self, optim_problem: OptimizationProblem, penalty_func: Func, p_init=100, alpha=2):
+
+    def __init__(self, optim_problem: OptimizationProblem, p_init=100, alpha=2):
         self.optim_problem = optim_problem
-        self.penalty_func = penalty_func
-        self.p = p_init
+        num_of_constraints = len(self.optim_problem.ineq_constraints)
+        self.penalty = [Penalty(p_init) for _ in range(num_of_constraints)]
         self.alpha = alpha
+        self.multipliers = np.ones((num_of_constraints, num_of_constraints))
 
     def func(self, x):
         f_value = self.optim_problem.func(x)
         for i, _ in enumerate(self.optim_problem.ineq_constraints):
-            f_value += (1 / self.p) * self.penalty_func.func(self.p * self.optim_problem.ineq_func(x, i))
+            g_i_x = self.optim_problem.ineq_func(x, i)
+            f_value += self.penalty[i].func(g_i_x)
         return f_value
 
     def grad(self, x):
@@ -20,7 +25,7 @@ class AugmentedLagrangianSolver:
         for i, _ in enumerate(self.optim_problem.ineq_constraints):
             g_i_x = self.optim_problem.ineq_func(x, i)
             nabla_g_i_x = self.optim_problem.ineq_grad(x, i)
-            g_value += self.penalty_func.grad(self.p * g_i_x) * nabla_g_i_x
+            g_value += self.penalty[i].grad(g_i_x) * nabla_g_i_x
         return g_value
 
     def hessian(self, x):
@@ -28,14 +33,16 @@ class AugmentedLagrangianSolver:
         for i, _ in enumerate(self.optim_problem.ineq_constraints):
             g_i_x = self.optim_problem.ineq_func(x, i)
             nabla_g_i_x = self.optim_problem.ineq_grad(x, i)
-            first_comp = (self.p * self.penalty_func.hessian(self.p * g_i_x) *
-                          nabla_g_i_x @ nabla_g_i_x.T)
+            first_comp = (self.penalty[i].hessian(g_i_x) * nabla_g_i_x @ nabla_g_i_x.T)
             nabla_square_g_i_x = self.optim_problem.ineq_hessian(x, i)
-            second_comp = (self.penalty_func.grad(self.p * g_i_x) * nabla_square_g_i_x)
+            second_comp = (self.penalty[i].grad(g_i_x) * nabla_square_g_i_x)
             h_value += first_comp + second_comp
         return h_value
 
     def solve(self, x_0):
+        num_of_constraints = len(self.optim_problem.ineq_constraints)
+        self.multipliers = np.ones((num_of_constraints, num_of_constraints))
+
         x_traj = []
         # loop of the algo
         # create unconstrained optimization problem using
