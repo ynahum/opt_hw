@@ -4,7 +4,6 @@ from plot_utils import *
 from augmented_lagrangian_multipliers_algo import *
 from newton_method import newton_method
 from optim_problem import *
-from penalty import *
 import numpy as np
 
 
@@ -24,10 +23,16 @@ if __name__ == '__main__':
     test_unconst_rosen_2 = False
     if test_unconst_rosen_2:
         x_0 = np.zeros((10, 1))
+
         f = Func(func=rosenbrock_func, grad=rosenbrock_grad, hessian=rosenbrock_hessian)
         rosen_op_problem = OptimizationProblem(objective_func=f)
+
         augmented_lagrangian_solver = AugmentedLagrangianSolver(rosen_op_problem)
-        x_traj = augmented_lagrangian_solver.solve(x_0)
+        returned_hash = augmented_lagrangian_solver.solve(x_0)
+
+        x_traj = returned_hash['x_list']
+        grads = returned_hash['grad_list']
+
         title = f'Augmented Lagrangian over rosenbrock trajectory plot'
         traj_plot(x_traj, rosenbrock_func, title=title)
 
@@ -46,8 +51,12 @@ if __name__ == '__main__':
 
         augmented_lagrangian_solver = AugmentedLagrangianSolver(op_problem, p_init=100)
 
-        x_traj = augmented_lagrangian_solver.solve(x_0)
+        returned_hash = augmented_lagrangian_solver.solve(x_0)
+
+        x_traj = returned_hash['x_list']
+        grads = returned_hash['grad_list']
 
         title = f'Augmented Lagrangian over report problem trajectory plot'
         print(x_traj)
         traj_plot(x_traj, augmented_lagrangian_solver.func, y_scale_to_log=False, title=title)
+        #traj_plot(x_traj, augmented_lagrangian_solver.func, title=title)

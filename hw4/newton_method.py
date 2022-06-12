@@ -19,6 +19,7 @@ def inexact_line_search_armijo_rule_backtrack(
 
 def newton_method(x_0, optim_problem: OptimizationProblem, grad_norm_thresh=(10**(-5))):
     x_k_list = []
+    grad_k_list = []
 
     print('Started Newton Method with:')
 
@@ -27,8 +28,8 @@ def newton_method(x_0, optim_problem: OptimizationProblem, grad_norm_thresh=(10*
 
     while True:
         #print(f"Running iteration {num_of_iteration}")
-
-        d = newton_direction(optim_problem.hessian(x), optim_problem.grad(x))
+        grad_k_list.append(optim_problem.grad(x))
+        d = newton_direction(optim_problem.hessian(x), grad_k_list[-1])
 
         x_k_list.append(x)
         if np.linalg.norm(d, ord=2) <= grad_norm_thresh:
@@ -39,4 +40,7 @@ def newton_method(x_0, optim_problem: OptimizationProblem, grad_norm_thresh=(10*
         alpha = inexact_line_search_armijo_rule_backtrack(optim_problem, d, x)
         x = x + alpha * d
 
-    return np.array(x_k_list)
+    return_hash = {}
+    return_hash['x_list'] = np.array(x_k_list)
+    return_hash['grad_list'] = np.array(grad_k_list)
+    return return_hash
