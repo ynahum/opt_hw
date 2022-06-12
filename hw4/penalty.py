@@ -29,19 +29,13 @@ class Penalty:
 
     def __init__(self, p_init, multiplier_init=1):
         self.p = p_init
-        self.mu = multiplier_init
-
-    def set_p(self, p):
-        self.p = p
-
-    def set_mu(self, multiplier):
-        self.mu = multiplier
+        self.multiplier = multiplier_init
 
     def func(self,x):
-        return (1.0/self.p) * penalty_func(self.p * x, self.mu)
+        return (1.0/self.p) * penalty_func(self.p * x, self.multiplier)
 
     def first_derivative(self,x):
-        return penalty_first_derivative(self.p * x, self.mu)
+        return penalty_first_derivative(self.p * x, self.multiplier)
 
     def second_derivative(self,x):
         return self.p * penalty_second_derivative(self.p * x)

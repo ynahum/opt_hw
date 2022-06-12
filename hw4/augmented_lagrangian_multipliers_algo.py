@@ -1,3 +1,5 @@
+from audioop import mul
+
 from optim_problem import *
 from penalty import *
 from newton_method import newton_method
@@ -10,8 +12,9 @@ class AugmentedLagrangianSolver:
         self.optim_problem = optim_problem
         num_of_constraints = len(self.optim_problem.ineq_constraints)
         self.penalty = [Penalty(p_init) for _ in range(num_of_constraints)]
+        self.p = p_init
         self.alpha = alpha
-        self.multipliers = np.ones((num_of_constraints, num_of_constraints))
+        self.p_max = 1000
 
     def func(self, x):
         f_value = self.optim_problem.func(x)
@@ -39,22 +42,39 @@ class AugmentedLagrangianSolver:
             h_value += first_comp + second_comp
         return h_value
 
-    def solve(self, x_0):
-        num_of_constraints = len(self.optim_problem.ineq_constraints)
-        self.multipliers = np.ones((num_of_constraints, num_of_constraints))
+    def update_multipliers(self, x):
+        for i, _ in enumerate(self.optim_problem.ineq_constraints):
+            g_i_x = self.optim_problem.ineq_func(x, i)
+            self.penalty[i].multipliers = self.penalty[i].first_derivative(g_i_x)
 
-        x_traj = []
-        # loop of the algo
-        # create unconstrained optimization problem using
-        # the original optimization probem with penalty function and multiplies
+    def update_penalty_param(self):
+        for i, _ in enumerate(self.optim_problem.ineq_constraints):
+            self.penalty[i].p = self.p
+
+    def solve(self, x_0):
+        x_trajectory = []
         func_aggregate = Func(self.func, self.grad, self.hessian)
 
-        unconstrained_optim_problem = OptimizationProblem(func_aggregate)
+        # loop of the algo
+        while self.p < self.p_max:
 
-        # run newton method on the new unconstrained problem and get optimal x
-        x_traj = newton_method(x_0, unconstrained_optim_problem)
-        # calculate new multiplier phi'(x_optimal)
+            # update penalty parameters (to every constraint penalty function)
+            self.update_penalty_param()
 
-        return x_traj
+            # create unconstrained optimization problem using
+            # the original optimization probem with penalty function and multiplies
+            unconstrained_optim_problem = OptimizationProblem(func_aggregate)
+
+            # run newton method on the new unconstrained problem and get optimal x
+            x_trajectory.extend(newton_method(x_0, unconstrained_optim_problem))
+            x_optimal = x_trajectory[-1]
+
+            # calculate new multiplier phi'(x_optimal)
+            self.update_multipliers(x_optimal)
+
+            # increase p by alpha
+            self.p *= self.alpha
+
+        return x_trajectory
 
 
