@@ -55,6 +55,7 @@ if __name__ == '__main__':
 
         x_traj = returned_hash['x_list']
         grads = returned_hash['grad_list']
+        mults = returned_hash['mult_list']
 
         title = r'$||\nabla F_{p,\mu}(x_k)||_2$'
         augmented_grads_plot(grads, title=title)
@@ -64,7 +65,16 @@ if __name__ == '__main__':
         maximal_cont_violation_plot(max_violations, title=title)
 
         analitical_x_optimal = [2.0/3, 2.0/3]
-        title = r'$|(f(x_k)-f(x^*))|$'
+        title = r'$|f(x_k)-f(x^*)|$'
         print(x_traj)
         f_abs_diff_plot(x_traj, augmented_lagrangian_solver.func, analitical_x_optimal, y_scale_to_log=False, title=title)
-        #traj_plot(x_traj, augmented_lagrangian_solver.func, title=title)
+
+
+        title = r'$||x-x^*||_2$'
+        #print(x_traj)
+        x_diff_plot(x_traj, analitical_x_optimal, title=title)
+
+        analitical_lambda_optimal = np.array([12.0, (34.0/3), 0.0])
+        title = r'$||\lambda-\lambda^*||_2$'
+        multipliers_diff_plot(mults, analitical_lambda_optimal, title=title)
+

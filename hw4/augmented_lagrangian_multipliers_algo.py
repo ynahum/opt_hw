@@ -10,8 +10,8 @@ class AugmentedLagrangianSolver:
 
     def __init__(self, optim_problem: OptimizationProblem, p_init=100, alpha=2):
         self.optim_problem = optim_problem
-        num_of_constraints = len(self.optim_problem.ineq_constraints)
-        self.penalty = [Penalty(p_init) for _ in range(num_of_constraints)]
+        self.num_of_constraints = len(self.optim_problem.ineq_constraints)
+        self.penalty = [Penalty(p_init) for _ in range(self.num_of_constraints)]
         self.p = p_init
         self.alpha = alpha
         self.p_max = 1000
@@ -58,6 +58,9 @@ class AugmentedLagrangianSolver:
     def solve(self, x_0):
         x_trajectory = []
         aggregate_grads = []
+        mult_trajectory = []
+        current_multipliers = np.ones((self.num_of_constraints, 1))
+        mult_trajectory.append(current_multipliers)
 
         func_aggregate = Func(self.func, self.grad, self.hessian)
 
@@ -81,14 +84,14 @@ class AugmentedLagrangianSolver:
 
             # calculate new multiplier phi'(x_optimal)
             self.update_multipliers(x_optimal)
+            current_multipliers = np.zeros((self.num_of_constraints, 1))
+            for i, _ in enumerate(self.optim_problem.ineq_constraints):
+                current_multipliers[i] = self.penalty[i].multiplier
+            mult_trajectory.append(current_multipliers)
 
             # increase p by alpha
             self.p *= self.alpha
 
-        return_hash = {}
-        return_hash['x_list'] = x_trajectory
-        return_hash['grad_list'] = aggregate_grads
-
-        return return_hash
+        return {'x_list': x_trajectory, 'grad_list': aggregate_grads, 'mult_list': mult_trajectory}
 
 
