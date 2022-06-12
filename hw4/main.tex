@@ -289,11 +289,71 @@ $$=\begin{bmatrix} \frac{2}{3} & \frac{2}{3}\\ \end{bmatrix}^T \Rightarrow$$
 Exactly like we got at the primal problem solution. So we conclude that the dual optimum is achieved at that point as expected due to strong duality in this case.
 
 \subsection{Augmented Lagrangian Solver}
-In code.
+In code.\\
+We've defined 3 main classes:\\
+1. OptimizationProblem - objective functions pointers' to value,gradient and hessian + the same for constraints functions (w/ or w/o constraints)\\
+2. Penalty - manages the penalty function value and derivatives calculations + considers penalty parameter and multiplier\\
+3. AugmentedLagarangianSolver - the main class\\
+
+Note: we've limited the multipliers increase/decrease relative to previous multiplier by factor of 3 (as suggested in lectures).
 
 \subsection{Testing solver}
+Some snippets from code outputs:\\
+Newton Method has converged after 6 iterations\\
+Newton Method has converged after 6 iterations\\
+Newton Method has converged after 7 iterations\\
+Newton Method has converged after 6 iterations\\
 
+We can see the x values have converged to the optimal x under constraints as calculates:\\
+x\_traj=array([[ 0. ], [-0.2]]),\\ array([[0.09900358],
+       [0.02088282]]), array([[0.82696752],
+       [0.75244632]]), array([[0.80335486],
+       [0.70356693]]), array([[0.80387324],
+       [0.70393907]]), array([[0.80386339],
+       [0.70393477]]), array([[0.80386357],
+       [0.70393483]]), array([[ 0. ],
+       [-0.2]]), array([[0.04311619],
+       [0.01379573]]), array([[0.64303387],
+       [0.61516818]]), array([[0.71960123],
+       [0.69190039]]), array([[0.72342876],
+       [0.6824236 ]]), array([[0.72340545],
+       [0.68244142]]), array([[0.72340564],
+       [0.68244143]]), array([[ 0. ],
+       [-0.2]]), array([[0.01385387],
+       [0.01412047]]), array([[0.45665664],
+       [0.45744669]]), array([[0.65601656],
+       [0.65706519]]), array([[0.67112535],
+       [0.67215757]]), array([[0.67549307],
+       [0.66969653]]), array([[0.6754751 ],
+       [0.66969512]]), array([[0.67547518],
+       [0.66969514]]), array([[ 0. ],
+       [-0.2]]), array([[0.00544623],
+       [0.00846268]]), array([[0.61151288],
+       [0.5594119 ]]), array([[0.70594954],
+       [0.65477842]]), array([[0.66662328],
+       [0.66666689]]), array([[0.66670718],
+       [0.66668043]]),\\
+       \textbf{array([[0.66670699],[0.66668037]])}\\
+
+We can also see the multipliers have converged close to thier optimal calculated values:\\
+multipliers=\\
+array([[1.],[1.],[1.]]),\\
+       array([[3.        ],
+       [3.        ],
+       [0.33333333]]),\\
+       array([[9.        ],
+       [9.        ],
+       [0.11111111]]),\\
+       \textbf{array([[11.97309228],
+       [11.31201791],
+       [ 0.03703704]])}
+       
 \subsection{Plots}
+\includegraphics[scale=0.5]{hw4/plots/plot_3.png}\\
+\includegraphics[scale=0.5]{hw4/plots/plot_4.png}\\
+\includegraphics[scale=0.5]{hw4/plots/plot_5.png}\\
+\includegraphics[scale=0.5]{hw4/plots/plot_6.png}\\
+\includegraphics[scale=0.5]{hw4/plots/plot_7.png}\\
 
 
 \begin{comment}
