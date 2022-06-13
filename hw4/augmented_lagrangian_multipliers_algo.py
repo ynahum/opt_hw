@@ -64,8 +64,11 @@ class AugmentedLagrangianSolver:
 
         func_aggregate = Func(self.func, self.grad, self.hessian)
 
+        x_start = x_0
+
         # loop of the algo
         while self.p < self.p_max:
+
 
             # update penalty parameters (to every constraint penalty function)
             self.update_penalty_param()
@@ -76,7 +79,7 @@ class AugmentedLagrangianSolver:
 
             # run newton method on the new unconstrained problem and get optimal x
 
-            returned_hash = newton_method(x_0, unconstrained_optim_problem)
+            returned_hash = newton_method(x_start, unconstrained_optim_problem)
             x_trajectory.extend(returned_hash['x_list'])
             x_optimal = x_trajectory[-1]
 
@@ -91,6 +94,8 @@ class AugmentedLagrangianSolver:
 
             # increase p by alpha
             self.p *= self.alpha
+
+            x_start = x_optimal
 
         return {'x_list': x_trajectory, 'grad_list': aggregate_grads, 'mult_list': mult_trajectory}
 
